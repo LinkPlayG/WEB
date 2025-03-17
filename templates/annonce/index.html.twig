@@ -1,0 +1,23 @@
+{# templates/annonce/index.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Annonces - Interned{% endblock %}
+
+{% block body %}
+    <h1>Annonces</h1>
+
+    <div class="annonces-container">
+        {% for offre in offres %}
+            <div class="offre-card">
+                <div class="offre-image">
+                    <img src="{{ asset('images/placeholder.png') }}" alt="{{ offre.nom }}">
+                </div>
+                <div class="offre-content">
+                    <h3>{{ offre.nom }}</h3>
+                    <p>{{ offre.description }}</p>
+                    <a href="{{ path('app_annonce_show', {'id': offre.id}) }}" class="btn-details">Voir détails</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

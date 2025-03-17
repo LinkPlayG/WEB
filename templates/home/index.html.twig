@@ -1,0 +1,36 @@
+{# templates/home/index.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Interned - Accueil{% endblock %}
+
+{% block body %}
+    <div class="banner-image">
+        <img src="{{ asset('images/banner.jpg') }}" alt="Bannière Interned">
+    </div>
+
+    <div class="container">
+        <section class="about-section">
+            <h2>À Propos de nous</h2>
+            <p>
+                {{ aboutText }}
+            </p>
+        </section>
+
+        <section class="offers-section">
+            <h2>Offres pour vous</h2>
+            <div class="offers-list">
+                {% for offer in offers %}
+                    <div class="offer-card">
+                        <div class="offer-image">
+                            <img src="{{ asset('images/offer-icon.png') }}" alt="{{ offer.name }}">
+                        </div>
+                        <div class="offer-content">
+                            <h3>{{ offer.name }}</h3>
+                            <p>{{ offer.description }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+    </div>
+{% endblock %}
