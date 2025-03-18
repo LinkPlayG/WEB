@@ -24,9 +24,25 @@
         </ul>
     </nav>
     <div class="user-profile">
-        <a href="{{ path('app_profile') }}">
-            <img src="{{ asset('images/user.svg') }}" alt="Profil">
-        </a>
+        <div class="profile-container">
+            <img src="{{ asset('images/user.svg') }}" alt="Profil" id="profileIcon">
+            <div class="account-overlay" id="accountOverlay">
+                <div class="user-info">
+                    <img src="{{ asset('images/user.svg') }}" alt="Avatar" class="user-avatar">
+                    <div class="user-details">
+                        <div class="user-name">Nom Prénom</div>
+                        <div class="user-email">xxxxxxxx@email.xxx</div>
+                    </div>
+                </div>
+                <div class="overlay-links">
+                    <a href="{{ path('app_profile') }}" class="overlay-button">Profil</a>
+                    <a href="#" class="overlay-link">Portail Admin</a>
+                    <a href="#" class="overlay-link">Portail Pilote</a>
+                    <a href="#" class="overlay-link">Préférences</a>
+                    <a href="#" class="overlay-button disconnect">Se déconnecter</a>
+                </div>
+            </div>
+        </div>
     </div>
 </header>
 
@@ -75,6 +91,28 @@
     </div>
 </footer>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const profileIcon = document.getElementById('profileIcon');
+        const accountOverlay = document.getElementById('accountOverlay');
+        
+        if (profileIcon && accountOverlay) {
+            // Afficher/cacher le menu au clic sur l'icône
+            profileIcon.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                accountOverlay.classList.toggle('active');
+            });
+            
+            // Fermer le menu si on clique ailleurs sur la page
+            document.addEventListener('click', function(e) {
+                if (!profileIcon.contains(e.target) && !accountOverlay.contains(e.target)) {
+                    accountOverlay.classList.remove('active');
+                }
+            });
+        }
+    });
+</script>
 {% block javascripts %}{% endblock %}
 </body>
 </html>
