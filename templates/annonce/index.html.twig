@@ -1,23 +1,53 @@
-{# templates/annonce/index.html.twig #}
+{# templates/search/index.html.twig #}
 {% extends 'base.html.twig' %}
 
-{% block title %}Annonces - Interned{% endblock %}
+{% block title %}Offres - Interned{% endblock %}
 
 {% block body %}
-    <h1>Annonces</h1>
+    {# Barre de recherche principale #}
+    <div class="search-header">
+        <h1>Annonces</h1>
+        <div class="search-container">
+            <div class="search-input-wrapper">
+                <input type="text" id="search-input" placeholder="Rechercher">
+                <img class="search-icon" src="{{ asset('images/Search.svg') }}" alt="Rechercher">
+                {# Overlay #}
 
-    <div class="annonces-container">
-        {% for offre in offres %}
-            <div class="offre-card">
-                <div class="offre-image">
-                    <img src="{{ asset('images/placeholder.png') }}" alt="{{ offre.nom }}">
-                </div>
-                <div class="offre-content">
-                    <h3>{{ offre.nom }}</h3>
-                    <p>{{ offre.description }}</p>
-                    <a href="{{ path('app_annonce_show', {'id': offre.id}) }}" class="btn-details">Voir détails</a>
+                <div id="search-overlay" class="search-overlay hidden">
+                    <button id="close-overlay">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                        </svg>
+                    </button>
+                    <div class="search-fields">
+                        <div class="search-field">
+                            <label for="quoi">QUOI ?</label>
+                            <input type="text" id="quoi" placeholder="Métier, entreprise, compétence...">
+                        </div>
+                        <div class="search-field">
+                            <label for="ou">OÙ ?</label>
+                            <input type="text" id="ou" placeholder="Ville, département, code postal...">
+                        </div>
+                    </div>
+                    <button id="search-button">Rechercher</button>
                 </div>
             </div>
-        {% endfor %}
+            <div class="view-options">
+                <button class="option-btn active">Default</button>
+                <button class="option-btn">A-Z</button>
+                <button class="option-btn">List view</button>
+            </div>
+        </div>
+
     </div>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/search.css') }}">
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/search.js') }}"></script>
 {% endblock %}
