@@ -12,7 +12,7 @@
         <section class="about-section">
             <h2>À Propos de nous</h2>
             <p>
-                {{ aboutText }}
+                {{ about_text }}
             </p>
         </section>
 
@@ -22,10 +22,10 @@
                 {% for offer in offers %}
                     <div class="offer-card">
                         <div class="offer-image">
-                            <img src="{{ asset('images/offer-icon.png') }}" alt="{{ offer.name }}">
+                            <img src="{{ asset('images/offer-icon.png') }}" alt="{{ offer.title }}">
                         </div>
                         <div class="offer-content">
-                            <h3>{{ offer.name }}</h3>
+                            <h3>{{ offer.title }}</h3>
                             <p>{{ offer.description }}</p>
                         </div>
                     </div>
