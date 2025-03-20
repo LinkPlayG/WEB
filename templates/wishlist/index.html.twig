@@ -1,11 +1,130 @@
 {# templates/wishlist/index.html.twig #}
-    {% extends 'base.html.twig' %}
+{% extends 'base.html.twig' %}
 
-    {% block title %}Wishlist - Interned{% endblock %}
+{% block title %}Wishlist - Interned{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/wishlist.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+{% endblock %}
 
 {% block body %}
-    <div class="container">
-        <h1>Ma Wishlist</h1>
-        <p>Page en construction</p>
+    <div class="wishlist-container">
+        <div class="wishlist-header">
+            <h1>Votre wishlist</h1>
+        </div>
+
+        <div class="wishlist-content">
+            <div class="wishlist-list">
+                <!-- Wishlist item 1 -->
+                <div class="wishlist-item">
+                    <div class="wishlist-image">
+                        <i class="fa fa-image"></i>
+                    </div>
+                    <div class="wishlist-details">
+                        <h3>choin choin affelou</h3>
+                        <p>Description courte sur l'offre voila aaaaaa aaaaaaaaaa aaaaaaaaaaaaa aaaaaaaaaaaaaa...</p>
+                    </div>
+                    <div class="wishlist-heart">
+                        <label class="heart-checkbox">
+                            <input type="checkbox" checked>
+                            <span class="checkmark">
+                                <i class="fa fa-heart"></i>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Wishlist item 2 -->
+                <div class="wishlist-item">
+                    <div class="wishlist-image">
+                        <i class="fa fa-image"></i>
+                    </div>
+                    <div class="wishlist-details">
+                        <h3>Cyrilmp4-Quarts</h3>
+                        <p>Description courte sur l'offre voila aaaaaa aaaaaaaaaa aaaaaaaaaaaaa aaaaaaaaaaaaaa...</p>
+                    </div>
+                    <div class="wishlist-heart">
+                        <label class="heart-checkbox">
+                            <input type="checkbox" checked>
+                            <span class="checkmark">
+                                <i class="fa fa-heart"></i>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Wishlist item 3 -->
+                <div class="wishlist-item">
+                    <div class="wishlist-image">
+                        <i class="fa fa-image"></i>
+                    </div>
+                    <div class="wishlist-details">
+                        <h3>Le Pierre Croc'</h3>
+                        <p>Description courte sur l'offre voila aaaaaa aaaaaaaaaa aaaaaaaaaaaaa aaaaaaaaaaaaaa...</p>
+                    </div>
+                    <div class="wishlist-heart">
+                        <label class="heart-checkbox">
+                            <input type="checkbox" checked>
+                            <span class="checkmark">
+                                <i class="fa fa-heart"></i>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Wishlist item 4 -->
+                <div class="wishlist-item">
+                    <div class="wishlist-image">
+                        <i class="fa fa-image"></i>
+                    </div>
+                    <div class="wishlist-details">
+                        <h3>Thomas Douceur</h3>
+                        <p>Biscuiterie Familiale-1905<br>Biscuits français d'origine GOURMANDE !</p>
+                    </div>
+                    <div class="wishlist-heart">
+                        <label class="heart-checkbox">
+                            <input type="checkbox" checked>
+                            <span class="checkmark">
+                                <i class="fa fa-heart"></i>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="map-container">
+                <!-- Map iframe or placeholder -->
+                <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d83998.96777804328!2d6.1269674624161705!3d48.68200942928266!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4794986e17a692cd%3A0x4ed671b867d7b08!2sNancy!5e0!3m2!1sfr!2sfr!4v1615294597751!5m2!1sfr!2sfr"
+                    width="100%" 
+                    height="100%" 
+                    style="border:0;" 
+                    allowfullscreen="" 
+                    loading="lazy">
+                </iframe>
+            </div>
+        </div>
     </div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Heart checkbox functionality
+        const checkboxes = document.querySelectorAll('.heart-checkbox input');
+        
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const heartIcon = this.nextElementSibling.querySelector('i');
+                
+                if (this.checked) {
+                    heartIcon.classList.remove('unchecked');
+                } else {
+                    heartIcon.classList.add('unchecked');
+                }
+            });
+        });
+    });
+</script>
 {% endblock %}

@@ -1,52 +1,100 @@
-{# templates/search/index.html.twig #}
+{# templates/annonce/index.html.twig #}
 {% extends 'base.html.twig' %}
 
 {% block title %}Offres - Interned{% endblock %}
 
-{% block body %}
-    {# Barre de recherche principale #}
-    <div class="search-header">
-        <div class="search-title">Annonces</div>
-        <div class="search-container">
-            <div class="search-input-wrapper">
-                <input type="text" id="search-input" placeholder="Rechercher">
-                <img class="search-icon" src="{{ asset('images/Search.svg') }}" alt="Rechercher">
-                {# Overlay #}
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/annonce.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+{% endblock %}
 
-                <div id="search-overlay" class="search-overlay hidden">
-                    <button id="close-overlay">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
-                        </svg>
-                    </button>
-                    <div class="search-fields">
-                        <div class="search-field">
-                            <label for="quoi">QUOI ?</label>
-                            <input type="text" id="quoi" placeholder="Métier, entreprise, compétence...">
-                        </div>
-                        <div class="search-field">
-                            <label for="ou">OÙ ?</label>
-                            <input type="text" id="ou" placeholder="Ville, département, code postal...">
-                        </div>
+{% block body %}
+    <div class="annonce-container">
+        <div class="annonce-header">
+            <h1>Annonces</h1>
+            <div class="search-bar">
+                <i class="fa fa-search search-icon"></i>
+                <input type="text" class="search-input" placeholder="filtred search text">
+            </div>
+        </div>
+
+        <div class="annonce-content">
+            <div class="annonce-list">
+                <!-- Annonce item 1 -->
+                <div class="annonce-item">
+                    <div class="annonce-image">
+                        <i class="fa fa-image"></i>
                     </div>
-                    <button id="search-button">Rechercher</button>
+                    <div class="annonce-details">
+                        <h3>Nom De L'offre</h3>
+                        <p>Description courte sur l'offre voila aaaaaa aaaaaaaaaa aaaaaaaaaaaaa aaaaaaaaaaaaaa aaaaaaaaaaaaaa aaaaaaaaaaaaaa...</p>
+                    </div>
+                </div>
+
+                <!-- Annonce item 2 -->
+                <div class="annonce-item">
+                    <div class="annonce-image">
+                        <i class="fa fa-image"></i>
+                    </div>
+                    <div class="annonce-details">
+                        <h3>Nom De L'offre</h3>
+                        <p>Description courte sur l'offre voila aaaaaa aaaaaaaaaa aaaaaaaaaaaaa aaaaaaaaaaaaaa aaaaaaaaaaaaaa aaaaaaaaaaaaaa...</p>
+                    </div>
+                </div>
+
+                <!-- Annonce item 3 -->
+                <div class="annonce-item">
+                    <div class="annonce-image">
+                        <i class="fa fa-image"></i>
+                    </div>
+                    <div class="annonce-details">
+                        <h3>Nom De L'offre</h3>
+                        <p>Description courte sur l'offre voila aaaaaa aaaaaaaaaa aaaaaaaaaaaaa aaaaaaaaaaaaaa aaaaaaaaaaaaaa aaaaaaaaaaaaaa...</p>
+                    </div>
+                </div>
+
+                <!-- Annonce item 4 -->
+                <div class="annonce-item">
+                    <div class="annonce-image">
+                        <i class="fa fa-image"></i>
+                    </div>
+                    <div class="annonce-details">
+                        <h3>Nom De L'offre</h3>
+                        <p>Description courte sur l'offre voila aaaaaa aaaaaaaaaa aaaaaaaaaaaaa aaaaaaaaaaaaaa aaaaaaaaaaaaaa aaaaaaaaaaaaaa...</p>
+                    </div>
                 </div>
             </div>
-            <div class="view-options">
-                <button class="option-btn active">Default</button>
-                <button class="option-btn">A-Z</button>
-                <button class="option-btn">List view</button>
+
+            <div class="map-container">
+                <!-- Map iframe or placeholder -->
+                <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d83998.96777804328!2d6.1269674624161705!3d48.68200942928266!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4794986e17a692cd%3A0x4ed671b867d7b08!2sNancy!5e0!3m2!1sfr!2sfr!4v1615294597751!5m2!1sfr!2sfr"
+                    width="100%" 
+                    height="100%" 
+                    style="border:0;" 
+                    allowfullscreen="" 
+                    loading="lazy">
+                </iframe>
             </div>
         </div>
     </div>
 {% endblock %}
 
-{% block stylesheets %}
-    {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('css/search.css') }}">
-{% endblock %}
-
 {% block javascripts %}
     {{ parent() }}
-    <script src="{{ asset('js/search.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add click event to annonce items to make them clickable
+            const annonceItems = document.querySelectorAll('.annonce-item');
+            
+            annonceItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    // Navigate to detail page or show more info
+                    // For demo purposes, we'll just add a clicked class
+                    this.classList.toggle('clicked');
+                });
+            });
+        });
+    </script>
 {% endblock %}

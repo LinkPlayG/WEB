@@ -3,9 +3,132 @@
 
 {% block title %}Candidatures - Interned{% endblock %}
 
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/candidature.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+{% endblock %}
+
 {% block body %}
-    <div class="container">
-        <h1>Mes Candidatures</h1>
-        <p>Page en construction</p>
+    <div class="candidature-container">
+        <div class="candidature-header">
+            <h1>Candidatures</h1>
+            <div class="filter-tabs">
+                <button class="tab-button active" data-status="acceptees">Acceptées</button>
+                <button class="tab-button" data-status="en-cours">En cours</button>
+                <button class="tab-button" data-status="refusees">Refusées</button>
+            </div>
+            <div class="search-bar">
+                <i class="fa fa-search search-icon"></i>
+                <input type="text" class="search-input" placeholder="filtred search text">
+            </div>
+        </div>
+
+        <div class="candidature-content">
+            <div class="candidature-list">
+                <!-- Candidature item - Acceptée -->
+                <div class="candidature-item" data-status="acceptees">
+                    <div class="candidature-image">
+                        <i class="fa fa-image"></i>
+                    </div>
+                    <div class="candidature-details">
+                        <h3>Nom De L'offre</h3>
+                        <p>Description courte sur l'offre voila aaaaaa aaaaaaaaaa aaaaaaaaaaaaa aaaaaaaaaaaaaa aaaaaaaaaaaaaa aaaaaaaaaaaaaa...</p>
+                    </div>
+                    <div class="candidature-status">
+                        <span class="status-badge acceptee">Accepté</span>
+                    </div>
+                </div>
+
+                <!-- Candidature item - En cours -->
+                <div class="candidature-item" data-status="en-cours">
+                    <div class="candidature-image">
+                        <i class="fa fa-image"></i>
+                    </div>
+                    <div class="candidature-details">
+                        <h3>Nom De L'offre</h3>
+                        <p>Description courte sur l'offre voila aaaaaa aaaaaaaaaa aaaaaaaaaaaaa aaaaaaaaaaaaaa aaaaaaaaaaaaaa aaaaaaaaaaaaaa...</p>
+                    </div>
+                    <div class="candidature-status">
+                        <span class="status-badge en-cours">En cours</span>
+                    </div>
+                </div>
+
+                <!-- Candidature item - En cours (duplicate) -->
+                <div class="candidature-item" data-status="en-cours">
+                    <div class="candidature-image">
+                        <i class="fa fa-image"></i>
+                    </div>
+                    <div class="candidature-details">
+                        <h3>Nom De L'offre</h3>
+                        <p>Description courte sur l'offre voila aaaaaa aaaaaaaaaa aaaaaaaaaaaaa aaaaaaaaaaaaaa aaaaaaaaaaaaaa aaaaaaaaaaaaaa...</p>
+                    </div>
+                    <div class="candidature-status">
+                        <span class="status-badge en-cours">En cours</span>
+                    </div>
+                </div>
+
+                <!-- Candidature item - Refusée -->
+                <div class="candidature-item" data-status="refusees">
+                    <div class="candidature-image">
+                        <i class="fa fa-image"></i>
+                    </div>
+                    <div class="candidature-details">
+                        <h3>Nom De L'offre</h3>
+                        <p>Description courte sur l'offre voila aaaaaa aaaaaaaaaa aaaaaaaaaaaaa aaaaaaaaaaaaaa aaaaaaaaaaaaaa aaaaaaaaaaaaaa...</p>
+                    </div>
+                    <div class="candidature-status">
+                        <span class="status-badge refusee">Refusé</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="map-container">
+                <!-- Map iframe or placeholder -->
+                <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d83998.96777804328!2d6.1269674624161705!3d48.68200942928266!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4794986e17a692cd%3A0x4ed671b867d7b08!2sNancy!5e0!3m2!1sfr!2sfr!4v1615294597751!5m2!1sfr!2sfr"
+                    width="100%" 
+                    height="100%" 
+                    style="border:0;" 
+                    allowfullscreen="" 
+                    loading="lazy">
+                </iframe>
+            </div>
+        </div>
     </div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get all buttons and candidature items
+        const buttons = document.querySelectorAll('.tab-button');
+        const items = document.querySelectorAll('.candidature-item');
+
+        // Add click event to each button
+        buttons.forEach(button => {
+            button.addEventListener('click', function() {
+                // Remove active class from all buttons
+                buttons.forEach(btn => btn.classList.remove('active'));
+                
+                // Add active class to clicked button
+                this.classList.add('active');
+                
+                // Get the status to filter
+                const status = this.getAttribute('data-status');
+                
+                // Show/hide items based on status
+                items.forEach(item => {
+                    if (status === 'all' || item.getAttribute('data-status') === status) {
+                        item.style.display = 'flex';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        // Trigger click on the first button to initialize the view
+        buttons[0].click();
+    });
+</script>
 {% endblock %}

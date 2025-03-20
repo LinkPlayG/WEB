@@ -4,88 +4,64 @@
 {% block title %}Profil - Interned{% endblock %}
 
 {% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/profile.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <style>
-        .profile-header {
-            background-image: url('{{ asset('images/wave-bg.svg') }}');
-            background-size: cover;
-            background-position: center;
-        }
-        .card {
-            border-radius: 8px;
-            background-color: #f2f2f2;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        .card-body {
-            padding: 1.25rem;
-        }
-        .icon-box {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 40px;
-            height: 40px;
-            border-radius: 8px;
-            background-color: #e0e0e0;
-        }
-    </style>
 {% endblock %}
 
 {% block body %}
     <div class="container p-0">
         <!-- Header Banner -->
-        <div class="profile-header" style="display: flex; height: 150px; position: relative;">
-            <div style="flex-grow: 1; position: relative; overflow: hidden;">
+        <div class="profile-header">
+            <div class="profile-header-bg">
                 <!-- Background image is handled by CSS -->
             </div>
             <!-- Info icon on the right -->
-            <div style="width: 80px; background-color: #003399; display: flex; justify-content: center; align-items: center; color: white; font-size: 2.5rem;">
+            <div class="profile-header-info">
                 <i class="fa fa-info" aria-hidden="true"></i>
             </div>
         </div>
 
         <!-- Profile Content -->
-        <div class="profile-content" style="padding: 0 20px; position: relative;">
+        <div class="profile-content">
             <!-- Profile Picture -->
-            <div class="profile-picture" style="position: absolute; top: -60px; left: 40px; width: 120px; height: 120px; background-color: #ddd; border-radius: 50%; overflow: hidden; display: flex; justify-content: center; align-items: center; border: 3px solid white;">
+            <div class="profile-picture">
                 <!-- Default silhouette if no image -->
-                <i class="fa fa-user" aria-hidden="true" style="font-size: 5rem; color: #333;"></i>
+                <i class="fa fa-user profile-user-icon" aria-hidden="true"></i>
             </div>
 
             <!-- Name and Description -->
-            <div style="padding-top: 70px; padding-left: 20px;">
-                <h2 style="font-weight: bold; margin-bottom: 5px;">NOM PRENOM</h2>
-                <p style="color: #555; margin-bottom: 20px;">Description courte de la personne</p>
+            <div class="profile-info">
+                <h2 class="profile-name">NOM PRENOM</h2>
+                <p class="profile-description">Description courte de la personne</p>
             </div>
 
             <!-- Info Card -->
             <div class="card mb-3">
                 <div class="card-body">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                        <h3 style="margin-bottom: 0;">Infos</h3>
-                        <i class="fa fa-graduation-cap" aria-hidden="true" style="font-size: 1.5rem; color: #333;"></i>
+                    <div class="card-header">
+                        <h3 class="card-title">Infos</h3>
+                        <i class="fa fa-graduation-cap card-icon" aria-hidden="true"></i>
                     </div>
-                    <p style="color: #666; margin-bottom: 15px;">Information comme des experience professionnel</p>
+                    <p class="card-text">Information comme des experience professionnel</p>
                     
                     <div class="experience-list">
                         <div class="experience-item mb-3">
-                            <p style="font-weight: bold; margin-bottom: 5px;">2023-2024: École ingénieur CESI (Lorraine, France)</p>
+                            <p class="experience-title">2023-2024: École ingénieur CESI (Lorraine, France)</p>
                             <p>-Ambassadeur, Organisation événement et communication</p>
                         </div>
                         
                         <div class="experience-item mb-3">
-                            <p style="font-weight: bold; margin-bottom: 5px;">• 2022 - 2023: Resto du cœur (Woippy, France)</p>
+                            <p class="experience-title">• 2022 - 2023: Resto du cœur (Woippy, France)</p>
                             <p>-Réception et gestion des stocks de produit</p>
                         </div>
                         
                         <div class="experience-item mb-3">
-                            <p style="font-weight: bold; margin-bottom: 5px;">• 2021 Juillet/Août: Ficominrors (Dieuze, France)</p>
+                            <p class="experience-title">• 2021 Juillet/Août: Ficominrors (Dieuze, France)</p>
                             <p>-Préparation de matériel pour les pièces automobiles</p>
                         </div>
                         
                         <div class="experience-item">
-                            <p style="font-weight: bold; margin-bottom: 5px;">• 2020 Août: Atelier de nettoyage (Metz, France)</p>
+                            <p class="experience-title">• 2020 Août: Atelier de nettoyage (Metz, France)</p>
                             <p>-Réception et gestion de commande</p>
                         </div>
                     </div>
@@ -94,16 +70,16 @@
             
             <!-- CV Card -->
             <div class="card mb-3">
-                <div class="card-body" style="display: flex; align-items: center;">
+                <div class="card-body cv-card-body">
                     <div class="icon-box">
-                        <i class="fa fa-file-pdf-o" aria-hidden="true" style="font-size: 1.2rem; color: #555;"></i>
+                        <i class="fa fa-file-pdf-o pdf-icon" aria-hidden="true"></i>
                     </div>
-                    <div style="margin-left: 15px; flex-grow: 1;">
-                        <h4 style="margin-bottom: 5px;">Mon CV</h4>
-                        <p style="margin-bottom: 0; color: #666; font-size: 0.9rem;">NomDuCV.pdf</p>
+                    <div class="cv-details">
+                        <h4 class="cv-title">Mon CV</h4>
+                        <p class="cv-filename">NomDuCV.pdf</p>
                     </div>
-                    <a href="#" style="text-decoration: none; color: inherit;">
-                        <i class="fa fa-download" aria-hidden="true" style="font-size: 1.2rem; color: #555;"></i>
+                    <a href="#" class="download-link">
+                        <i class="fa fa-download download-icon" aria-hidden="true"></i>
                     </a>
                 </div>
             </div>
