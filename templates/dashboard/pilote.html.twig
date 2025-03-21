@@ -1,5 +1,10 @@
 {% extends 'dashboard/layout.html.twig' %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/pilote-dashboard.css') }}">
+{% endblock %}
+
 {% block dashboard_content %}
     <!-- Statistics Cards -->
     <div class="row mb-4">
