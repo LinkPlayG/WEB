@@ -79,6 +79,40 @@ nav a.active {
     height: 40px;
     border-radius: 50%;
 }
+#profileIcon {
+    display: block;
+}
+
+#burgerIcon {
+    display: none;
+}
+.nav-burger{
+    display: none;
+}
+
+.burger-links{
+    list-style: none;
+    display: none;
+    flex-direction: column;
+    text-align: center;
+    border-bottom: 1px solid #eee;
+
+}
+
+.burger-link {
+    padding: 10px 15px;
+    text-decoration: none;
+    font-size: 14px;
+    transition: background-color 0.2s;
+    color: black;
+}
+.burger-link:hover {
+    background-color: #f5f5f5;
+}
+.burger-link.active {
+    background-color: var(--primary-color);
+    color: white;
+}
 
 /* Main Content */
 main {
@@ -203,6 +237,7 @@ footer {
     position: relative;
     cursor: pointer;
 }
+/* Account Overlay*/
 
 .account-overlay {
     display: none;
@@ -286,4 +321,23 @@ footer {
     color: #d33;
     border-color: #d33;
     margin-top: 5px;
+}
+
+@media screen and (width < 700px) {
+    nav{
+        display: none;
+    }
+    #profileIcon{
+        display: none;
+    }
+    #burgerIcon{
+        display: block;
+    }
+    .nav-burger{
+        display: block;
+    }
+    .burger-links{
+        display: flex;
+    }
+
 }

@@ -118,6 +118,16 @@
     border: none;
     cursor: pointer;
 }
+
 .hidden {
     display: none;
+}
+
+.search-title{
+    display: flex;
+}
+@media screen and (width<700) {
+    .search-title {
+        display: none;
+    }
 }

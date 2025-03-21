@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}Interned{% endblock %}</title>
     <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
-    <script src="{{ asset('js/search.js') }}"></script>
+    <script src="{{ asset('js/profile.js') }}"></script>
     {% block stylesheets %}{% endblock %}
 </head>
 <body>
@@ -26,7 +26,14 @@
     <div class="user-profile">
         <div class="profile-container">
             <img src="{{ asset('images/user.svg') }}" alt="Profil" id="profileIcon">
+            <img src="{{ asset('images/burger.png') }}" alt="Burger" id="burgerIcon">
             <div class="account-overlay" id="accountOverlay">
+                <div class="burger-links">
+                    <a href="{{ path('app_home') }}" class="{{ app.request.get('_route') == 'app_home' ? 'active' : '' }} burger-link">Accueil</a>
+                    <a href="{{ path('app_annonces') }}" class="{{ app.request.get('_route') == 'app_annonces' ? 'active' : '' }} burger-link">Annonces</a>
+                    <a href="{{ path('app_wishlist') }}" class="{{ app.request.get('_route') == 'app_wishlist' ? 'active' : '' }} burger-link">Wishlist</a>
+                    <a href="{{ path('app_candidatures') }}" class="{{ app.request.get('_route') == 'app_candidatures' ? 'active' : '' }} burger-link">Candidatures</a>
+                </div>
                 <div class="user-info">
                     <img src="{{ asset('images/user.svg') }}" alt="Avatar" class="user-avatar">
                     <div class="user-details">
@@ -100,29 +107,6 @@
         </div>
     </div>
 </footer>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const profileIcon = document.getElementById('profileIcon');
-        const accountOverlay = document.getElementById('accountOverlay');
-        
-        if (profileIcon && accountOverlay) {
-            // Afficher/cacher le menu au clic sur l'icône
-            profileIcon.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                accountOverlay.classList.toggle('active');
-            });
-            
-            // Fermer le menu si on clique ailleurs sur la page
-            document.addEventListener('click', function(e) {
-                if (!profileIcon.contains(e.target) && !accountOverlay.contains(e.target)) {
-                    accountOverlay.classList.remove('active');
-                }
-            });
-        }
-    });
-</script>
 {% block javascripts %}{% endblock %}
 </body>
 </html>
