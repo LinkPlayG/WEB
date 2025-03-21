@@ -1,0 +1,238 @@
+{% extends 'dashboard/layout.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/user-management.css') }}">
+{% endblock %}
+
+{% block dashboard_content %}
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="stats-card">
+                <h5>Total Utilisateurs</h5>
+                <div class="d-flex justify-content-between align-items-center">
+                    <h2 class="mb-0">{{ stats.total }}</h2>
+                    <i class="fas fa-users fa-2x text-primary"></i>
+                </div>
+                <div class="mt-2 text-muted">Tous les utilisateurs</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-card">
+                <h5>Étudiants</h5>
+                <div class="d-flex justify-content-between align-items-center">
+                    <h2 class="mb-0">{{ stats.etudiants }}</h2>
+                    <i class="fas fa-user-graduate fa-2x text-success"></i>
+                </div>
+                <div class="mt-2 text-muted">Total des étudiants</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-card">
+                <h5>Pilotes</h5>
+                <div class="d-flex justify-content-between align-items-center">
+                    <h2 class="mb-0">{{ stats.pilotes }}</h2>
+                    <i class="fas fa-user-tie fa-2x text-info"></i>
+                </div>
+                <div class="mt-2 text-muted">Total des pilotes</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-card">
+                <h5>Administrateurs</h5>
+                <div class="d-flex justify-content-between align-items-center">
+                    <h2 class="mb-0">{{ stats.admins }}</h2>
+                    <i class="fas fa-user-shield fa-2x text-warning"></i>
+                </div>
+                <div class="mt-2 text-muted">Total des admins</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search and Filter Section -->
+    <div class="search-section mb-4">
+        <div class="row">
+            <div class="col-md-4">
+                <input type="text" class="form-control" placeholder="Rechercher un utilisateur...">
+            </div>
+            <div class="col-md-3">
+                <select class="form-select">
+                    <option>Tous les rôles</option>
+                    <option>Étudiants</option>
+                    <option>Pilotes</option>
+                    <option>Administrateurs</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select class="form-select">
+                    <option>Tous les statuts</option>
+                    <option>Actif</option>
+                    <option>Inactif</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-primary w-100">
+                    <i class="fas fa-filter me-2"></i>Filtrer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Data Tables -->
+    <div class="data-table">
+        <ul class="nav nav-tabs mb-3">
+            <li class="nav-item">
+                <a class="nav-link active" data-bs-toggle="tab" href="#etudiants">
+                    <i class="fas fa-user-graduate me-2"></i>Étudiants
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#pilotes">
+                    <i class="fas fa-user-tie me-2"></i>Pilotes
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#admins">
+                    <i class="fas fa-user-shield me-2"></i>Administrateurs
+                </a>
+            </li>
+        </ul>
+
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="etudiants">
+                <div class="d-flex justify-content-end mb-3">
+                    <a href="{{ path('app_etudiant_new') }}" class="btn btn-success">
+                        <i class="fas fa-plus me-2"></i>Ajouter un étudiant
+                    </a>
+                </div>
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Nom</th>
+                            <th>Email</th>
+                            <th>Promotion</th>
+                            <th>Statut</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for etudiant in etudiants %}
+                            <tr>
+                                <td>{{ etudiant.nomEtudiant }} {{ etudiant.prenomEtudiant }}</td>
+                                <td>{{ etudiant.email }}</td>
+                                <td>{{ etudiant.promotion ? etudiant.promotion.nom : '-' }}</td>
+                                <td><span class="badge bg-{{ etudiant.statut == 'En stage' ? 'success' : 'warning' }}">{{ etudiant.statut }}</span></td>
+                                <td class="action-buttons">
+                                    <a href="#" class="btn btn-sm btn-info" title="Voir le profil">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a href="#" class="btn btn-sm btn-warning" title="Modifier">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="#" class="btn btn-sm btn-danger" title="Supprimer">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="tab-pane fade" id="pilotes">
+                <div class="d-flex justify-content-end mb-3">
+                    <a href="#" class="btn btn-success">
+                        <i class="fas fa-plus me-2"></i>Ajouter un pilote
+                    </a>
+                </div>
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Nom</th>
+                            <th>Email</th>
+                            <th>Promotions</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for pilote in pilotes %}
+                            <tr>
+                                <td>{{ pilote.nomPilote }} {{ pilote.prenomPilote }}</td>
+                                <td>{{ pilote.email }}</td>
+                                <td>
+                                    {% for promotion in pilote.promotions %}
+                                        <span class="badge bg-primary">{{ promotion.nom }}</span>
+                                    {% endfor %}
+                                </td>
+                                <td class="action-buttons">
+                                    <a href="#" class="btn btn-sm btn-info" title="Voir le profil">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a href="#" class="btn btn-sm btn-warning" title="Modifier">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="#" class="btn btn-sm btn-danger" title="Supprimer">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="tab-pane fade" id="admins">
+                <div class="d-flex justify-content-end mb-3">
+                    <a href="#" class="btn btn-success">
+                        <i class="fas fa-plus me-2"></i>Ajouter un administrateur
+                    </a>
+                </div>
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Nom</th>
+                            <th>Email</th>
+                            <th>Date de création</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for admin in admins %}
+                            <tr>
+                                <td>{{ admin.nomAdmin }} {{ admin.prenomAdmin }}</td>
+                                <td>{{ admin.email }}</td>
+                                <td>{{ admin.dateCreation|date('d/m/Y') }}</td>
+                                <td class="action-buttons">
+                                    <a href="#" class="btn btn-sm btn-info" title="Voir le profil">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a href="#" class="btn btn-sm btn-warning" title="Modifier">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="#" class="btn btn-sm btn-danger" title="Supprimer">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        // Initialisation des DataTables
+        $(document).ready(function() {
+            $('.table').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/fr-FR.json'
+                }
+            });
+        });
+    </script>
+{% endblock %} 

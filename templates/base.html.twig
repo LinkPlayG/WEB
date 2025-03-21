@@ -30,14 +30,24 @@
                 <div class="user-info">
                     <img src="{{ asset('images/user.svg') }}" alt="Avatar" class="user-avatar">
                     <div class="user-details">
-                        <div class="user-name">Nom Prénom</div>
-                        <div class="user-email">xxxxxxxx@email.xxx</div>
+                        {% if app.user %}
+                            {% if is_granted('ROLE_ADMIN') %}
+                                <div class="user-name">{{ app.user.nomAdmin }} {{ app.user.prenomAdmin }}</div>
+                            {% elseif is_granted('ROLE_PILOTE') %}
+                                <div class="user-name">{{ app.user.nomPilote }} {{ app.user.prenomPilote }}</div>
+                            {% elseif is_granted('ROLE_ETUDIANT') %}
+                                <div class="user-name">{{ app.user.nomEtudiant }} {{ app.user.prenomEtudiant }}</div>
+                            {% endif %}
+                            <div class="user-email">{{ app.user.email }}</div>
+                        {% else %}
+                            <div class="user-name">Non connecté</div>
+                            <div class="user-email">Veuillez vous connecter</div>
+                        {% endif %}
                     </div>
                 </div>
                 <div class="overlay-links">
                     <a href="{{ path('app_profile') }}" class="overlay-button">Profil</a>
-                    <a href="#" class="overlay-link">Portail Admin</a>
-                    <a href="#" class="overlay-link">Portail Pilote</a>
+                    <a href="{{ path('app_dashboard') }}" class="overlay-link">Tableau de bord</a>
                     <a href="#" class="overlay-link">Préférences</a>
                     <a href="{{ path('app_logout') }}" class="overlay-button disconnect">Se déconnecter</a>
                 </div>

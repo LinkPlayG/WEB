@@ -1,0 +1,200 @@
+{% extends 'dashboard/layout.html.twig' %}
+
+{% block dashboard_content %}
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="stats-card">
+                <h5>Mes Étudiants</h5>
+                <div class="d-flex justify-content-between align-items-center">
+                    <h2 class="mb-0">{{ stats.etudiants }}</h2>
+                    <i class="fas fa-user-graduate fa-2x text-primary"></i>
+                </div>
+                <div class="mt-2 text-muted">Total des étudiants</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-card">
+                <h5>Offres actives</h5>
+                <div class="d-flex justify-content-between align-items-center">
+                    <h2 class="mb-0">{{ stats.offres }}</h2>
+                    <i class="fas fa-briefcase fa-2x text-success"></i>
+                </div>
+                <div class="mt-2 text-muted">Total des offres</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-card">
+                <h5>Entreprises partenaires</h5>
+                <div class="d-flex justify-content-between align-items-center">
+                    <h2 class="mb-0">{{ stats.entreprises }}</h2>
+                    <i class="fas fa-building fa-2x text-info"></i>
+                </div>
+                <div class="mt-2 text-muted">Total des entreprises</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-card">
+                <h5>Étudiants en stage</h5>
+                <div class="d-flex justify-content-between align-items-center">
+                    <h2 class="mb-0">{{ stats.etudiantsEnStage|length }}</h2>
+                    <i class="fas fa-user-check fa-2x text-warning"></i>
+                </div>
+                <div class="mt-2 text-muted">{{ (stats.etudiantsEnStage|length / stats.etudiants * 100)|round }}% placés</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="stats-card">
+                <h5>Statut des étudiants</h5>
+                <canvas id="studentStatusChart"></canvas>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="stats-card">
+                <h5>Candidatures par entreprise</h5>
+                <canvas id="applicationChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search and Filter Section -->
+    <div class="search-section mb-4">
+        <div class="row">
+            <div class="col-md-4">
+                <input type="text" class="form-control" placeholder="Rechercher...">
+            </div>
+            <div class="col-md-3">
+                <select class="form-select">
+                    <option>Toutes les promotions</option>
+                    {% for etudiant in etudiants %}
+                        <option>{{ etudiant.promotion.nom }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select class="form-select">
+                    <option>Tous les statuts</option>
+                    <option>En recherche</option>
+                    <option>En stage</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-primary w-100">
+                    <i class="fas fa-filter me-2"></i>Filtrer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Data Tables -->
+    <div class="data-table">
+        <ul class="nav nav-tabs mb-3">
+            <li class="nav-item">
+                <a class="nav-link active" data-bs-toggle="tab" href="#mes-etudiants">
+                    <i class="fas fa-user-graduate me-2"></i>Mes Étudiants
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#offres">
+                    <i class="fas fa-briefcase me-2"></i>Offres de stage
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#entreprises">
+                    <i class="fas fa-building me-2"></i>Entreprises
+                </a>
+            </li>
+        </ul>
+
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="mes-etudiants">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Nom</th>
+                            <th>Promotion</th>
+                            <th>Statut</th>
+                            <th>Entreprise</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for etudiant in etudiants %}
+                            <tr>
+                                <td>{{ etudiant.nom }} {{ etudiant.prenom }}</td>
+                                <td>{{ etudiant.promotion.nom }}</td>
+                                <td><span class="badge bg-{{ etudiant.statut == 'En stage' ? 'success' : 'warning' }}">{{ etudiant.statut }}</span></td>
+                                <td>{{ etudiant.entrepriseStage ? etudiant.entrepriseStage.nom : '-' }}</td>
+                                <td class="action-buttons">
+                                    <a href="#" class="btn btn-sm btn-info" title="Voir le profil">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a href="#" class="btn btn-sm btn-warning" title="Éditer">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="#" class="btn btn-sm btn-success" title="Contacter">
+                                        <i class="fas fa-envelope"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        // Calcul des statistiques pour le graphique
+        const enStage = {{ stats.etudiantsEnStage|length }};
+        const enRecherche = {{ stats.etudiants - stats.etudiantsEnStage|length }};
+
+        // Graphique du statut des étudiants
+        new Chart(document.getElementById('studentStatusChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['En stage', 'En recherche'],
+                datasets: [{
+                    data: [enStage, enRecherche],
+                    backgroundColor: ['#1cc88a', '#f6c23e']
+                }]
+            }
+        });
+
+        // Graphique des candidatures
+        new Chart(document.getElementById('applicationChart'), {
+            type: 'bar',
+            data: {
+                labels: ['Total des entreprises'],
+                datasets: [{
+                    label: 'Nombre d\'entreprises',
+                    data: [{{ stats.entreprises }}],
+                    backgroundColor: '#4e73df'
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Initialisation des DataTables
+        $(document).ready(function() {
+            $('.table').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/fr-FR.json'
+                }
+            });
+        });
+    </script>
+{% endblock %} 
