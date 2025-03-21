@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Entity\Etudiant;
 use App\Entity\PiloteDePromotion;
+use App\Entity\Administrateur;
 use App\Entity\Promotion;
 use App\Form\EtudiantType;
 use App\Form\PiloteType;
@@ -15,9 +17,33 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[Route('/admin')]
+#[IsGranted('ROLE_ADMIN')]
 class UserController extends AbstractController
 {
+    #[Route('/admin/users', name: 'app_users')]
+    public function index(EntityManagerInterface $entityManager): Response
+    {
+        // Récupérer tous les utilisateurs par type
+        $etudiants = $entityManager->getRepository(Etudiant::class)->findAll();
+        $pilotes = $entityManager->getRepository(PiloteDePromotion::class)->findAll();
+        $admins = $entityManager->getRepository(Administrateur::class)->findAll();
+
+        // Statistiques
+        $stats = [
+            'total' => count($etudiants) + count($pilotes) + count($admins),
+            'etudiants' => count($etudiants),
+            'pilotes' => count($pilotes),
+            'admins' => count($admins)
+        ];
+
+        return $this->render('user/index.html.twig', [
+            'stats' => $stats,
+            'etudiants' => $etudiants,
+            'pilotes' => $pilotes,
+            'admins' => $admins
+        ]);
+    }
+
     #[Route('/etudiant/new', name: 'app_etudiant_new')]
     #[IsGranted('ROLE_ADMIN')]
     public function newEtudiant(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): Response

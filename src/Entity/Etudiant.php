@@ -16,6 +16,9 @@ class Etudiant extends User
     #[ORM\Column(length: 255)]
     private ?string $prenom_etudiant = null;
 
+    #[ORM\Column(length: 50)]
+    private ?string $statut = 'En recherche';
+
     #[ORM\ManyToOne(inversedBy: 'etudiants')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Promotion $promotion = null;
@@ -31,6 +34,7 @@ class Etudiant extends User
         parent::__construct();
         $this->setRoles(['ROLE_ETUDIANT']);
         $this->candidatures = new ArrayCollection();
+        $this->statut = 'En recherche';
     }
 
     public function getNomEtudiant(): ?string
@@ -53,6 +57,18 @@ class Etudiant extends User
     public function setPrenomEtudiant(string $prenom_etudiant): static
     {
         $this->prenom_etudiant = $prenom_etudiant;
+
+        return $this;
+    }
+
+    public function getStatut(): ?string
+    {
+        return $this->statut;
+    }
+
+    public function setStatut(string $statut): static
+    {
+        $this->statut = $statut;
 
         return $this;
     }

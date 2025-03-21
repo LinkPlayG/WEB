@@ -1,48 +1,243 @@
-{% extends 'dashboard/base_dashboard.html.twig' %}
-
-{% block dashboard_title %}Tableau de bord Étudiant{% endblock %}
-
-{% block dashboard_stats %}
-<div class="stats-container">
-    <div class="stat-card">
-        <div class="stat-number">0</div>
-        <div class="stat-label">Offres en wishlist</div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-number">0</div>
-        <div class="stat-label">Candidatures</div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-number">0</div>
-        <div class="stat-label">Entreprises évaluées</div>
-    </div>
-</div>
-{% endblock %}
+{% extends 'dashboard/layout.html.twig' %}
 
 {% block dashboard_content %}
-    <div class="dashboard-card">
-        <h2>Gestion des entreprises</h2>
-        <ul class="action-list">
-            <li><a href="#">Rechercher une entreprise</a></li>
-            <li><a href="#">Évaluer une entreprise</a></li>
-            <li><a href="#">Consulter les statistiques</a></li>
-        </ul>
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="stats-card">
+                <h5>Candidatures</h5>
+                <div class="d-flex justify-content-between align-items-center">
+                    <h2 class="mb-0">{{ stats.candidatures }}</h2>
+                    <i class="fas fa-paper-plane fa-2x text-primary"></i>
+                </div>
+                <div class="mt-2 text-muted">Total des candidatures</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-card">
+                <h5>Entretiens</h5>
+                <div class="d-flex justify-content-between align-items-center">
+                    <h2 class="mb-0">{{ stats.entretiens }}</h2>
+                    <i class="fas fa-calendar-check fa-2x text-success"></i>
+                </div>
+                <div class="mt-2 text-muted">Entretiens prévus</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-card">
+                <h5>Offres disponibles</h5>
+                <div class="d-flex justify-content-between align-items-center">
+                    <h2 class="mb-0">{{ stats.offresDisponibles }}</h2>
+                    <i class="fas fa-briefcase fa-2x text-info"></i>
+                </div>
+                <div class="mt-2 text-muted">Total des offres</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-card">
+                <h5>Wishlist</h5>
+                <div class="d-flex justify-content-between align-items-center">
+                    <h2 class="mb-0">{{ stats.wishlist }}</h2>
+                    <i class="fas fa-heart fa-2x text-danger"></i>
+                </div>
+                <div class="mt-2 text-muted">Offres sauvegardées</div>
+            </div>
+        </div>
     </div>
 
-    <div class="dashboard-card">
-        <h2>Gestion des offres de stage</h2>
-        <ul class="action-list">
-            <li><a href="#">Rechercher une offre</a></li>
-            <li><a href="#">Consulter les statistiques</a></li>
-        </ul>
+    <!-- Charts -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="stats-card">
+                <h5>Statut des candidatures</h5>
+                <canvas id="candidatureStatusChart"></canvas>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="stats-card">
+                <h5>Offres par secteur</h5>
+                <canvas id="sectorChart"></canvas>
+            </div>
+        </div>
     </div>
 
-    <div class="dashboard-card">
-        <h2>Gestion des candidatures</h2>
-        <ul class="action-list">
-            <li><a href="#">Ajouter une offre à la wish-list</a></li>
-            <li><a href="#">Retirer une offre de la wish-list</a></li>
-            <li><a href="#">Postuler à une offre</a></li>
-        </ul>
+    <!-- Search and Filter Section -->
+    <div class="search-section mb-4">
+        <div class="row">
+            <div class="col-md-4">
+                <input type="text" class="form-control" placeholder="Rechercher une offre...">
+            </div>
+            <div class="col-md-3">
+                <select class="form-select">
+                    <option>Tous les secteurs</option>
+                    {% for offre in offres %}
+                        {% if offre.secteur %}
+                            <option>{{ offre.secteur }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select class="form-select">
+                    <option>Toutes les villes</option>
+                    {% for offre in offres %}
+                        {% if offre.ville %}
+                            <option>{{ offre.ville }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-primary w-100">
+                    <i class="fas fa-filter me-2"></i>Filtrer
+                </button>
+            </div>
+        </div>
     </div>
+
+    <!-- Data Tables -->
+    <div class="data-table">
+        <ul class="nav nav-tabs mb-3">
+            <li class="nav-item">
+                <a class="nav-link active" data-bs-toggle="tab" href="#offres">
+                    <i class="fas fa-briefcase me-2"></i>Offres de stage
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#candidatures">
+                    <i class="fas fa-paper-plane me-2"></i>Mes candidatures
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#wishlist">
+                    <i class="fas fa-heart me-2"></i>Wishlist
+                </a>
+            </li>
+        </ul>
+
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="offres">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Entreprise</th>
+                            <th>Poste</th>
+                            <th>Ville</th>
+                            <th>Durée</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for offre in offres %}
+                            <tr>
+                                <td>
+                                    {% if offre.entreprise.logo %}
+                                        <img src="{{ asset(offre.entreprise.logo) }}" class="rounded-circle me-2" alt="Logo" width="30">
+                                    {% endif %}
+                                    {{ offre.entreprise.nom }}
+                                </td>
+                                <td>{{ offre.titre }}</td>
+                                <td>{{ offre.ville }}</td>
+                                <td>{{ offre.duree }} mois</td>
+                                <td class="action-buttons">
+                                    <a href="#" class="btn btn-sm btn-info" title="Voir les détails">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a href="#" class="btn btn-sm btn-success" title="Postuler">
+                                        <i class="fas fa-paper-plane"></i>
+                                    </a>
+                                    <a href="#" class="btn btn-sm btn-danger" title="Ajouter aux favoris">
+                                        <i class="fas fa-heart"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="tab-pane fade" id="candidatures">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Entreprise</th>
+                            <th>Poste</th>
+                            <th>Date de candidature</th>
+                            <th>Statut</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for candidature in candidatures %}
+                            <tr>
+                                <td>{{ candidature.offreDeStage.entreprise.nom }}</td>
+                                <td>{{ candidature.offreDeStage.titre }}</td>
+                                <td>{{ candidature.dateCandidature|date('d/m/Y') }}</td>
+                                <td><span class="badge bg-{{ candidature.statut == 'Acceptée' ? 'success' : (candidature.statut == 'En attente' ? 'warning' : 'danger') }}">{{ candidature.statut }}</span></td>
+                                <td class="action-buttons">
+                                    <a href="#" class="btn btn-sm btn-info" title="Voir les détails">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        // Calcul des statistiques pour le graphique des candidatures
+        const statuts = {
+            'En attente': {{ candidatures|filter(c => c.statut == 'En attente')|length }},
+            'Acceptée': {{ candidatures|filter(c => c.statut == 'Acceptée')|length }},
+            'Refusée': {{ candidatures|filter(c => c.statut == 'Refusée')|length }},
+            'Entretien': {{ candidatures|filter(c => c.statut == 'Entretien')|length }}
+        };
+
+        // Graphique du statut des candidatures
+        new Chart(document.getElementById('candidatureStatusChart'), {
+            type: 'doughnut',
+            data: {
+                labels: Object.keys(statuts),
+                datasets: [{
+                    data: Object.values(statuts),
+                    backgroundColor: ['#f6c23e', '#1cc88a', '#e74a3b', '#4e73df']
+                }]
+            }
+        });
+
+        // Graphique des secteurs
+        new Chart(document.getElementById('sectorChart'), {
+            type: 'bar',
+            data: {
+                labels: ['Offres disponibles'],
+                datasets: [{
+                    label: 'Nombre d\'offres',
+                    data: [{{ stats.offresDisponibles }}],
+                    backgroundColor: '#4e73df'
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Initialisation des DataTables
+        $(document).ready(function() {
+            $('.table').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/fr-FR.json'
+                }
+            });
+        });
+    </script>
 {% endblock %} 
