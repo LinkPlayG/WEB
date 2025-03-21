@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer une entreprise{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h1>Créer une nouvelle entreprise</h1>
+
+    {{ form_start(form, {'attr': {'class': 'needs-validation'}}) }}
+    <div class="row">
+        <div class="col-md-6">
+            {{ form_row(form.nom_entreprise) }}
+        </div>
+        <div class="col-md-6">
+            {{ form_row(form.secteur_activite) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            {{ form_row(form.adresse) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            {{ form_row(form.ville) }}
+        </div>
+        <div class="col-md-4">
+            {{ form_row(form.code_postal) }}
+        </div>
+        <div class="col-md-4">
+            {{ form_row(form.pays) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            {{ form_row(form.telephone) }}
+        </div>
+        <div class="col-md-6">
+            {{ form_row(form.email) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            {{ form_row(form.description) }}
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <button type="submit" class="btn btn-primary">Créer l'entreprise</button>
+        <a href="{{ path('app_dashboard') }}" class="btn btn-secondary">Retour</a>
+    </div>
+    {{ form_end(form) }}
+</div>
+{% endblock %} 

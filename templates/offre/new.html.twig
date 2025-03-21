@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer une offre de stage{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h1>Créer une nouvelle offre de stage</h1>
+
+    {{ form_start(form, {'attr': {'class': 'needs-validation'}}) }}
+    <div class="row">
+        <div class="col-md-12">
+            {{ form_row(form.titre) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            {{ form_row(form.description) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            {{ form_row(form.competences_requises) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            {{ form_row(form.duree) }}
+        </div>
+        <div class="col-md-4">
+            {{ form_row(form.date_debut) }}
+        </div>
+        <div class="col-md-4">
+            {{ form_row(form.remuneration) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            {{ form_row(form.entreprise) }}
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <button type="submit" class="btn btn-primary">Créer l'offre</button>
+        <a href="{{ path('app_dashboard') }}" class="btn btn-secondary">Retour</a>
+    </div>
+    {{ form_end(form) }}
+</div>
+{% endblock %} 

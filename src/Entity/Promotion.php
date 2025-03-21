@@ -15,6 +15,15 @@ class Promotion
     #[ORM\Column]
     private ?int $id = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $nom = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $campus = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $adresse = null;
+
     #[ORM\OneToMany(mappedBy: 'promotion', targetEntity: Etudiant::class)]
     private Collection $etudiants;
 
@@ -31,6 +40,39 @@ class Promotion
         return $this->id;
     }
 
+    public function getNom(): ?string
+    {
+        return $this->nom;
+    }
+
+    public function setNom(string $nom): static
+    {
+        $this->nom = $nom;
+        return $this;
+    }
+
+    public function getCampus(): ?string
+    {
+        return $this->campus;
+    }
+
+    public function setCampus(string $campus): static
+    {
+        $this->campus = $campus;
+        return $this;
+    }
+
+    public function getAdresse(): ?string
+    {
+        return $this->adresse;
+    }
+
+    public function setAdresse(string $adresse): static
+    {
+        $this->adresse = $adresse;
+        return $this;
+    }
+
     public function getPilote(): ?PiloteDePromotion
     {
         return $this->pilote;
@@ -39,7 +81,6 @@ class Promotion
     public function setPilote(?PiloteDePromotion $pilote): static
     {
         $this->pilote = $pilote;
-
         return $this;
     }
 
@@ -57,19 +98,21 @@ class Promotion
             $this->etudiants->add($etudiant);
             $etudiant->setPromotion($this);
         }
-
         return $this;
     }
 
     public function removeEtudiant(Etudiant $etudiant): static
     {
         if ($this->etudiants->removeElement($etudiant)) {
-            // set the owning side to null (unless already changed)
             if ($etudiant->getPromotion() === $this) {
                 $etudiant->setPromotion(null);
             }
         }
-
         return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->nom ?? 'Nouvelle promotion';
     }
 }
