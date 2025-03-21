@@ -1,0 +1,56 @@
+{% extends 'dashboard/base_dashboard.html.twig' %}
+
+{% block dashboard_title %}Tableau de bord Pilote{% endblock %}
+
+{% block dashboard_stats %}
+<div class="stats-container">
+    <div class="stat-card">
+        <div class="stat-number">0</div>
+        <div class="stat-label">Entreprises suivies</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number">0</div>
+        <div class="stat-label">Offres de stage</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number">0</div>
+        <div class="stat-label">Étudiants</div>
+    </div>
+</div>
+{% endblock %}
+
+{% block dashboard_content %}
+    <div class="dashboard-card">
+        <h2>Gestion des entreprises</h2>
+        <ul class="action-list">
+            <li><a href="#">Rechercher une entreprise</a></li>
+            <li><a href="#">Créer une entreprise</a></li>
+            <li><a href="#">Modifier une entreprise</a></li>
+            <li><a href="#">Évaluer une entreprise</a></li>
+            <li><a href="#">Supprimer une entreprise</a></li>
+            <li><a href="#">Consulter les statistiques</a></li>
+        </ul>
+    </div>
+
+    <div class="dashboard-card">
+        <h2>Gestion des offres de stage</h2>
+        <ul class="action-list">
+            <li><a href="#">Rechercher une offre</a></li>
+            <li><a href="#">Créer une offre</a></li>
+            <li><a href="#">Modifier une offre</a></li>
+            <li><a href="#">Supprimer une offre</a></li>
+            <li><a href="#">Consulter les statistiques</a></li>
+        </ul>
+    </div>
+
+    <div class="dashboard-card">
+        <h2>Gestion des étudiants</h2>
+        <ul class="action-list">
+            <li><a href="#">Rechercher un compte étudiant</a></li>
+            <li><a href="#">Créer un compte étudiant</a></li>
+            <li><a href="#">Modifier un compte étudiant</a></li>
+            <li><a href="#">Supprimer un compte étudiant</a></li>
+            <li><a href="#">Consulter les statistiques</a></li>
+        </ul>
+    </div>
+{% endblock %} 
