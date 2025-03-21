@@ -3,186 +3,34 @@
 
 {% block title %}Interned - Accueil{% endblock %}
 
-{% block stylesheets %}
-    {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('css/home.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-{% endblock %}
-
 {% block body %}
     <div class="banner-image">
         <img src="{{ asset('images/banner.jpg') }}" alt="Bannière Interned">
-        <div class="banner-overlay">
-            <h1>Trouvez votre stage idéal</h1>
-            <p>Interned vous connecte avec les meilleures opportunités de stage</p>
-            <a href="{{ path('app_annonces') }}" class="banner-btn">Voir les offres</a>
-        </div>
     </div>
 
     <div class="container">
         <section class="about-section">
             <h2>À Propos de nous</h2>
             <p>
-                {{ aboutText }}
+                {{ about_text }}
             </p>
         </section>
 
-        <!-- Carousel d'offres -->
-        <section class="carousel-section">
-            <div class="section-header">
-                <h2>Offres populaires</h2>
-                <div class="carousel-controls">
-                    <button class="carousel-control prev" id="prevBtn"><i class="fa fa-chevron-left"></i></button>
-                    <button class="carousel-control next" id="nextBtn"><i class="fa fa-chevron-right"></i></button>
-                </div>
-            </div>
-            
-            <div class="carousel-container">
-                <div class="carousel-wrapper" id="carouselWrapper">
-                    {% for i in 1..6 %}
-                        <div class="carousel-item">
-                            <div class="offer-card">
-                                <div class="offer-image">
-                                    <i class="fa fa-briefcase"></i>
-                                </div>
-                                <div class="offer-content">
-                                    <h3>Nom De L'offre {{ i }}</h3>
-                                    <p class="offer-company">Entreprise {{ i }}</p>
-                                    <p class="offer-location"><i class="fa fa-map-marker"></i> Nancy, France</p>
-                                    <p class="offer-description">Description courte sur l'offre avec toutes les informations nécessaires pour attirer l'attention...</p>
-                                    <div class="offer-footer">
-                                        <span class="offer-time"><i class="fa fa-clock-o"></i> Il y a 2 jours</span>
-                                        <a href="#" class="offer-link">Voir détails</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
-        </section>
-
         <section class="offers-section">
-            <h2 class="offers-title">Offres pour vous</h2>
+            <h2>Offres pour vous</h2>
             <div class="offers-list">
-                <!-- Stage développeur web -->
-                <div class="offer-card offer-card-highlight">
-                    <div class="offer-image">
-                        <img src="{{ asset('images/dev-icon.png') }}" alt="Stage développeur web" onerror="this.onerror=null; this.src='https://via.placeholder.com/80x80?text=Dev';">
+                {% for offer in offers %}
+                    <div class="offer-card">
+                        <div class="offer-image">
+                            <img src="{{ asset('images/offer-icon.png') }}" alt="{{ offer.title }}">
+                        </div>
+                        <div class="offer-content">
+                            <h3>{{ offer.title }}</h3>
+                            <p>{{ offer.description }}</p>
+                        </div>
                     </div>
-                    <div class="offer-content">
-                        <h3>Stage développeur web</h3>
-                        <p>Stage de 6 mois en développement web avec des technologies modernes (React, Node.js).</p>
-                        <a href="#" class="offer-detail-link">En savoir plus <i class="fa fa-arrow-right"></i></a>
-                    </div>
-                </div>
-                
-                <!-- Stage marketing digital -->
-                <div class="offer-card offer-card-highlight">
-                    <div class="offer-image">
-                        <img src="{{ asset('images/marketing-icon.png') }}" alt="Stage marketing digital" onerror="this.onerror=null; this.src='https://via.placeholder.com/80x80?text=Marketing';">
-                    </div>
-                    <div class="offer-content">
-                        <h3>Stage marketing digital</h3>
-                        <p>Stage de 4 mois en marketing digital, spécialisé dans les réseaux sociaux et le SEO.</p>
-                        <a href="#" class="offer-detail-link">En savoir plus <i class="fa fa-arrow-right"></i></a>
-                    </div>
-                </div>
-                
-                <!-- Stage designer UX/UI -->
-                <div class="offer-card offer-card-highlight">
-                    <div class="offer-image">
-                        <img src="{{ asset('images/design-icon.png') }}" alt="Stage designer UX/UI" onerror="this.onerror=null; this.src='https://via.placeholder.com/80x80?text=Design';">
-                    </div>
-                    <div class="offer-content">
-                        <h3>Stage designer UX/UI</h3>
-                        <p>Stage de 3 mois en conception d'interfaces utilisateur et expérience utilisateur.</p>
-                        <a href="#" class="offer-detail-link">En savoir plus <i class="fa fa-arrow-right"></i></a>
-                    </div>
-                </div>
-                
-                <!-- Stage assistant comptable -->
-                <div class="offer-card offer-card-highlight">
-                    <div class="offer-image">
-                        <img src="{{ asset('images/finance-icon.png') }}" alt="Stage assistant comptable" onerror="this.onerror=null; this.src='https://via.placeholder.com/80x80?text=Finance';">
-                    </div>
-                    <div class="offer-content">
-                        <h3>Stage assistant comptable</h3>
-                        <p>Stage de 6 mois au sein d'un cabinet comptable pour assister l'équipe dans ses missions quotidiennes.</p>
-                        <a href="#" class="offer-detail-link">En savoir plus <i class="fa fa-arrow-right"></i></a>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Section statistiques -->
-        <section class="stats-section">
-            <h2>Interned en chiffres</h2>
-            <div class="stats-container">
-                <div class="stat-item">
-                    <i class="fa fa-building"></i>
-                    <div class="stat-number">500+</div>
-                    <div class="stat-text">Entreprises partenaires</div>
-                </div>
-                <div class="stat-item">
-                    <i class="fa fa-file-text-o"></i>
-                    <div class="stat-number">1200+</div>
-                    <div class="stat-text">Offres de stage</div>
-                </div>
-                <div class="stat-item">
-                    <i class="fa fa-users"></i>
-                    <div class="stat-number">5000+</div>
-                    <div class="stat-text">Étudiants utilisateurs</div>
-                </div>
-                <div class="stat-item">
-                    <i class="fa fa-thumbs-up"></i>
-                    <div class="stat-number">95%</div>
-                    <div class="stat-text">Taux de satisfaction</div>
-                </div>
+                {% endfor %}
             </div>
         </section>
     </div>
-{% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const carouselWrapper = document.getElementById('carouselWrapper');
-            const prevBtn = document.getElementById('prevBtn');
-            const nextBtn = document.getElementById('nextBtn');
-            
-            const itemWidth = document.querySelector('.carousel-item').offsetWidth;
-            const visibleItems = 3; // Nombre d'éléments visibles en même temps
-            const scrollAmount = itemWidth; // Défiler d'un élément à la fois
-            let currentPosition = 0;
-            
-            // Fonction pour mettre à jour la position du carousel
-            function updateCarouselPosition() {
-                carouselWrapper.style.transform = `translateX(${-currentPosition}px)`;
-            }
-            
-            // Gestionnaire d'événement pour le bouton précédent
-            prevBtn.addEventListener('click', function() {
-                currentPosition = Math.max(0, currentPosition - scrollAmount);
-                updateCarouselPosition();
-            });
-            
-            // Gestionnaire d'événement pour le bouton suivant
-            nextBtn.addEventListener('click', function() {
-                const maxPosition = (carouselWrapper.children.length - visibleItems) * itemWidth;
-                currentPosition = Math.min(maxPosition, currentPosition + scrollAmount);
-                updateCarouselPosition();
-            });
-            
-            // Adaptation au redimensionnement
-            window.addEventListener('resize', function() {
-                // Recalculer la largeur des éléments
-                const newItemWidth = document.querySelector('.carousel-item').offsetWidth;
-                // Ajuster la position actuelle
-                currentPosition = Math.floor(currentPosition / itemWidth) * newItemWidth;
-                updateCarouselPosition();
-            });
-        });
-    </script>
 {% endblock %}
