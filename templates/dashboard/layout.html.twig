@@ -13,9 +13,10 @@
         <!-- Sidebar -->
         <div class="col-md-2 sidebar">
             {% block sidebar %}
-                <div class="section-title">Administration</div>
+
                 <nav class="nav flex-column">
                     {% if is_granted('ROLE_ADMIN') %}
+                        <div class="section-title">Administration</div>
                         <a class="nav-link" href="{{ path('app_dashboard') }}">
                             <i class="fas fa-home me-2"></i> Accueil
                         </a>
