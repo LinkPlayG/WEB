@@ -88,10 +88,47 @@ class EntrepriseController extends AbstractController
     #[Route('/admin/entreprise/{id}/edit', name: 'app_entreprise_edit')]
     public function edit(Request $request, Entreprise $entreprise, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(EntrepriseType::class, $entreprise);
+        $dto = new EntrepriseDTO();
+        $dto->setNom($entreprise->getNom());
+        $dto->setSecteur($entreprise->getSecteur());
+        $dto->setActive($entreprise->isActive());
+        $dto->setTelephone($entreprise->getTelephone());
+        $dto->setEmail($entreprise->getEmail());
+        $dto->setDescription($entreprise->getDescription());
+        
+        // Récupérer les données de l'adresse
+        $adresse = $entreprise->getAdresse();
+        if ($adresse) {
+            $dto->setRue($adresse->getRue());
+            $dto->setCodePostal($adresse->getCodePostal());
+            $dto->setVille($adresse->getVille());
+            $dto->setPays($adresse->getPays());
+        }
+
+        $form = $this->createForm(EntrepriseType::class, $dto);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // Mettre à jour l'entreprise
+            $entreprise->setNom($dto->getNom());
+            $entreprise->setSecteur($dto->getSecteur());
+            $entreprise->setActive($dto->isActive());
+            $entreprise->setTelephone($dto->getTelephone());
+            $entreprise->setEmail($dto->getEmail());
+            $entreprise->setDescription($dto->getDescription());
+
+            // Mettre à jour l'adresse
+            if (!$adresse) {
+                $adresse = new Adresse();
+                $entreprise->setAdresse($adresse);
+            }
+            
+            $adresse->setRue($dto->getRue());
+            $adresse->setCodePostal($dto->getCodePostal());
+            $adresse->setVille($dto->getVille());
+            $adresse->setPays($dto->getPays());
+
+            $entityManager->persist($adresse);
             $entityManager->flush();
 
             $this->addFlash('success', 'L\'entreprise a été modifiée avec succès.');
@@ -99,18 +136,20 @@ class EntrepriseController extends AbstractController
         }
 
         return $this->render('entreprise/edit.html.twig', [
-            'entreprise' => $entreprise,
             'form' => $form->createView(),
+            'entreprise' => $entreprise
         ]);
     }
 
     #[Route('/admin/entreprise/{id}/delete', name: 'app_entreprise_delete', methods: ['POST'])]
-    public function delete(Entreprise $entreprise, EntityManagerInterface $entityManager): Response
+    public function delete(Request $request, Entreprise $entreprise, EntityManagerInterface $entityManager): Response
     {
-        $entityManager->remove($entreprise);
-        $entityManager->flush();
+        if ($this->isCsrfTokenValid('delete'.$entreprise->getId(), $request->request->get('_token'))) {
+            $entityManager->remove($entreprise);
+            $entityManager->flush();
+            $this->addFlash('success', 'L\'entreprise a été supprimée avec succès.');
+        }
 
-        $this->addFlash('success', 'L\'entreprise a été supprimée avec succès.');
         return $this->redirectToRoute('app_entreprises');
     }
 } 
