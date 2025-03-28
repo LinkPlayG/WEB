@@ -15,17 +15,77 @@ class Adresse
     #[ORM\Column]
     private ?int $id = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $rue = null;
+
+    #[ORM\Column(length: 10)]
+    private ?string $codePostal = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $ville = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $pays = null;
+
     #[ORM\OneToMany(mappedBy: 'adresse', targetEntity: Etudiant::class)]
     private Collection $etudiants;
+
+    #[ORM\OneToMany(mappedBy: 'adresse', targetEntity: Entreprise::class)]
+    private Collection $entreprises;
 
     public function __construct()
     {
         $this->etudiants = new ArrayCollection();
+        $this->entreprises = new ArrayCollection();
     }
 
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getRue(): ?string
+    {
+        return $this->rue;
+    }
+
+    public function setRue(string $rue): static
+    {
+        $this->rue = $rue;
+        return $this;
+    }
+
+    public function getCodePostal(): ?string
+    {
+        return $this->codePostal;
+    }
+
+    public function setCodePostal(string $codePostal): static
+    {
+        $this->codePostal = $codePostal;
+        return $this;
+    }
+
+    public function getVille(): ?string
+    {
+        return $this->ville;
+    }
+
+    public function setVille(string $ville): static
+    {
+        $this->ville = $ville;
+        return $this;
+    }
+
+    public function getPays(): ?string
+    {
+        return $this->pays;
+    }
+
+    public function setPays(string $pays): static
+    {
+        $this->pays = $pays;
+        return $this;
     }
 
     /**
@@ -52,6 +112,36 @@ class Adresse
             // set the owning side to null (unless already changed)
             if ($etudiant->getAdresse() === $this) {
                 $etudiant->setAdresse(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Entreprise>
+     */
+    public function getEntreprises(): Collection
+    {
+        return $this->entreprises;
+    }
+
+    public function addEntreprise(Entreprise $entreprise): static
+    {
+        if (!$this->entreprises->contains($entreprise)) {
+            $this->entreprises->add($entreprise);
+            $entreprise->setAdresse($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEntreprise(Entreprise $entreprise): static
+    {
+        if ($this->entreprises->removeElement($entreprise)) {
+            // set the owning side to null (unless already changed)
+            if ($entreprise->getAdresse() === $this) {
+                $entreprise->setAdresse(null);
             }
         }
 

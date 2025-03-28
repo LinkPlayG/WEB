@@ -22,6 +22,9 @@ class OffreDeStage
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description_offre = null;
 
+    #[ORM\Column(type: Types::TEXT)]
+    private ?string $competences_requises = null;
+
     #[ORM\Column]
     private ?int $duree_stage = null;
 
@@ -80,6 +83,17 @@ class OffreDeStage
     {
         $this->description_offre = $description_offre;
 
+        return $this;
+    }
+
+    public function getCompetencesRequises(): ?string
+    {
+        return $this->competences_requises;
+    }
+
+    public function setCompetencesRequises(string $competences_requises): static
+    {
+        $this->competences_requises = $competences_requises;
         return $this;
     }
 

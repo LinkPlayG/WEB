@@ -6,15 +6,23 @@
 <div class="container mt-4">
     <h1>Créer une nouvelle offre de stage</h1>
 
+    {% for message in app.flashes('error') %}
+        <div class="alert alert-danger mt-3">
+            {{ message }}
+        </div>
+    {% endfor %}
+
     {{ form_start(form, {'attr': {'class': 'needs-validation'}}) }}
+    {{ form_errors(form) }}
+    
     <div class="row">
         <div class="col-md-12">
-            {{ form_row(form.titre) }}
+            {{ form_row(form.titre_offre) }}
         </div>
     </div>
     <div class="row">
         <div class="col-md-12">
-            {{ form_row(form.description) }}
+            {{ form_row(form.description_offre) }}
         </div>
     </div>
     <div class="row">
@@ -24,25 +32,35 @@
     </div>
     <div class="row">
         <div class="col-md-4">
-            {{ form_row(form.duree) }}
+            {{ form_row(form.duree_stage) }}
         </div>
         <div class="col-md-4">
-            {{ form_row(form.date_debut) }}
+            {{ form_row(form.date_debut_stage) }}
         </div>
         <div class="col-md-4">
-            {{ form_row(form.remuneration) }}
+            {{ form_row(form.date_fin_stage) }}
         </div>
     </div>
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-6">
+            {{ form_row(form.salaire) }}
+        </div>
+        <div class="col-md-6">
             {{ form_row(form.entreprise) }}
         </div>
     </div>
+    {% if form.pilote is defined %}
+    <div class="row">
+        <div class="col-md-12">
+            {{ form_row(form.pilote) }}
+        </div>
+    </div>
+    {% endif %}
 
     <div class="mt-4">
         <button type="submit" class="btn btn-primary">Créer l'offre</button>
         <a href="{{ path('app_dashboard') }}" class="btn btn-secondary">Retour</a>
     </div>
-    {{ form_end(form) }}
+    {{ form_end(form, {'render_rest': true}) }}
 </div>
 {% endblock %} 

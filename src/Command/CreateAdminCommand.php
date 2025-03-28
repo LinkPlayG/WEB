@@ -4,61 +4,63 @@ namespace App\Command;
 
 use App\Entity\Administrateur;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Console\Attribute\AsCommand;
 
 #[AsCommand(
     name: 'app:create-admin',
-    description: 'Creates a new admin user',
+    description: 'Creates an admin user',
 )]
 class CreateAdminCommand extends Command
 {
+    private EntityManagerInterface $entityManager;
+    private UserPasswordHasherInterface $passwordHasher;
+
     public function __construct(
-        private EntityManagerInterface $entityManager,
-        private UserPasswordHasherInterface $passwordHasher
+        EntityManagerInterface $entityManager,
+        UserPasswordHasherInterface $passwordHasher
     ) {
         parent::__construct();
+        $this->entityManager = $entityManager;
+        $this->passwordHasher = $passwordHasher;
     }
 
-    protected function configure(): void
+    protected function configure()
     {
-        $this
-            ->addArgument('email', InputArgument::REQUIRED, 'The email of the admin user')
-            ->addArgument('password', InputArgument::REQUIRED, 'The password of the admin user')
-            ->addArgument('nom', InputArgument::REQUIRED, 'The last name of the admin user')
-            ->addArgument('prenom', InputArgument::REQUIRED, 'The first name of the admin user')
-        ;
+        $this->setDescription('Creates an admin user');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
-        $email = $input->getArgument('email');
-        $password = $input->getArgument('password');
-        $nom = $input->getArgument('nom');
-        $prenom = $input->getArgument('prenom');
+
+        // Vérifier si l'admin existe déjà
+        $existingAdmin = $this->entityManager->getRepository(Administrateur::class)->findOneBy(['email' => 'admin@interned.fr']);
+        if ($existingAdmin) {
+            $io->warning('An admin user already exists.');
+            return Command::SUCCESS;
+        }
 
         $admin = new Administrateur();
-        $admin->setEmail($email);
-        $admin->setNomAdmin($nom);
-        $admin->setPrenomAdmin($prenom);
-        
-        $hashedPassword = $this->passwordHasher->hashPassword(
-            $admin,
-            $password
+        $admin->setEmail('admin@interned.fr');
+        $admin->setNomAdmin('admin');
+        $admin->setPrenomAdmin('admin');
+        $admin->setRoles(['ROLE_ADMIN']);
+        $admin->setPassword(
+            $this->passwordHasher->hashPassword(
+                $admin,
+                'Admin123!'
+            )
         );
-        $admin->setPassword($hashedPassword);
 
         $this->entityManager->persist($admin);
         $this->entityManager->flush();
 
-        $io->success("Admin user created with email: {$email}");
-
+        $io->success('Admin user created successfully.');
         return Command::SUCCESS;
     }
 }
