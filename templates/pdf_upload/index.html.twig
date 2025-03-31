@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+{% block title %}Télécharger votre CV - Interned{% endblock %}
+{% block stylesheets %}
+{{ parent() }}
+<link rel="stylesheet" href="{{ asset('css/profile.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+{% endblock %}
+{% block body %}
+<div class="container p-0">
+<div class="row my-4">
+<div class="col-md-8 offset-md-2">
+<div class="card">
+<div class="card-header">
+<h2><i class="fa fa-file-pdf-o" aria-hidden="true"></i> Télécharger votre CV</h2>
+</div>
+<div class="card-body">
+{{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate', 'enctype': 'multipart/form-data'}}) }}
+<div class="mb-3">
+{{ form_label(form.CV, 'Votre CV (fichier PDF)', {'label_attr': {'class': 'form-label'}}) }}
+{{ form_widget(form.CV, {'attr': {'class': 'form-control'}}) }}
+<div class="form-text">Formats acceptés: PDF. Taille maximale: 1Mo.</div>
+{% if form.CV.vars.errors|length > 0 %}
+<div class="invalid-feedback d-block">
+{{ form_errors(form.CV) }}
+</div>
+        {% endif %}
+                </div>
+                     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{{ path('app_profile') }}" class="btn btn-secondary me-2">
+                                <i class="fa fa-arrow-left" aria-hidden="true"></i> Retour
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fa fa-upload" aria-hidden="true"></i> Enregistrer
+                            </button>
+                        </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+
+{% if pdf is defined and pdf is not null and pdf.filename is defined and pdf.filename is not null %}
+<div class="card mt-4">
+    <div class="card-body">
+        <div class="d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center">
+                <div class="me-3">
+                    <i class="fa fa-file-pdf-o fa-3x text-danger" aria-hidden="true"></i>
+                </div>
+                <div>
+                    <h5 class="mb-0">{{ pdf.filename }}</h5>
+                    <small class="text-muted">Téléchargé avec succès</small>
+                </div>
+            </div>
+            <a href="{{ asset('uploads/' ~ pdf.filename) }}" class="btn btn-outline-primary" target="_blank">
+                <i class="fa fa-download" aria-hidden="true"></i> Télécharger
+            </a>
+        </div>
+    </div>
+</div>
+{% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
