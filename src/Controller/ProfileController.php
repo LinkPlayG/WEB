@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Entity\Etudiant;
+use App\Entity\Pdf;
 use App\Entity\PiloteDePromotion;
 use App\Entity\Administrateur;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;

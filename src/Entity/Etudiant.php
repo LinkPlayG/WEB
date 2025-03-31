@@ -28,6 +28,7 @@ class Etudiant extends User
     
     #[ORM\OneToMany(mappedBy: 'etudiant', targetEntity: Candidature::class)]
     private Collection $candidatures;
+
     
     public function __construct()
     {
@@ -126,4 +127,5 @@ class Etudiant extends User
 
         return $this;
     }
+
 }
