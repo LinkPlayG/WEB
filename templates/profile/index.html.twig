@@ -3,9 +3,88 @@
 
 {% block title %}Profil - Interned{% endblock %}
 
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/profile.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+{% endblock %}
+
 {% block body %}
-    <div class="container">
-        <h1>Mon Profil</h1>
-        <p>Page en construction</p>
-    </div>
+    <div class="container p-0">
+        <!-- Header Banner -->
+        <div class="profile-header">
+            <div class="profile-header-bg">
+                <!-- Background image is handled by CSS -->
+            </div>
+            <!-- Info icon on the right -->
+            <div class="profile-header-info">
+                <i class="fa fa-info" aria-hidden="true"></i>
+            </div>
+        </div>
+
+        <!-- Profile Content -->
+        <div class="profile-content">
+            <!-- Profile Picture -->
+            <div class="profile-picture">
+                <!-- Default silhouette if no image -->
+                <i class="fa fa-user profile-user-icon" aria-hidden="true"></i>
+            </div>
+
+            <!-- Name and Description -->
+            <div class="profile-info">
+                <h2 class="profile-name">{{ nom }} {{ prenom }} </h2>
+                <p class="profile-description">Description courte de la personne</p>
+            </div>
+
+            <!-- Info Card -->
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="card-header">
+                        <h3 class="card-title">Infos</h3>
+                        <i class="fa fa-graduation-cap card-icon" aria-hidden="true"></i>
+                    </div>
+                    <p class="card-text">Information comme des experience professionnel</p>
+                    
+                    <div class="experience-list">
+                        <div class="experience-item mb-3">
+                            <p class="experience-title">2023-2024: École ingénieur CESI (Lorraine, France)</p>
+                            <p>- Ambassadeur, Organisation événement et communication</p>
+                        </div>
+                        
+                        <div class="experience-item mb-3">
+                            <p class="experience-title">• 2022 - 2023: Resto du cœur (Woippy, France)</p>
+                            <p>- Réception et gestion des stocks de produit</p>
+                        </div>
+                        
+                        <div class="experience-item mb-3">
+                            <p class="experience-title">• 2021 Juillet/Août: Ficominrors (Dieuze, France)</p>
+                            <p>- Préparation de matériel pour les pièces automobiles</p>
+                        </div>
+                        
+                        <div class="experience-item">
+                            <p class="experience-title">• 2020 Août: Atelier de nettoyage (Metz, France)</p>
+                            <p>- Réception et gestion de commande</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+<!-- CV Card -->
+{% if app.user %}
+    {% if is_granted('ROLE_ETUDIANT') %}
+        <div class="card mb-3">
+            <div class="card-body cv-card-body">
+                <div class="icon-box">
+                    <i class="fa fa-file-pdf-o pdf-icon" aria-hidden="true"></i>
+                </div>
+                <div class="cv-details">
+                    <h4 class="cv-title">Mon CV</h4>
+                    <p class="cv-filename">NomDuCV.pdf</p>
+                </div>
+                <a href="{{ path('app_cv') }}" class="download-link">
+                    <i class="fa fa-download download-icon" aria-hidden="true"></i>
+                </a>
+            </div>
+        </div>
+    {% endif %}
+{% endif %}   
 {% endblock %}
