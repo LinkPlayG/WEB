@@ -27,6 +27,12 @@ class Adresse
     #[ORM\Column(length: 255)]
     private ?string $pays = null;
 
+    #[ORM\Column(type: 'float', nullable: true)]
+    private ?float $latitude = null;
+
+    #[ORM\Column(type: 'float', nullable: true)]
+    private ?float $longitude = null;
+
     #[ORM\OneToMany(mappedBy: 'adresse', targetEntity: Etudiant::class)]
     private Collection $etudiants;
 
@@ -85,6 +91,28 @@ class Adresse
     public function setPays(string $pays): static
     {
         $this->pays = $pays;
+        return $this;
+    }
+
+    public function getLatitude(): ?float
+    {
+        return $this->latitude;
+    }
+
+    public function setLatitude(?float $latitude): static
+    {
+        $this->latitude = $latitude;
+        return $this;
+    }
+
+    public function getLongitude(): ?float
+    {
+        return $this->longitude;
+    }
+
+    public function setLongitude(?float $longitude): static
+    {
+        $this->longitude = $longitude;
         return $this;
     }
 
