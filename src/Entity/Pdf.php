@@ -16,6 +16,10 @@ class Pdf
 
     #[ORM\Column(length: 255)]
     private ?string $Filename = null;
+    
+    #[ORM\ManyToOne(inversedBy: 'pdfs')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Etudiant $etudiant = null;
 
     public function getId(): ?int
     {
@@ -30,6 +34,18 @@ class Pdf
     public function setFilename(string $Filename): static
     {
         $this->Filename = $Filename;
+
+        return $this;
+    }
+
+    public function getEtudiant(): ?Etudiant
+    {
+        return $this->etudiant;
+    }
+
+    public function setEtudiant(?Etudiant $etudiant): static
+    {
+        $this->etudiant = $etudiant;
 
         return $this;
     }
