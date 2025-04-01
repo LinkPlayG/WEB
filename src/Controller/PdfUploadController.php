@@ -25,19 +25,21 @@ class PdfUploadController extends AbstractController
         EntityManagerInterface $entityManager,
         #[Autowire('%kernel.project_dir%/public/uploads')] string $pdfDirectory
     ): Response
-    {
+    {        
+        $user = $this->getUser();
+        if (!$user || !($user instanceof Etudiant)) {
+            $this->addFlash('error', 'Vous devez être connecté en tant qu\'étudiant pour accéder à cette page.');
+            return $this->redirectToRoute('app_login');
+        }
         $pdf = new Pdf();
 
         $form = $this->createForm(PdfCVType::class, $pdf);
         $form->handleRequest($request);
         
 
-        $user = $this->getUser();
+
         $pdf->setEtudiant($user);
-        if (!$user || !($user instanceof Etudiant)) {
-            $this->addFlash('error', 'Vous devez être connecté en tant qu\'étudiant pour accéder à cette page.');
-            return $this->redirectToRoute('app_login');
-        }
+
         
 
         if ($form->isSubmitted() && $form->isValid()) {

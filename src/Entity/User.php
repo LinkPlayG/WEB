@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -40,6 +41,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: 'datetime')]
     private ?\DateTimeInterface $dateCreation = null;
+
+    #[ORM\Column(type: Types::BLOB, nullable: true)]
+    private $profile_img = null;
 
     public function __construct()
     {
@@ -132,4 +136,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
     }
+
+    public function getProfileImg()
+    {
+        return $this->profile_img;
+    }
+
+    public function setProfileImg($profile_img): static
+    {
+        $this->profile_img = $profile_img;
+
+        return $this;
+    }
+
 }
