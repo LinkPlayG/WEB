@@ -63,15 +63,14 @@
 {% endblock %}
 
 {% block body %}
-    {# Barre de recherche principale #}
+    {# Barre de recherche avancée #}
     <div class="search-header">
-        <h1>Annonces</h1>
+        <h1>Offres de stage</h1>
         <div class="search-container">
             <div class="search-input-wrapper">
                 <input type="text" id="search-input" placeholder="Rechercher">
                 <img class="search-icon" src="{{ asset('images/Search.svg') }}" alt="Rechercher">
                 {# Overlay #}
-
                 <div id="search-overlay" class="search-overlay hidden">
                     <button id="close-overlay">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
@@ -94,19 +93,155 @@
             <div class="view-options">
                 <button class="option-btn active">Default</button>
                 <button class="option-btn">A-Z</button>
-                <button class="option-btn">List view</button>
             </div>
         </div>
-
     </div>
-{% endblock %}
 
-{% block stylesheets %}
-    {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('css/search.css') }}">
+    {# Contenu principal avec carte et offres #}
+    <div class="search-and-map-container">
+        <div class="offers-list">
+            {% for offre in offres %}
+                <div class="offer-card"
+                     data-lat="{{ offre.entreprise.adresse.latitude }}"
+                     data-lng="{{ offre.entreprise.adresse.longitude }}"
+                     data-id="{{ offre.id }}"
+                     data-address="{{ offre.entreprise.adresse.rue }}, {{ offre.entreprise.adresse.ville }}, {{ offre.entreprise.adresse.codePostal }}">
+                    <div class="offer-title">{{ offre.titreOffre }}</div>
+                    <div class="offer-company">{{ offre.entreprise.nom }}</div>
+                    <div class="offer-details">
+                        <div class="offer-detail">
+                            <i class="fas fa-briefcase"></i>
+                            Stage
+                        </div>
+                        <div class="offer-detail">
+                            <i class="fas fa-calendar"></i>
+                            {{ offre.dateDebutStage|date('d/m/Y') }}
+                        </div>
+                        <div class="offer-detail">
+                            <i class="fas fa-clock"></i>
+                            {{ offre.dureeStage }} mois
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    Aucune offre de stage disponible pour le moment.
+                </div>
+            {% endfor %}
+        </div>
+
+        <div id="map"></div>
+    </div>
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script src="{{ asset('js/search.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialisation de la carte
+            var map = L.map('map').setView([46.603354, 1.888334], 6); // Centre sur la France
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+
+            // Collection des marqueurs
+            var markers = [];
+
+            // Ajout des marqueurs pour chaque offre
+            document.querySelectorAll('.offer-card').forEach(function(card) {
+                var lat = parseFloat(card.dataset.lat);
+                var lng = parseFloat(card.dataset.lng);
+
+                if (lat && lng) {
+                    var marker = L.marker([lat, lng])
+                        .bindPopup(card.querySelector('.offer-title').textContent)
+                        .addTo(map);
+
+                    markers.push({
+                        marker: marker,
+                        card: card
+                    });
+
+                    // Lien entre le marqueur et la carte
+                    marker.on('click', function() {
+                        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        card.style.backgroundColor = '#f0f8ff';
+                        setTimeout(() => card.style.backgroundColor = '', 2000);
+                    });
+
+                    // Lien entre la carte et le marqueur
+                    card.addEventListener('click', function() {
+                        map.setView([lat, lng], 13);
+                        marker.openPopup();
+                    });
+                }
+            });
+
+            // Intégration avec la recherche avancée
+            const searchInput = document.getElementById('search-input');
+            // Synchroniser la recherche simple avec la recherche avancée
+            searchInput.addEventListener('input', function(e) {
+                var searchText = e.target.value.toLowerCase();
+
+                markers.forEach(function(item) {
+                    var title = item.card.querySelector('.offer-title').textContent.toLowerCase();
+                    var company = item.card.querySelector('.offer-company').textContent.toLowerCase();
+
+                    if (title.includes(searchText) || company.includes(searchText)) {
+                        item.card.style.display = '';
+                        item.marker.setOpacity(1);
+                    } else {
+                        item.card.style.display = 'none';
+                        item.marker.setOpacity(0.2);
+                    }
+                });
+            });
+
+            // Gestion de la recherche avancée
+            const searchButton = document.getElementById('search-button');
+            searchButton.addEventListener('click', function() {
+                const quoi = document.getElementById('quoi').value.toLowerCase();
+                const ou = document.getElementById('ou').value.toLowerCase();
+
+                markers.forEach(function(item) {
+                    var title = item.card.querySelector('.offer-title').textContent.toLowerCase();
+                    var company = item.card.querySelector('.offer-company').textContent.toLowerCase();
+                    var matched = true;
+
+                    if (quoi && !(title.includes(quoi) || company.includes(quoi))) {
+                        matched = false;
+                    }
+
+                    // Vérifier la localisation si spécifiée
+                    if (matched && ou) {
+                        // On pourrait ajouter ici plus de détails sur la localisation
+                        // comme la ville ou le département extraits des données
+                        matched = false; // Par défaut, jusqu'à une vérification réelle
+
+                        // Simulation - à remplacer par une vérification réelle
+                        // par exemple avec la ville de l'entreprise
+                        var address = item.card.dataset.address.toLowerCase();
+                        if (address.includes(ou)) {
+                            matched = true;
+                        }
+                    }
+
+                    if (matched) {
+                        item.card.style.display = '';
+                        item.marker.setOpacity(1);
+                    } else {
+                        item.card.style.display = 'none';
+                        item.marker.setOpacity(0.2);
+                    }
+                });
+
+                // Fermer l'overlay après la recherche
+                document.getElementById('search-overlay').style.display = 'none';
+            });
+        });
+    </script>
 {% endblock %}
