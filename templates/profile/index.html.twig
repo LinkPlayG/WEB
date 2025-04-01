@@ -67,22 +67,24 @@
                     </div>
                 </div>
             </div>
-            
-            <!-- CV Card -->
-            <div class="card mb-3">
-                <div class="card-body cv-card-body">
-                    <div class="icon-box">
-                        <i class="fa fa-file-pdf-o pdf-icon" aria-hidden="true"></i>
-                    </div>
-                    <div class="cv-details">
-                        <h4 class="cv-title">Mon CV</h4>
-                        <p class="cv-filename">NomDuCV.pdf</p>
-                    </div>
-                    <a href="{{ path('app_cv') }}" class="download-link">
-                    <i class="fa fa-download download-icon" aria-hidden="true"></i>
-                    </a>
+
+<!-- CV Card -->
+{% if app.user %}
+    {% if is_granted('ROLE_ETUDIANT') %}
+        <div class="card mb-3">
+            <div class="card-body cv-card-body">
+                <div class="icon-box">
+                    <i class="fa fa-file-pdf-o pdf-icon" aria-hidden="true"></i>
                 </div>
+                <div class="cv-details">
+                    <h4 class="cv-title">Mon CV</h4>
+                    <p class="cv-filename">NomDuCV.pdf</p>
+                </div>
+                <a href="{{ path('app_cv') }}" class="download-link">
+                    <i class="fa fa-download download-icon" aria-hidden="true"></i>
+                </a>
             </div>
         </div>
-    </div><br>
+    {% endif %}
+{% endif %}   
 {% endblock %}

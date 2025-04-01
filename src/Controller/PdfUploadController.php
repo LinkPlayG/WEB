@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+
+use App\Entity\Etudiant;
 use App\Entity\Pdf;
 use App\Form\PdfCVType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -21,12 +23,22 @@ class PdfUploadController extends AbstractController
         Request $request,
         SluggerInterface $slugger,
         EntityManagerInterface $entityManager,
-        #[Autowire('%kernel.project_dir%/public/uploads')] string $brochuresDirectory
+        #[Autowire('%kernel.project_dir%/public/uploads')] string $pdfDirectory
     ): Response
     {
         $pdf = new Pdf();
+
         $form = $this->createForm(PdfCVType::class, $pdf);
         $form->handleRequest($request);
+        
+
+        $user = $this->getUser();
+        $pdf->setEtudiant($user);
+        if (!$user || !($user instanceof Etudiant)) {
+            $this->addFlash('error', 'Vous devez être connecté en tant qu\'étudiant pour accéder à cette page.');
+            return $this->redirectToRoute('app_login');
+        }
+        
 
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var UploadedFile $cvFile */
@@ -40,9 +52,9 @@ class PdfUploadController extends AbstractController
                 $safeFilename = $slugger->slug($originalFilename);
                 $newFilename = $safeFilename.'-'.uniqid().'.'.$cvFile->guessExtension();
 
-                // Move the file to the directory where brochures are stored
+                // Move the file to the directory where pdf are stored
                 try {
-                    $cvFile->move($brochuresDirectory, $newFilename);
+                    $cvFile->move($pdfDirectory, $newFilename);
                 } catch (FileException $e) {
                     // Add flash message for error
                     $this->addFlash('error', 'Une erreur est survenue lors du téléchargement du fichier.');
@@ -64,12 +76,15 @@ class PdfUploadController extends AbstractController
             }
         }
 
-        // Get the last uploaded PDF if exists (optional)
-        $lastPdf = $entityManager->getRepository(Pdf::class)->findOneBy([], ['id' => 'DESC']);
+        $userPdfs = $entityManager->getRepository(Pdf::class)->findBy(
+            ['etudiant' => $user],
+            ['id' => 'DESC']
+        );
 
         return $this->render('pdf_upload/index.html.twig', [
             'form' => $form,
-            'pdf' => $lastPdf
+            'pdfs' => $userPdfs, // Passer la liste complète des PDFs
+            'pdf' => !empty($userPdfs) ? $userPdfs[0] : null
         ]);
     }
 }

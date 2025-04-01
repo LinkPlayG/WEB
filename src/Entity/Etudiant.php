@@ -29,6 +29,12 @@ class Etudiant extends User
     #[ORM\OneToMany(mappedBy: 'etudiant', targetEntity: Candidature::class)]
     private Collection $candidatures;
 
+    /**
+     * @var Collection<int, Pdf>
+     */
+    #[ORM\OneToMany(targetEntity: Pdf::class, mappedBy: 'etudiant', orphanRemoval: true)]
+    private Collection $pdfs;
+
     
     public function __construct()
     {
@@ -36,6 +42,7 @@ class Etudiant extends User
         $this->setRoles(['ROLE_ETUDIANT']);
         $this->candidatures = new ArrayCollection();
         $this->statut = 'En recherche';
+        $this->pdfs = new ArrayCollection();
     }
 
     public function getNomEtudiant(): ?string
@@ -122,6 +129,36 @@ class Etudiant extends User
             // set the owning side to null (unless already changed)
             if ($candidature->getEtudiant() === $this) {
                 $candidature->setEtudiant(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Pdf>
+     */
+    public function getPdfs(): Collection
+    {
+        return $this->pdfs;
+    }
+
+    public function addPdf(Pdf $pdf): static
+    {
+        if (!$this->pdfs->contains($pdf)) {
+            $this->pdfs->add($pdf);
+            $pdf->setEtudiant($this);
+        }
+
+        return $this;
+    }
+
+    public function removePdf(Pdf $pdf): static
+    {
+        if ($this->pdfs->removeElement($pdf)) {
+            // set the owning side to null (unless already changed)
+            if ($pdf->getEtudiant() === $this) {
+                $pdf->setEtudiant(null);
             }
         }
 

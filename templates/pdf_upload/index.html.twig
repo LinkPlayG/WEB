@@ -7,56 +7,81 @@
 {% endblock %}
 {% block body %}
 <div class="container p-0">
-<div class="row my-4">
-<div class="col-md-8 offset-md-2">
-<div class="card">
-<div class="card-header">
-<h2><i class="fa fa-file-pdf-o" aria-hidden="true"></i> Télécharger votre CV</h2>
-</div>
-<div class="card-body">
-{{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate', 'enctype': 'multipart/form-data'}}) }}
-<div class="mb-3">
-{{ form_label(form.CV, 'Votre CV (fichier PDF)', {'label_attr': {'class': 'form-label'}}) }}
-{{ form_widget(form.CV, {'attr': {'class': 'form-control'}}) }}
-<div class="form-text">Formats acceptés: PDF. Taille maximale: 1Mo.</div>
-{% if form.CV.vars.errors|length > 0 %}
-<div class="invalid-feedback d-block">
-{{ form_errors(form.CV) }}
-</div>
-        {% endif %}
+    <div class="row my-4">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fa fa-file-pdf-o" aria-hidden="true"></i> Télécharger votre CV</h2>
                 </div>
-                     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                            <a href="{{ path('app_profile') }}" class="btn btn-secondary me-2">
-                                <i class="fa fa-arrow-left" aria-hidden="true"></i> Retour
-                            </a>
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fa fa-upload" aria-hidden="true"></i> Enregistrer
-                            </button>
+                <div class="card-body">
+                    {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate', 'enctype': 'multipart/form-data'}}) }}
+                    <div class="mb-3">
+                        {{ form_label(form.CV, 'Votre CV (fichier PDF)', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.CV, {'attr': {'class': 'form-control'}}) }}
+                        <div class="form-text">Formats acceptés: PDF. Taille maximale: 1Mo.</div>
+                        {% if form.CV.vars.errors|length > 0 %}
+                        <div class="invalid-feedback d-block">
+                            {{ form_errors(form.CV) }}
                         </div>
+                        {% endif %}
+                    </div>
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{{ path('app_profile') }}" class="btn btn-secondary me-2">
+                            <i class="fa fa-arrow-left" aria-hidden="true"></i> Retour
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fa fa-upload" aria-hidden="true"></i> Enregistrer
+                        </button>
+                    </div>
                     {{ form_end(form) }}
                 </div>
             </div>
 
-{% if pdf is defined and pdf is not null and pdf.filename is defined and pdf.filename is not null %}
-<div class="card mt-4">
-    <div class="card-body">
-        <div class="d-flex align-items-center justify-content-between">
-            <div class="d-flex align-items-center">
-                <div class="me-3">
-                    <i class="fa fa-file-pdf-o fa-3x text-danger" aria-hidden="true"></i>
+            {% if pdfs is defined and pdfs|length > 0 %}
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h3><i class="fa fa-files-o" aria-hidden="true"></i> Vos documents PDF</h3>
                 </div>
-                <div>
-                    <h5 class="mb-0">{{ pdf.filename }}</h5>
-                    <small class="text-muted">Téléchargé avec succès</small>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        {% for pdf_item in pdfs %}
+                        <div class="list-group-item">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div class="d-flex align-items-center">
+                                    <div class="me-3">
+                                        <i class="fa fa-file-pdf-o fa-2x text-danger" aria-hidden="true"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="mb-0">{{ pdf_item.filename }}</h5>
+                                    </div>
+                                </div>
+                                <div>
+                                    <a href="{{ asset('uploads/' ~ pdf_item.filename) }}" class="btn btn-outline-primary btn-sm me-2" target="_blank">
+                                        <i class="fa fa-eye" aria-hidden="true"></i>Voir
+                                    </a>
+                                    <br>
+                                    <a href="{{ asset('uploads/' ~ pdf_item.filename) }}" class="btn btn-outline-success btn-sm" download>
+                                        <i class="fa fa-download" aria-hidden="true"></i>Télécharger
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <br>
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
-            <a href="{{ asset('uploads/' ~ pdf.filename) }}" class="btn btn-outline-primary" target="_blank">
-                <i class="fa fa-download" aria-hidden="true"></i> Télécharger
-            </a>
-        </div>
-    </div>
-</div>
-{% endif %}
+            {% else %}
+            <div class="card mt-4">
+                <div class="card-body">
+                    <div class="text-center text-muted">
+                        <i class="fa fa-info-circle fa-2x mb-3" aria-hidden="true"></i>
+                        <p>Vous n'avez pas encore téléchargé de document PDF.</p>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
         </div>
     </div>
 </div>
