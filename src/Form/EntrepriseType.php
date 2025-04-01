@@ -2,8 +2,9 @@
 
 namespace App\Form;
 
-use App\Entity\Entreprise;
+use App\DTO\EntrepriseDTO;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
@@ -16,29 +17,50 @@ class EntrepriseType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('nom_entreprise', TextType::class, [
+            ->add('nom', TextType::class, [
                 'label' => 'Nom de l\'entreprise',
                 'attr' => ['class' => 'form-control']
             ])
-            ->add('secteur_activite', TextType::class, [
+            ->add('secteur', ChoiceType::class, [
                 'label' => 'Secteur d\'activité',
+                'choices' => [
+                    'Informatique' => 'Informatique',
+                    'Technologie' => 'Technologie',
+                    'Finance' => 'Finance',
+                    'Ressources humaines' => 'Ressources humaines',
+                    'Santé' => 'Santé',
+                    'Education' => 'Education',
+                    'Industrie' => 'Industrie',
+                    'Système embarqué' => 'Système embarqué',
+                    'Commerce' => 'Commerce',
+                    'Services' => 'Services',
+                    'Autre' => 'Autre'
+                ],
+                'attr' => ['class' => 'form-select']
+            ])
+            ->add('rue', TextType::class, [
+                'label' => 'Rue',
                 'attr' => ['class' => 'form-control']
             ])
-            ->add('adresse', TextType::class, [
-                'label' => 'Adresse',
+            ->add('codePostal', TextType::class, [
+                'label' => 'Code Postal',
                 'attr' => ['class' => 'form-control']
             ])
             ->add('ville', TextType::class, [
                 'label' => 'Ville',
                 'attr' => ['class' => 'form-control']
             ])
-            ->add('code_postal', TextType::class, [
-                'label' => 'Code postal',
-                'attr' => ['class' => 'form-control']
-            ])
             ->add('pays', TextType::class, [
                 'label' => 'Pays',
                 'attr' => ['class' => 'form-control']
+            ])
+            ->add('active', ChoiceType::class, [
+                'label' => 'Statut',
+                'choices' => [
+                    'Actif' => true,
+                    'Inactif' => false
+                ],
+                'attr' => ['class' => 'form-select']
             ])
             ->add('telephone', TelType::class, [
                 'label' => 'Téléphone',
@@ -58,7 +80,7 @@ class EntrepriseType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Entreprise::class,
+            'data_class' => EntrepriseDTO::class,
         ]);
     }
 } 
