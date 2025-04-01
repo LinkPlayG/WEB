@@ -2,40 +2,50 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\User;
+use App\Entity\Administrateur;
+use App\Entity\PiloteDePromotion;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class UserFixtures extends Fixture implements ContainerAwareInterface
+class UserFixtures extends Fixture
 {
-    private ?ContainerInterface $container = null;
+    private UserPasswordHasherInterface $passwordHasher;
 
-    public function setContainer(ContainerInterface $container = null)
+    public function __construct(UserPasswordHasherInterface $passwordHasher)
     {
-        $this->container = $container;
+        $this->passwordHasher = $passwordHasher;
     }
 
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
-        $passwordHasher = $this->container->get('security.password_hasher');
-
         // Création de l'administrateur
-        $admin = new User();
-        $admin->setNom('admin');
-        $admin->setPrenom('admin');
+        $admin = new Administrateur();
+        $admin->setNomAdmin('Admin');
+        $admin->setPrenomAdmin('Super');
         $admin->setEmail('admin@interned.fr');
-        $admin->setRoles(['ROLE_ADMIN']);
         $admin->setPassword(
-            $passwordHasher->hashPassword(
+            $this->passwordHasher->hashPassword(
                 $admin,
                 'Admin123!'
             )
         );
-
         $manager->persist($admin);
+
+        // Création du pilote
+        $pilote = new PiloteDePromotion();
+        $pilote->setNomPilote('Dupont');
+        $pilote->setPrenomPilote('Jean');
+        $pilote->setEmail('pilote@interned.fr');
+        $pilote->setEmailPilote('pilote@interned.fr');
+        $pilote->setPassword(
+            $this->passwordHasher->hashPassword(
+                $pilote,
+                'Pilote123!'
+            )
+        );
+        $manager->persist($pilote);
+
         $manager->flush();
     }
 } 

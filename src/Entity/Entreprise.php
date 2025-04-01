@@ -37,6 +37,9 @@ class Entreprise
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $description = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $logo = null;
+
     #[ORM\OneToMany(mappedBy: 'entreprise', targetEntity: OffreDeStage::class)]
     private Collection $offresDeStage;
 
@@ -124,6 +127,17 @@ class Entreprise
     public function setDescription(?string $description): static
     {
         $this->description = $description;
+        return $this;
+    }
+
+    public function getLogo(): ?string
+    {
+        return $this->logo;
+    }
+
+    public function setLogo(?string $logo): static
+    {
+        $this->logo = $logo;
         return $this;
     }
 

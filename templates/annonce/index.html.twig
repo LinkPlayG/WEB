@@ -6,12 +6,13 @@
 {% block stylesheets %}
     {{ parent() }}
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <link rel="stylesheet" href="{{ asset('css/search.css') }}">
     <style>
         .search-and-map-container {
             display: flex;
             gap: 20px;
             margin: 20px;
-            height: calc(100vh - 100px);
+            height: calc(100vh - 180px); /* Réduit pour tenir compte de la barre de recherche */
         }
         .offers-list {
             flex: 1;
@@ -58,27 +59,53 @@
             align-items: center;
             gap: 5px;
         }
-        .search-bar {
-            padding: 10px;
-            margin-bottom: 20px;
-            width: 100%;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 1em;
-        }
     </style>
 {% endblock %}
 
 {% block body %}
+    {# Barre de recherche avancée #}
+    <div class="search-header">
+        <h1>Offres de stage</h1>
+        <div class="search-container">
+            <div class="search-input-wrapper">
+                <input type="text" id="search-input" placeholder="Rechercher">
+                <img class="search-icon" src="{{ asset('images/Search.svg') }}" alt="Rechercher">
+                {# Overlay #}
+                <div id="search-overlay" class="search-overlay hidden">
+                    <button id="close-overlay">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                        </svg>
+                    </button>
+                    <div class="search-fields">
+                        <div class="search-field">
+                            <label for="quoi">QUOI ?</label>
+                            <input type="text" id="quoi" placeholder="Métier, entreprise, compétence...">
+                        </div>
+                        <div class="search-field">
+                            <label for="ou">OÙ ?</label>
+                            <input type="text" id="ou" placeholder="Ville, département, code postal...">
+                        </div>
+                    </div>
+                    <button id="search-button">Rechercher</button>
+                </div>
+            </div>
+            <div class="view-options">
+                <button class="option-btn active">Default</button>
+                <button class="option-btn">A-Z</button>
+            </div>
+        </div>
+    </div>
+
+    {# Contenu principal avec carte et offres #}
     <div class="search-and-map-container">
         <div class="offers-list">
-            <input type="text" class="search-bar" placeholder="Rechercher une offre de stage..." id="searchInput">
-            
             {% for offre in offres %}
                 <div class="offer-card" 
                      data-lat="{{ offre.entreprise.adresse.latitude }}" 
                      data-lng="{{ offre.entreprise.adresse.longitude }}"
-                     data-id="{{ offre.id }}">
+                     data-id="{{ offre.id }}"
+                     data-address="{{ offre.entreprise.adresse.rue }}, {{ offre.entreprise.adresse.ville }}, {{ offre.entreprise.adresse.codePostal }}">
                     <div class="offer-title">{{ offre.titreOffre }}</div>
                     <div class="offer-company">{{ offre.entreprise.nom }}</div>
                     <div class="offer-details">
@@ -110,6 +137,7 @@
 {% block javascripts %}
     {{ parent() }}
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="{{ asset('js/search.js') }}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Initialisation de la carte
@@ -153,8 +181,10 @@
                 }
             });
 
-            // Fonction de recherche
-            document.getElementById('searchInput').addEventListener('input', function(e) {
+            // Intégration avec la recherche avancée
+            const searchInput = document.getElementById('search-input');
+            // Synchroniser la recherche simple avec la recherche avancée
+            searchInput.addEventListener('input', function(e) {
                 var searchText = e.target.value.toLowerCase();
                 
                 markers.forEach(function(item) {
@@ -169,6 +199,48 @@
                         item.marker.setOpacity(0.2);
                     }
                 });
+            });
+            
+            // Gestion de la recherche avancée
+            const searchButton = document.getElementById('search-button');
+            searchButton.addEventListener('click', function() {
+                const quoi = document.getElementById('quoi').value.toLowerCase();
+                const ou = document.getElementById('ou').value.toLowerCase();
+                
+                markers.forEach(function(item) {
+                    var title = item.card.querySelector('.offer-title').textContent.toLowerCase();
+                    var company = item.card.querySelector('.offer-company').textContent.toLowerCase();
+                    var matched = true;
+                    
+                    if (quoi && !(title.includes(quoi) || company.includes(quoi))) {
+                        matched = false;
+                    }
+                    
+                    // Vérifier la localisation si spécifiée
+                    if (matched && ou) {
+                        // On pourrait ajouter ici plus de détails sur la localisation
+                        // comme la ville ou le département extraits des données
+                        matched = false; // Par défaut, jusqu'à une vérification réelle
+                        
+                        // Simulation - à remplacer par une vérification réelle
+                        // par exemple avec la ville de l'entreprise
+                        var address = item.card.dataset.address.toLowerCase();
+                        if (address.includes(ou)) {
+                            matched = true;
+                        }
+                    }
+                    
+                    if (matched) {
+                        item.card.style.display = '';
+                        item.marker.setOpacity(1);
+                    } else {
+                        item.card.style.display = 'none';
+                        item.marker.setOpacity(0.2);
+                    }
+                });
+                
+                // Fermer l'overlay après la recherche
+                document.getElementById('search-overlay').style.display = 'none';
             });
         });
     </script>

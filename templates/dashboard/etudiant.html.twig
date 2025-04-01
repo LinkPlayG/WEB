@@ -71,8 +71,8 @@
                 <select class="form-select">
                     <option>Tous les secteurs</option>
                     {% for offre in offres %}
-                        {% if offre.secteur %}
-                            <option>{{ offre.secteur }}</option>
+                        {% if offre.entreprise.secteur %}
+                            <option>{{ offre.entreprise.secteur }}</option>
                         {% endif %}
                     {% endfor %}
                 </select>
@@ -81,8 +81,8 @@
                 <select class="form-select">
                     <option>Toutes les villes</option>
                     {% for offre in offres %}
-                        {% if offre.ville %}
-                            <option>{{ offre.ville }}</option>
+                        {% if offre.entreprise.adresse.ville %}
+                            <option>{{ offre.entreprise.adresse.ville }}</option>
                         {% endif %}
                     {% endfor %}
                 </select>
@@ -136,9 +136,9 @@
                                     {% endif %}
                                     {{ offre.entreprise.nom }}
                                 </td>
-                                <td>{{ offre.titre }}</td>
-                                <td>{{ offre.ville }}</td>
-                                <td>{{ offre.duree }} mois</td>
+                                <td>{{ offre.titreOffre }}</td>
+                                <td>{{ offre.entreprise.adresse.ville }}</td>
+                                <td>{{ offre.dureeStage }} mois</td>
                                 <td class="action-buttons">
                                     <a href="#" class="btn btn-sm btn-info" title="Voir les détails">
                                         <i class="fas fa-eye"></i>
