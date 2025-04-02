@@ -153,6 +153,7 @@
 .download-link {
     text-decoration: none;
     color: inherit;
+    float: right;
 }
 
 .download-icon {
@@ -208,7 +209,8 @@
 .profile-header-section {
     position: relative;
     width: 120px;
-    height: -10px;
+    height: 0px;
+    margin-right: 20px;
 }
 
 
