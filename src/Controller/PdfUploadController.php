@@ -15,6 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Component\Filesystem\Filesystem;
 
 class PdfUploadController extends AbstractController
 {
@@ -25,19 +26,21 @@ class PdfUploadController extends AbstractController
         EntityManagerInterface $entityManager,
         #[Autowire('%kernel.project_dir%/public/uploads')] string $pdfDirectory
     ): Response
-    {
+    {        
+        $user = $this->getUser();
+        if (!$user || !($user instanceof Etudiant)) {
+            $this->addFlash('error', 'Vous devez être connecté en tant qu\'étudiant pour accéder à cette page.');
+            return $this->redirectToRoute('app_login');
+        }
         $pdf = new Pdf();
 
         $form = $this->createForm(PdfCVType::class, $pdf);
         $form->handleRequest($request);
         
 
-        $user = $this->getUser();
+
         $pdf->setEtudiant($user);
-        if (!$user || !($user instanceof Etudiant)) {
-            $this->addFlash('error', 'Vous devez être connecté en tant qu\'étudiant pour accéder à cette page.');
-            return $this->redirectToRoute('app_login');
-        }
+
         
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -86,6 +89,40 @@ class PdfUploadController extends AbstractController
             'pdfs' => $userPdfs, // Passer la liste complète des PDFs
             'pdf' => !empty($userPdfs) ? $userPdfs[0] : null
         ]);
+    }
+    #[Route('/pdf/delete/{id}', name: 'app_pdf_delete')]
+    public function delete(
+        Pdf $pdf,
+        EntityManagerInterface $entityManager,
+        #[Autowire('%kernel.project_dir%/public/uploads')] string $pdfDirectory,
+        Filesystem $filesystem
+    ): Response
+    {
+        // Vérifier que l'utilisateur connecté est bien le propriétaire du PDF
+        $user = $this->getUser();
+        if (!$user || $pdf->getEtudiant() !== $user) {
+            $this->addFlash('error', 'Vous n\'êtes pas autorisé à supprimer ce document.');
+            return $this->redirectToRoute('app_cv');
+        }
+        
+        // Récupérer le nom du fichier avant de supprimer l'entité
+        $filename = $pdf->getFilename();
+        
+        // Supprimer l'entité de la base de données
+        $entityManager->remove($pdf);
+        $entityManager->flush();
+        
+        // Supprimer le fichier physique
+        $filePath = $pdfDirectory . '/' . $filename;
+        if ($filesystem->exists($filePath)) {
+            $filesystem->remove($filePath);
+        }
+        
+        // Ajouter un message flash de succèss
+        $this->addFlash('success', 'Le document a été supprimé avec succès.');
+        
+        // Rediriger vers la page des CV
+        return $this->redirectToRoute('app_cv');
     }
 }
 ?>
