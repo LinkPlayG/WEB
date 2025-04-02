@@ -63,6 +63,11 @@
                                     <a href="{{ asset('uploads/' ~ pdf_item.filename) }}" class="btn btn-outline-success btn-sm" download>
                                         <i class="fa fa-download" aria-hidden="true"></i>Télécharger
                                     </a>
+                                    <br>
+                                    <a href="{{ path('app_pdf_delete', {'id': pdf_item.id}) }}" class="btn btn-outline-danger btn-sm">
+                                        <i class="fa fa-trash" aria-hidden="true"></i>Supprimer
+                                    </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
