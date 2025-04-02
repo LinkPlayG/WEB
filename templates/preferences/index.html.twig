@@ -1,0 +1,331 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Préférences - Interned{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .preferences-container {
+            display: flex;
+            min-height: calc(100vh - 200px);
+            background-color: #f8f9fa;
+            margin: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #fff;
+            border-right: 1px solid #e9ecef;
+            padding: 20px;
+            border-radius: 8px 0 0 8px;
+        }
+
+        .sidebar h2 {
+            font-size: 18px;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 10px;
+        }
+
+        .sidebar-menu a {
+            display: block;
+            padding: 10px 15px;
+            color: #495057;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .sidebar-menu a:hover,
+        .sidebar-menu a.active {
+            background-color: #e9ecef;
+            color: #2c3e50;
+        }
+
+        .content {
+            flex: 1;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .settings-section {
+            display: none;
+            margin-bottom: 30px;
+        }
+
+        .settings-section.active {
+            display: block;
+        }
+
+        .settings-section h1 {
+            font-size: 24px;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #495057;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .btn-save {
+            background-color: #0d6efd;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+
+        .btn-save:hover {
+            background-color: #0b5ed7;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="preferences-container">
+        <div class="sidebar">
+            <h2>Paramètres</h2>
+            <ul class="sidebar-menu">
+                <li><a data-section="general" class="active">Paramètres Généraux</a></li>
+                <li><a data-section="langue">Paramètres de Langue</a></li>
+                <li><a data-section="communication">Préférences de communication</a></li>
+                <li><a data-section="cookies">Gestion des cookies</a></li>
+                <li><a data-section="compte">Compte</a></li>
+                {% if is_granted('ROLE_ADMIN') %}
+                    <li><a data-section="admin">Paramètres administrateur</a></li>
+                {% endif %}
+                {% if is_granted('ROLE_PILOTE') %}
+                    <li><a data-section="pilote">Paramètres pilote</a></li>
+                {% endif %}
+                {% if is_granted('ROLE_ETUDIANT') %}
+                    <li><a data-section="etudiant">Paramètres étudiant</a></li>
+                {% endif %}
+            </ul>
+        </div>
+
+        <div class="content">
+            <div id="general" class="settings-section active">
+                <h1>Paramètres Généraux</h1>
+                <div class="form-group">
+                    <label for="theme">Thème</label>
+                    <select id="theme" class="form-control">
+                        <option value="light">Clair</option>
+                        <option value="dark">Sombre</option>
+                        <option value="auto">Automatique</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="notifications">Notifications</label>
+                    <select id="notifications" class="form-control">
+                        <option value="all">Toutes les notifications</option>
+                        <option value="important">Notifications importantes uniquement</option>
+                        <option value="none">Aucune notification</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="langue" class="settings-section">
+                <h1>Paramètres de Langue</h1>
+                <div class="form-group">
+                    <label for="language">Langue de l'interface</label>
+                    <select id="language" class="form-control">
+                        <option value="fr">Français</option>
+                        <option value="en">English</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="communication" class="settings-section">
+                <h1>Préférences de communication</h1>
+                <div class="form-group">
+                    <label for="email-frequency">Fréquence des emails</label>
+                    <select id="email-frequency" class="form-control">
+                        <option value="immediate">Immédiat</option>
+                        <option value="daily">Résumé quotidien</option>
+                        <option value="weekly">Résumé hebdomadaire</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="cookies" class="settings-section">
+                <h1>Gestion des cookies</h1>
+                <div class="form-group">
+                    <label for="cookie-preferences">Préférences des cookies</label>
+                    <select id="cookie-preferences" class="form-control">
+                        <option value="essential">Cookies essentiels uniquement</option>
+                        <option value="all">Tous les cookies</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="compte" class="settings-section">
+                <h1>Compte</h1>
+                <div class="form-group">
+                    <label for="email-visibility">Visibilité de l'email</label>
+                    <select id="email-visibility" class="form-control">
+                        <option value="public">Public</option>
+                        <option value="private">Privé</option>
+                    </select>
+                </div>
+            </div>
+
+            {% if is_granted('ROLE_ADMIN') %}
+                <div id="admin" class="settings-section">
+                    <h1>Paramètres Administrateur</h1>
+                    <div class="form-group">
+                        <label for="dashboard">Tableau de bord par défaut</label>
+                        <select id="dashboard" class="form-control">
+                            <option value="overview">Vue d'ensemble</option>
+                            <option value="users">Gestion des utilisateurs</option>
+                            <option value="offers">Gestion des offres</option>
+                        </select>
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if is_granted('ROLE_PILOTE') %}
+                <div id="pilote" class="settings-section">
+                    <h1>Paramètres Pilote</h1>
+                    <div class="form-group">
+                        <label for="student-notifications">Notifications étudiants</label>
+                        <select id="student-notifications" class="form-control">
+                            <option value="all">Tous les étudiants</option>
+                            <option value="assigned">Étudiants assignés uniquement</option>
+                        </select>
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if is_granted('ROLE_ETUDIANT') %}
+                <div id="etudiant" class="settings-section">
+                    <h1>Paramètres Étudiant</h1>
+                    <div class="form-group">
+                        <label for="job-alerts">Alertes offres de stage</label>
+                        <select id="job-alerts" class="form-control">
+                            <option value="instant">Instantanées</option>
+                            <option value="daily">Quotidiennes</option>
+                            <option value="weekly">Hebdomadaires</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="cv-visibility">Visibilité du CV</label>
+                        <select id="cv-visibility" class="form-control">
+                            <option value="public">Public</option>
+                            <option value="private">Privé</option>
+                        </select>
+                    </div>
+                </div>
+            {% endif %}
+
+            <button class="btn-save">Enregistrer les modifications</button>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Gestion du menu latéral
+            const menuLinks = document.querySelectorAll('.sidebar-menu a');
+            const sections = document.querySelectorAll('.settings-section');
+            
+            // Fonction pour afficher une section
+            function showSection(sectionId) {
+                // Cacher toutes les sections
+                sections.forEach(section => {
+                    section.classList.remove('active');
+                });
+                
+                // Afficher la section sélectionnée
+                const targetSection = document.getElementById(sectionId);
+                if (targetSection) {
+                    targetSection.classList.add('active');
+                }
+                
+                // Mettre à jour le lien actif
+                menuLinks.forEach(link => {
+                    if (link.dataset.section === sectionId) {
+                        link.classList.add('active');
+                    } else {
+                        link.classList.remove('active');
+                    }
+                });
+            }
+            
+            // Gestionnaire d'événements pour les liens du menu
+            menuLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const sectionId = this.dataset.section;
+                    showSection(sectionId);
+                });
+            });
+
+            // Gestion du formulaire
+            const saveButton = document.querySelector('.btn-save');
+            saveButton.addEventListener('click', function() {
+                // Récupérer toutes les valeurs des champs
+                const formData = {
+                    theme: document.getElementById('theme')?.value,
+                    notifications: document.getElementById('notifications')?.value,
+                    language: document.getElementById('language')?.value,
+                    emailFrequency: document.getElementById('email-frequency')?.value,
+                    cookiePreferences: document.getElementById('cookie-preferences')?.value,
+                    emailVisibility: document.getElementById('email-visibility')?.value
+                };
+
+                // Ajouter les champs spécifiques au rôle
+                if (document.getElementById('dashboard')) {
+                    formData.dashboard = document.getElementById('dashboard').value;
+                }
+                if (document.getElementById('student-notifications')) {
+                    formData.studentNotifications = document.getElementById('student-notifications').value;
+                }
+                if (document.getElementById('job-alerts')) {
+                    formData.jobAlerts = document.getElementById('job-alerts').value;
+                    formData.cvVisibility = document.getElementById('cv-visibility').value;
+                }
+
+                // TODO: Envoyer les données au serveur
+                console.log('Données à sauvegarder:', formData);
+                alert('Les modifications ont été enregistrées');
+            });
+        });
+    </script>
+{% endblock %} 
