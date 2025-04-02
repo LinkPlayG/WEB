@@ -1,7 +1,7 @@
 {# templates/wishlist/index.html.twig #}
-{% extends 'base.html.twig' %}
+    {% extends 'base.html.twig' %}
 
-{% block title %}Wishlist - Interned{% endblock %}
+    {% block title %}Wishlist - Interned{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
@@ -29,7 +29,7 @@
             {% else %}
                 <div class="empty-wishlist">
                     <p>Votre wishlist est vide</p>
-                    <a href="{{ path('app_offres') }}" class="browse-offers-btn">Parcourir les offres</a>
+                    <a href="{{ path('app_annonces') }}" class="browse-offers-btn">Parcourir les offres</a>
                 </div>
             {% endfor %}
         </div>
@@ -69,7 +69,7 @@
                                     emptyWishlist.className = 'empty-wishlist';
                                     emptyWishlist.innerHTML = `
                                         <p>Votre wishlist est vide</p>
-                                        <a href="{{ path('app_offres') }}" class="browse-offers-btn">Parcourir les offres</a>
+                                        <a href="{{ path('app_annonces') }}" class="browse-offers-btn">Parcourir les offres</a>
                                     `;
                                     document.querySelector('.wishlist-items').appendChild(emptyWishlist);
                                 }
