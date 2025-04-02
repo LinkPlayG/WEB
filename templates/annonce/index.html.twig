@@ -43,21 +43,28 @@
             transform: translateY(-2px);
         }
         .offer-info {
-            display: grid;
-            grid-template-columns: 1fr auto;
+            display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 12px;
+            width: 100%;
         }
         .offer-main {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 10px;
+            min-width: 0;
+            flex: 1;
+            overflow: hidden;
         }
         .offer-title {
             font-size: 16px;
             font-weight: 600;
             color: #2c3e50;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            min-width: 0;
         }
         .offer-company {
             font-size: 16px;
@@ -65,6 +72,11 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             position: relative;
             padding-left: 15px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            min-width: 0;
+            flex-shrink: 1;
         }
         .offer-company::before {
             content: "•";
@@ -75,7 +87,7 @@
         .offer-details {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
             font-size: 14px;
             color: #34495e;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -91,6 +103,49 @@
             width: 16px;
             text-align: center;
             color: #7f8c8d;
+        }
+        .offer-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+        .view-btn, .wishlist-btn {
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 16px;
+            min-width: 40px;
+            height: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .view-btn {
+            background-color: #e3f2fd;
+            border: none;
+            cursor: pointer;
+            color: #1976d2;
+            transition: all 0.2s;
+        }
+        .wishlist-btn {
+            background-color: #fff0f3;
+            border: none;
+            cursor: pointer;
+            color: #dc3545;
+            transition: all 0.2s;
+        }
+        .view-btn:hover {
+            background-color: #1976d2;
+            color: white;
+            transform: translateY(-1px);
+        }
+        .wishlist-btn:hover {
+            background-color: #ffccd5;
+            transform: translateY(-1px);
+        }
+        .wishlist-btn.active {
+            background-color: #dc3545;
+            color: white;
         }
         /* Styles pour la modal */
         .modal {
@@ -280,19 +335,13 @@
                             <span class="offer-title">{{ offre.titreOffre }}</span>
                             <span class="offer-company">{{ offre.entreprise.nom }}</span>
                         </div>
-                        <div class="offer-details">
-                            <span class="offer-detail">
-                                <i class="fas fa-briefcase"></i>
-                                Stage
-                            </span>
-                            <span class="offer-detail">
-                                <i class="fas fa-calendar"></i>
-                                {{ offre.dateDebutStage|date('d/m/Y') }}
-                            </span>
-                            <span class="offer-detail">
-                                <i class="fas fa-clock"></i>
-                                {{ offre.dureeStage }} mois
-                            </span>
+                        <div class="offer-actions">
+                            <button class="view-btn" title="Voir les détails">
+                                👁️
+                            </button>
+                            <button class="wishlist-btn" title="Ajouter à ma wishlist" data-offer-id="{{ offre.id }}">
+                                ❤️
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -337,8 +386,29 @@
             window.applyOffer = function() {
                 const currentCard = document.querySelector('.offer-card[data-id="' + currentOfferId + '"]');
                 if (currentCard) {
-                    // TODO: Implémenter la logique de candidature
-                    window.location.href = '/candidature/new/' + currentOfferId;
+                    fetch('/candidature/new/' + currentOfferId, {
+                        method: 'POST',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Fermer la modal
+                            closeModal();
+                            // Afficher un message de succès
+                            alert('Votre candidature a été enregistrée avec succès !');
+                            // Rediriger vers la page des candidatures
+                            window.location.href = '/candidatures';
+                        } else {
+                            alert(data.error || 'Une erreur est survenue lors de l\'envoi de votre candidature.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erreur:', error);
+                        alert('Une erreur est survenue lors de l\'envoi de votre candidature.');
+                    });
                 }
             }
 
@@ -408,14 +478,20 @@
                         setTimeout(() => card.style.backgroundColor = '', 2000);
                     });
 
-                    // Ouvrir la modal au clic sur la carte
+                    // Clic sur la carte pour centrer sur le marqueur
                     card.addEventListener('click', function(e) {
-                        // Si on clique sur la carte, on centre la carte et on ouvre le popup
-                        if (e.target.closest('.offer-card')) {
-                            openModal(card);
+                        // Ne pas déclencher si on clique sur le bouton de vue
+                        if (!e.target.closest('.view-btn')) {
+                            map.setView([lat, lng], 13);
+                            marker.openPopup();
                         }
-                        map.setView([lat, lng], 13);
-                        marker.openPopup();
+                    });
+
+                    // Bouton pour voir les détails
+                    const viewBtn = card.querySelector('.view-btn');
+                    viewBtn.addEventListener('click', function(e) {
+                        e.stopPropagation(); // Empêcher la propagation du clic
+                        openModal(card);
                     });
                 }
             });
@@ -480,6 +556,63 @@
                 
                 // Fermer l'overlay après la recherche
                 document.getElementById('search-overlay').style.display = 'none';
+            });
+
+            // Gestion de la wishlist
+            document.querySelectorAll('.wishlist-btn').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.stopPropagation(); // Empêcher la propagation du clic
+                    const offerId = this.dataset.offerId;
+                    
+                    // Toggle de la classe active
+                    this.classList.toggle('active');
+                    
+                    // Mise à jour du texte du bouton
+                    if (this.classList.contains('active')) {
+                        this.innerHTML = '❤️';
+                        // Appel AJAX pour ajouter à la wishlist
+                        fetch('/wishlist/add/' + offerId, {
+                            method: 'POST',
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                // Animation de succès si besoin
+                            }
+                        });
+                    } else {
+                        this.innerHTML = '🤍';
+                        // Appel AJAX pour retirer de la wishlist
+                        fetch('/wishlist/remove/' + offerId, {
+                            method: 'POST',
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                // Animation de succès si besoin
+                            }
+                        });
+                    }
+                });
+
+                // Vérifier si l'offre est déjà dans la wishlist au chargement
+                const offerId = button.dataset.offerId;
+                fetch('/wishlist/check/' + offerId)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.inWishlist) {
+                            button.classList.add('active');
+                            button.innerHTML = '❤️';
+                        } else {
+                            button.innerHTML = '🤍';
+                        }
+                    });
             });
         });
     </script>

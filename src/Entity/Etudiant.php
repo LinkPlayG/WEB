@@ -29,11 +29,15 @@ class Etudiant extends User
     #[ORM\OneToMany(mappedBy: 'etudiant', targetEntity: Candidature::class)]
     private Collection $candidatures;
     
+    #[ORM\OneToMany(mappedBy: 'etudiant', targetEntity: Wishlist::class, orphanRemoval: true)]
+    private Collection $wishlists;
+    
     public function __construct()
     {
         parent::__construct();
         $this->setRoles(['ROLE_ETUDIANT']);
         $this->candidatures = new ArrayCollection();
+        $this->wishlists = new ArrayCollection();
         $this->statut = 'En recherche';
     }
 
@@ -124,6 +128,34 @@ class Etudiant extends User
             }
         }
 
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Wishlist>
+     */
+    public function getWishlists(): Collection
+    {
+        return $this->wishlists;
+    }
+
+    public function addWishlist(Wishlist $wishlist): static
+    {
+        if (!$this->wishlists->contains($wishlist)) {
+            $this->wishlists->add($wishlist);
+            $wishlist->setEtudiant($this);
+        }
+        return $this;
+    }
+
+    public function removeWishlist(Wishlist $wishlist): static
+    {
+        if ($this->wishlists->removeElement($wishlist)) {
+            // set the owning side to null (unless already changed)
+            if ($wishlist->getEtudiant() === $this) {
+                $wishlist->setEtudiant(null);
+            }
+        }
         return $this;
     }
 }
