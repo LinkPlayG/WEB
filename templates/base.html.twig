@@ -19,8 +19,10 @@
         <ul>
             <li><a href="{{ path('app_home') }}" class="{{ app.request.get('_route') == 'app_home' ? 'active' : '' }}">Accueil</a></li>
             <li><a href="{{ path('app_annonces') }}" class="{{ app.request.get('_route') == 'app_annonces' ? 'active' : '' }}">Annonces</a></li>
-            <li><a href="{{ path('app_wishlist') }}" class="{{ app.request.get('_route') == 'app_wishlist' ? 'active' : '' }}">Wishlist</a></li>
-            <li><a href="{{ path('app_candidatures') }}" class="{{ app.request.get('_route') == 'app_candidatures' ? 'active' : '' }}">Candidatures</a></li>
+            {% if not is_granted('ROLE_ADMIN') %}
+                <li><a href="{{ path('app_wishlist') }}" class="{{ app.request.get('_route') == 'app_wishlist' ? 'active' : '' }}">Wishlist</a></li>
+                <li><a href="{{ path('app_candidatures') }}" class="{{ app.request.get('_route') == 'app_candidatures' ? 'active' : '' }}">Candidatures</a></li>
+            {% endif %}
         </ul>
     </nav>
     <div class="user-profile">
