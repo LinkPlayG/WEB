@@ -104,23 +104,23 @@ class PdfUploadController extends AbstractController
             $this->addFlash('error', 'Vous n\'êtes pas autorisé à supprimer ce document.');
             return $this->redirectToRoute('app_cv');
         }
-        
+
         // Récupérer le nom du fichier avant de supprimer l'entité
         $filename = $pdf->getFilename();
-        
+
         // Supprimer l'entité de la base de données
         $entityManager->remove($pdf);
         $entityManager->flush();
-        
+
         // Supprimer le fichier physique
         $filePath = $pdfDirectory . '/' . $filename;
         if ($filesystem->exists($filePath)) {
             $filesystem->remove($filePath);
         }
-        
+
         // Ajouter un message flash de succèss
         $this->addFlash('success', 'Le document a été supprimé avec succès.');
-        
+
         // Rediriger vers la page des CV
         return $this->redirectToRoute('app_cv');
     }

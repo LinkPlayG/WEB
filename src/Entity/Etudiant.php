@@ -29,15 +29,13 @@ class Etudiant extends User
     #[ORM\OneToMany(mappedBy: 'etudiant', targetEntity: Candidature::class)]
     private Collection $candidatures;
 
+
     /**
      * @var Collection<int, Pdf>
      */
     #[ORM\OneToMany(targetEntity: Pdf::class, mappedBy: 'etudiant', orphanRemoval: true)]
     private Collection $pdfs;
 
-
-    #[ORM\OneToMany(mappedBy: 'etudiant', targetEntity: Wishlist::class, orphanRemoval: true)]
-    private Collection $wishlists;
 
     public function __construct()
     {
@@ -196,5 +194,7 @@ class Etudiant extends User
 
         return $this;
     }
+
+
 
 }

@@ -23,15 +23,11 @@
 
         <!-- Profile Content -->
         <div class="profile-content">
-            <!-- Profile Picture with Upload Button beside it -->
-            <div class="d-flex align-items-center justify-content-center mb-3">
-                <div class="profile-picture mr-3">
-                    {% if user.profileImg %}
-                        <!-- Test 1.2 -->
-                    {% else %}
-                        <i class="fa fa-user profile-user-icon" aria-hidden="true"></i>
-                    {% endif %}
-                </div>
+            <!-- Profile Picture -->
+            <div class="profile-picture">
+                <!-- Default silhouette if no image -->
+                <i class="fa fa-user profile-user-icon" aria-hidden="true"></i>
+            </div>
 
             <!-- Name and Description -->
             <div class="profile-info">
