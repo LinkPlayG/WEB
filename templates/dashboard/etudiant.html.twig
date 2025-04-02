@@ -171,7 +171,7 @@
                         {% for candidature in candidatures %}
                             <tr>
                                 <td>{{ candidature.offreDeStage.entreprise.nom }}</td>
-                                <td>{{ candidature.offreDeStage.titre }}</td>
+                                <td>{{ candidature.offreDeStage.titreOffre }}</td>
                                 <td>{{ candidature.dateCandidature|date('d/m/Y') }}</td>
                                 <td><span class="badge bg-{{ candidature.statut == 'Acceptée' ? 'success' : (candidature.statut == 'En attente' ? 'warning' : 'danger') }}">{{ candidature.statut }}</span></td>
                                 <td class="action-buttons">

@@ -93,9 +93,18 @@ class DashboardController extends AbstractController
                 ->getQuery()
                 ->getResult();
 
+            // Récupérer les offres de stage du pilote
+            $offres = $entityManager->getRepository(OffreDeStage::class)
+                ->findBy(['pilote' => $pilote]);
+
+            // Récupérer les entreprises
+            $entreprises = $entityManager->getRepository(Entreprise::class)->findAll();
+
             return $this->render('dashboard/pilote.html.twig', [
                 'stats' => $stats,
-                'etudiants' => $etudiants
+                'etudiants' => $etudiants,
+                'offres' => $offres,
+                'entreprises' => $entreprises
             ]);
 
         } elseif ($this->isGranted('ROLE_ETUDIANT')) {

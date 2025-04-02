@@ -24,6 +24,11 @@
             height: 100%;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            z-index: 1; /* Ajout d'un z-index de base pour la carte */
+        }
+        /* Assurer que les contrôles de la carte restent au-dessus */
+        .leaflet-control-container {
+            z-index: 2;
         }
         .offer-card {
             background: white;
@@ -37,27 +42,202 @@
         .offer-card:hover {
             transform: translateY(-2px);
         }
+        .offer-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+        }
+        .offer-main {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+            flex: 1;
+            overflow: hidden;
+        }
         .offer-title {
-            font-size: 1.2em;
-            font-weight: bold;
+            font-size: 16px;
+            font-weight: 600;
             color: #2c3e50;
-            margin-bottom: 10px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            min-width: 0;
         }
         .offer-company {
+            font-size: 16px;
             color: #7f8c8d;
-            font-size: 0.9em;
-            margin-bottom: 8px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            position: relative;
+            padding-left: 15px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            min-width: 0;
+            flex-shrink: 1;
+        }
+        .offer-company::before {
+            content: "•";
+            position: absolute;
+            left: 5px;
+            color: #bdc3c7;
         }
         .offer-details {
             display: flex;
-            gap: 15px;
-            font-size: 0.9em;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
             color: #34495e;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
         }
         .offer-detail {
             display: flex;
             align-items: center;
             gap: 5px;
+            white-space: nowrap;
+        }
+        .offer-detail i {
+            font-size: 14px;
+            width: 16px;
+            text-align: center;
+            color: #7f8c8d;
+        }
+        .offer-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+        .view-btn, .wishlist-btn {
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 16px;
+            min-width: 40px;
+            height: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .view-btn {
+            background-color: #e3f2fd;
+            border: none;
+            cursor: pointer;
+            color: #1976d2;
+            transition: all 0.2s;
+        }
+        .wishlist-btn {
+            background-color: #fff0f3;
+            border: none;
+            cursor: pointer;
+            color: #dc3545;
+            transition: all 0.2s;
+        }
+        .view-btn:hover {
+            background-color: #1976d2;
+            color: white;
+            transform: translateY(-1px);
+        }
+        .wishlist-btn:hover {
+            background-color: #ffccd5;
+            transform: translateY(-1px);
+        }
+        .wishlist-btn.active {
+            background-color: #dc3545;
+            color: white;
+        }
+        /* Styles pour la modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 9999; /* Z-index plus élevé pour la modal */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 20px;
+            width: 50%; /* Réduction de la largeur */
+            max-width: 600px; /* Réduction de la largeur maximale */
+            border-radius: 8px;
+            position: relative;
+            max-height: 80vh;
+            overflow-y: auto;
+            z-index: 10000;
+        }
+        .close-modal {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+        .close-modal:hover {
+            color: #000;
+        }
+        .modal-header {
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .modal-section {
+            margin-bottom: 20px;
+        }
+        .modal-section h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+        .modal-section p {
+            color: #34495e;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+        .modal-footer {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+        .btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+        .btn-primary {
+            background-color: #0d6efd;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #0b5ed7;
+        }
+        .btn-outline {
+            background-color: white;
+            color: #0d6efd;
+            border: 1px solid #0d6efd;
+        }
+        .btn-outline:hover {
+            background-color: #f8f9fa;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+        .btn-secondary:hover {
+            background-color: #5c636a;
         }
     </style>
 {% endblock %}
@@ -97,29 +277,71 @@
         </div>
     </div>
 
+    {# Modal pour les détails de l'offre #}
+    <div id="offerModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="modal-header">
+                <h2 id="modalTitle"></h2>
+                <p id="modalCompany"></p>
+            </div>
+            <div class="modal-section">
+                <h3>Description</h3>
+                <p id="modalDescription"></p>
+            </div>
+            <div class="modal-section">
+                <h3>Compétences requises</h3>
+                <p id="modalSkills"></p>
+            </div>
+            <div class="modal-section">
+                <h3>Détails du stage</h3>
+                <p id="modalDetails"></p>
+            </div>
+            <div class="modal-section">
+                <h3>Entreprise</h3>
+                <p id="modalCompanyDetails"></p>
+            </div>
+            <div class="modal-footer">
+                <button onclick="saveOffer()" class="btn btn-outline">
+                    <i class="fas fa-bookmark"></i> Enregistrer
+                </button>
+                <button onclick="applyOffer()" class="btn btn-primary">
+                    <i class="fas fa-paper-plane"></i> Candidater
+                </button>
+                <button onclick="closeModal()" class="btn btn-secondary">Fermer</button>
+            </div>
+        </div>
+    </div>
+
     {# Contenu principal avec carte et offres #}
     <div class="search-and-map-container">
         <div class="offers-list">
             {% for offre in offres %}
-                <div class="offer-card"
-                     data-lat="{{ offre.entreprise.adresse.latitude }}"
+                <div class="offer-card" 
+                     data-lat="{{ offre.entreprise.adresse.latitude }}" 
                      data-lng="{{ offre.entreprise.adresse.longitude }}"
                      data-id="{{ offre.id }}"
+                     data-title="{{ offre.titreOffre }}"
+                     data-company="{{ offre.entreprise.nom }}"
+                     data-description="{{ offre.descriptionOffre }}"
+                     data-skills="{{ offre.competencesRequises }}"
+                     data-duration="{{ offre.dureeStage }}"
+                     data-start-date="{{ offre.dateDebutStage|date('d/m/Y') }}"
+                     data-end-date="{{ offre.dateFinStage|date('d/m/Y') }}"
+                     data-salary="{{ offre.salaire }}"
                      data-address="{{ offre.entreprise.adresse.rue }}, {{ offre.entreprise.adresse.ville }}, {{ offre.entreprise.adresse.codePostal }}">
-                    <div class="offer-title">{{ offre.titreOffre }}</div>
-                    <div class="offer-company">{{ offre.entreprise.nom }}</div>
-                    <div class="offer-details">
-                        <div class="offer-detail">
-                            <i class="fas fa-briefcase"></i>
-                            Stage
+                    <div class="offer-info">
+                        <div class="offer-main">
+                            <span class="offer-title">{{ offre.titreOffre }}</span>
+                            <span class="offer-company">{{ offre.entreprise.nom }}</span>
                         </div>
-                        <div class="offer-detail">
-                            <i class="fas fa-calendar"></i>
-                            {{ offre.dateDebutStage|date('d/m/Y') }}
-                        </div>
-                        <div class="offer-detail">
-                            <i class="fas fa-clock"></i>
-                            {{ offre.dureeStage }} mois
+                        <div class="offer-actions">
+                            <button class="view-btn" title="Voir les détails">
+                                👁️
+                            </button>
+                            <button class="wishlist-btn" title="Ajouter à ma wishlist" data-offer-id="{{ offre.id }}">
+                                ❤️
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -129,7 +351,7 @@
                 </div>
             {% endfor %}
         </div>
-
+        
         <div id="map"></div>
     </div>
 {% endblock %}
@@ -142,25 +364,108 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Initialisation de la carte
             var map = L.map('map').setView([46.603354, 1.888334], 6); // Centre sur la France
-
+            
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 19,
                 attribution: '© OpenStreetMap contributors'
             }).addTo(map);
 
-            // Collection des marqueurs
             var markers = [];
+            var modal = document.getElementById('offerModal');
+            
+            // Fonction pour enregistrer l'offre
+            window.saveOffer = function() {
+                const currentCard = document.querySelector('.offer-card[data-id="' + currentOfferId + '"]');
+                if (currentCard) {
+                    // TODO: Implémenter la logique de sauvegarde
+                    alert('Offre enregistrée !');
+                }
+            }
 
+            // Fonction pour candidater
+            window.applyOffer = function() {
+                const currentCard = document.querySelector('.offer-card[data-id="' + currentOfferId + '"]');
+                if (currentCard) {
+                    fetch('/candidature/new/' + currentOfferId, {
+                        method: 'POST',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Fermer la modal
+                            closeModal();
+                            // Afficher un message de succès
+                            alert('Votre candidature a été enregistrée avec succès !');
+                            // Rediriger vers la page des candidatures
+                            window.location.href = '/candidatures';
+                        } else {
+                            alert(data.error || 'Une erreur est survenue lors de l\'envoi de votre candidature.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erreur:', error);
+                        alert('Une erreur est survenue lors de l\'envoi de votre candidature.');
+                    });
+                }
+            }
+
+            // Variable pour stocker l'ID de l'offre courante
+            let currentOfferId = null;
+
+            // Fonction pour ouvrir la modal avec les détails de l'offre
+            function openModal(card) {
+                currentOfferId = card.dataset.id;
+                document.getElementById('modalTitle').textContent = card.dataset.title;
+                document.getElementById('modalCompany').textContent = card.dataset.company;
+                document.getElementById('modalDescription').textContent = card.dataset.description;
+                document.getElementById('modalSkills').textContent = card.dataset.skills;
+                
+                // Formatage des détails du stage
+                var details = `
+                    Durée : ${card.dataset.duration} mois<br>
+                    Date de début : ${card.dataset.startDate}<br>
+                    Date de fin : ${card.dataset.endDate}<br>
+                    Salaire : ${card.dataset.salary}€ par mois
+                `;
+                document.getElementById('modalDetails').innerHTML = details;
+                
+                // Détails de l'entreprise
+                document.getElementById('modalCompanyDetails').innerHTML = `
+                    ${card.dataset.company}<br>
+                    Adresse : ${card.dataset.address}
+                `;
+                
+                modal.style.display = 'block';
+            }
+            
+            // Fonction pour fermer la modal
+            window.closeModal = function() {
+                modal.style.display = 'none';
+            }
+            
+            // Fermer la modal en cliquant sur la croix
+            document.querySelector('.close-modal').onclick = closeModal;
+            
+            // Fermer la modal en cliquant en dehors
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    closeModal();
+                }
+            }
+            
             // Ajout des marqueurs pour chaque offre
             document.querySelectorAll('.offer-card').forEach(function(card) {
                 var lat = parseFloat(card.dataset.lat);
                 var lng = parseFloat(card.dataset.lng);
-
+                
                 if (lat && lng) {
                     var marker = L.marker([lat, lng])
                         .bindPopup(card.querySelector('.offer-title').textContent)
                         .addTo(map);
-
+                    
                     markers.push({
                         marker: marker,
                         card: card
@@ -173,10 +478,20 @@
                         setTimeout(() => card.style.backgroundColor = '', 2000);
                     });
 
-                    // Lien entre la carte et le marqueur
-                    card.addEventListener('click', function() {
-                        map.setView([lat, lng], 13);
-                        marker.openPopup();
+                    // Clic sur la carte pour centrer sur le marqueur
+                    card.addEventListener('click', function(e) {
+                        // Ne pas déclencher si on clique sur le bouton de vue
+                        if (!e.target.closest('.view-btn')) {
+                            map.setView([lat, lng], 13);
+                            marker.openPopup();
+                        }
+                    });
+
+                    // Bouton pour voir les détails
+                    const viewBtn = card.querySelector('.view-btn');
+                    viewBtn.addEventListener('click', function(e) {
+                        e.stopPropagation(); // Empêcher la propagation du clic
+                        openModal(card);
                     });
                 }
             });
@@ -186,11 +501,11 @@
             // Synchroniser la recherche simple avec la recherche avancée
             searchInput.addEventListener('input', function(e) {
                 var searchText = e.target.value.toLowerCase();
-
+                
                 markers.forEach(function(item) {
                     var title = item.card.querySelector('.offer-title').textContent.toLowerCase();
                     var company = item.card.querySelector('.offer-company').textContent.toLowerCase();
-
+                    
                     if (title.includes(searchText) || company.includes(searchText)) {
                         item.card.style.display = '';
                         item.marker.setOpacity(1);
@@ -200,28 +515,28 @@
                     }
                 });
             });
-
+            
             // Gestion de la recherche avancée
             const searchButton = document.getElementById('search-button');
             searchButton.addEventListener('click', function() {
                 const quoi = document.getElementById('quoi').value.toLowerCase();
                 const ou = document.getElementById('ou').value.toLowerCase();
-
+                
                 markers.forEach(function(item) {
                     var title = item.card.querySelector('.offer-title').textContent.toLowerCase();
                     var company = item.card.querySelector('.offer-company').textContent.toLowerCase();
                     var matched = true;
-
+                    
                     if (quoi && !(title.includes(quoi) || company.includes(quoi))) {
                         matched = false;
                     }
-
+                    
                     // Vérifier la localisation si spécifiée
                     if (matched && ou) {
                         // On pourrait ajouter ici plus de détails sur la localisation
                         // comme la ville ou le département extraits des données
                         matched = false; // Par défaut, jusqu'à une vérification réelle
-
+                        
                         // Simulation - à remplacer par une vérification réelle
                         // par exemple avec la ville de l'entreprise
                         var address = item.card.dataset.address.toLowerCase();
@@ -229,7 +544,7 @@
                             matched = true;
                         }
                     }
-
+                    
                     if (matched) {
                         item.card.style.display = '';
                         item.marker.setOpacity(1);
@@ -238,9 +553,66 @@
                         item.marker.setOpacity(0.2);
                     }
                 });
-
+                
                 // Fermer l'overlay après la recherche
                 document.getElementById('search-overlay').style.display = 'none';
+            });
+
+            // Gestion de la wishlist
+            document.querySelectorAll('.wishlist-btn').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.stopPropagation(); // Empêcher la propagation du clic
+                    const offerId = this.dataset.offerId;
+                    
+                    // Toggle de la classe active
+                    this.classList.toggle('active');
+                    
+                    // Mise à jour du texte du bouton
+                    if (this.classList.contains('active')) {
+                        this.innerHTML = '❤️';
+                        // Appel AJAX pour ajouter à la wishlist
+                        fetch('/wishlist/add/' + offerId, {
+                            method: 'POST',
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                // Animation de succès si besoin
+                            }
+                        });
+                    } else {
+                        this.innerHTML = '🤍';
+                        // Appel AJAX pour retirer de la wishlist
+                        fetch('/wishlist/remove/' + offerId, {
+                            method: 'POST',
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                // Animation de succès si besoin
+                            }
+                        });
+                    }
+                });
+
+                // Vérifier si l'offre est déjà dans la wishlist au chargement
+                const offerId = button.dataset.offerId;
+                fetch('/wishlist/check/' + offerId)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.inWishlist) {
+                            button.classList.add('active');
+                            button.innerHTML = '❤️';
+                        } else {
+                            button.innerHTML = '🤍';
+                        }
+                    });
             });
         });
     </script>

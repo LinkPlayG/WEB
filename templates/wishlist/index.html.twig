@@ -1,11 +1,83 @@
 {# templates/wishlist/index.html.twig #}
-    {% extends 'base.html.twig' %}
+{% extends 'base.html.twig' %}
 
-    {% block title %}Wishlist - Interned{% endblock %}
+{% block title %}Wishlist - Interned{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/wishlist.css') }}">
+{% endblock %}
 
 {% block body %}
-    <div class="container">
+    <div class="wishlist-container">
         <h1>Ma Wishlist</h1>
-        <p>Page en construction</p>
+        
+        <div class="wishlist-items">
+            {% for offre in offres|default([]) %}
+                <div class="wishlist-card" data-offer-id="{{ offre.id }}">
+                    <div class="card-image">
+                        <img src="{{ asset('images/placeholder.png') }}" alt="Logo entreprise">
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">{{ offre.titreOffre }}</h3>
+                        <p class="card-description">{{ offre.descriptionOffre }}</p>
+                    </div>
+                    <button class="wishlist-btn" title="Retirer de la wishlist" data-offer-id="{{ offre.id }}">
+                        ❤️
+                    </button>
+                </div>
+            {% else %}
+                <div class="empty-wishlist">
+                    <p>Votre wishlist est vide</p>
+                    <a href="{{ path('app_offres') }}" class="browse-offers-btn">Parcourir les offres</a>
+                </div>
+            {% endfor %}
+        </div>
     </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.wishlist-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const offerId = this.dataset.offerId;
+                    const card = this.closest('.wishlist-card');
+                    
+                    fetch('/wishlist/remove/' + offerId, {
+                        method: 'POST',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Animation de suppression
+                            card.style.transition = 'all 0.3s ease';
+                            card.style.opacity = '0';
+                            card.style.transform = 'translateX(100px)';
+                            
+                            setTimeout(() => {
+                                card.remove();
+                                
+                                // Vérifier s'il reste des offres
+                                const remainingCards = document.querySelectorAll('.wishlist-card');
+                                if (remainingCards.length === 0) {
+                                    const emptyWishlist = document.createElement('div');
+                                    emptyWishlist.className = 'empty-wishlist';
+                                    emptyWishlist.innerHTML = `
+                                        <p>Votre wishlist est vide</p>
+                                        <a href="{{ path('app_offres') }}" class="browse-offers-btn">Parcourir les offres</a>
+                                    `;
+                                    document.querySelector('.wishlist-items').appendChild(emptyWishlist);
+                                }
+                            }, 300);
+                        }
+                    });
+                });
+            });
+        });
+    </script>
 {% endblock %}
