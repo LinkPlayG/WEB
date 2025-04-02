@@ -64,7 +64,7 @@
                                         <i class="fa fa-download" aria-hidden="true"></i>Télécharger
                                     </a>
                                     <br>
-                                    <a href="{{ path('app_pdf_delete', {'id': pdf_item.id}) }}" class="btn btn-outline-danger btn-sm">
+                                    <a href="{{ path('app_pdf_delete', {'id': pdf_item.id}) }}" class="btn btn-outline-danger btn-sm" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce document?')">
                                         <i class="fa fa-trash" aria-hidden="true"></i>Supprimer
                                     </a>
                                     </div>

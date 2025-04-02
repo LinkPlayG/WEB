@@ -8,11 +8,12 @@ use App\Entity\Administrateur;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Doctrine\ORM\EntityManagerInterface;
 
 class ProfileController extends AbstractController
 {
     #[Route('/profile', name: 'app_profile')]
-    public function index(): Response
+    public function index(EntityManagerInterface $entityManager): Response
     {
         // Récupérer l'utilisateur connecté
         $user = $this->getUser();
@@ -26,18 +27,26 @@ class ProfileController extends AbstractController
         if ($user instanceof Etudiant) {
             $nom = $user->getNomEtudiant();
             $prenom = $user->getPrenomEtudiant();
+
+            $pdfs = $entityManager->getRepository(Pdf::class)->findBy(
+                ['etudiant' => $user],
+                ['id' => 'DESC']
+            );
         } elseif ($user instanceof PiloteDePromotion) {
             $nom = $user->getNomPilote();
             $prenom = $user->getPrenomPilote();
+            $pdfs = [];
         } elseif ($user instanceof Administrateur) {
             $nom = $user->getNomAdmin();
             $prenom = $user->getPrenomAdmin();
+            $pdfs = [];
         }
 
         return $this->render('profile/index.html.twig', [
             'nom' => $nom,
             'prenom' => $prenom,
-            'user' => $user
+            'user' => $user,
+            'pdfs' => $pdfs ?? []
         ]);
     }
 }
