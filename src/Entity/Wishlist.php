@@ -67,3 +67,4 @@ class Wishlist
         return $this;
     }
 } 
+ 

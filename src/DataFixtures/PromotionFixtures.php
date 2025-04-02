@@ -37,3 +37,4 @@ class PromotionFixtures extends Fixture implements DependentFixtureInterface
         ];
     }
 } 
+ 
