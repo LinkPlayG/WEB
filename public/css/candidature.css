@@ -173,5 +173,192 @@
 /* Assurer que les contrôles de la carte restent au-dessus */
 .leaflet-control-container {
     z-index: 2;
+}
+
+.candidature-container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.candidature-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.candidature-title {
+    font-size: 24px;
+    color: #2c3e50;
+    margin: 0;
+}
+
+.candidature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.candidature-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 20px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    position: relative;
+}
+
+.candidature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.candidature-card h3 {
+    margin: 0 0 10px 0;
+    color: #2c3e50;
+    font-size: 18px;
+}
+
+.candidature-card p {
+    color: #666;
+    margin: 0 0 15px 0;
+    font-size: 14px;
+}
+
+.candidature-card .company {
+    color: #0d6efd;
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+
+.candidature-card .location {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 15px;
+}
+
+.candidature-card .status {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    margin-bottom: 15px;
+}
+
+.candidature-card .status.pending {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.candidature-card .status.accepted {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.candidature-card .status.rejected {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.candidature-card .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-bottom: 15px;
+}
+
+.candidature-card .tag {
+    background: #e9ecef;
+    color: #495057;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+.candidature-card .actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+}
+
+.candidature-card .btn-view {
+    background: #0d6efd;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 14px;
+    transition: background-color 0.2s;
+}
+
+.candidature-card .btn-view:hover {
+    background: #0b5ed7;
+}
+
+.candidature-card .btn-remove {
+    background: none;
+    border: none;
+    color: #dc3545;
+    cursor: pointer;
+    font-size: 20px;
+    padding: 0;
+    transition: color 0.2s;
+}
+
+.candidature-card .btn-remove:hover {
+    color: #bb2d3b;
+}
+
+.empty-candidature {
+    text-align: center;
+    padding: 40px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.empty-candidature h2 {
+    color: #2c3e50;
+    margin-bottom: 20px;
+}
+
+.empty-candidature p {
+    color: #666;
+    margin-bottom: 30px;
+}
+
+.browse-offers-btn {
+    display: inline-block;
+    background: #0d6efd;
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.browse-offers-btn:hover {
+    background: #0b5ed7;
+}
+
+/* Animation pour la suppression */
+@keyframes slideOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+.candidature-card.removing {
+    animation: slideOut 0.3s ease-out forwards;
 } 
  
