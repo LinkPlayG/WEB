@@ -35,10 +35,10 @@
             </div>
         </div>
 
-    <div class="mt-4">
-        <button type="submit" class="btn btn-primary">Créer l'étudiant</button>
-        <a href="{{ path('app_dashboard') }}" class="btn btn-secondary">Retour</a>
+        <div class="mt-4">
+            <button type="submit" class="btn btn-primary">Créer l'étudiant</button>
+            <a href="{{ path('app_dashboard') }}" class="btn btn-secondary">Retour</a>
+        </div>
+        {{ form_end(form) }}
     </div>
-    {{ form_end(form) }}
-</div>
 {% endblock %}
