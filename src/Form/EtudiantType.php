@@ -9,8 +9,11 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 
 class EtudiantType extends AbstractType
 {
@@ -23,7 +26,9 @@ class EtudiantType extends AbstractType
             ])
             ->add('password', PasswordType::class, [
                 'label' => 'Mot de passe',
-                'attr' => ['class' => 'form-control']
+                'attr' => ['class' => 'form-control'],
+                'required' => false,
+                'mapped' => false
             ])
             ->add('nom_etudiant', TextType::class, [
                 'label' => 'Nom',
@@ -39,7 +44,25 @@ class EtudiantType extends AbstractType
                 'label' => 'Promotion',
                 'attr' => ['class' => 'form-control']
             ])
+            ->add('statut', ChoiceType::class, [
+                'label' => 'Statut',
+                'choices' => [
+                    'En recherche' => 'En recherche',
+                    'En stage' => 'En stage'
+                ],
+                'attr' => ['class' => 'form-control']
+            ])
         ;
+
+        $builder->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) {
+            $etudiant = $event->getData();
+            $form = $event->getForm();
+            
+            // Si le mot de passe est vide, on ne le modifie pas
+            if (empty($form->get('password')->getData())) {
+                $etudiant->setPassword($etudiant->getPassword());
+            }
+        });
     }
 
     public function configureOptions(OptionsResolver $resolver): void

@@ -11,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -55,6 +56,15 @@ class OffreDeStageType extends AbstractType
             ])
             ->add('salaire', NumberType::class, [
                 'label' => 'Rémunération mensuelle (€)',
+                'attr' => ['class' => 'form-control']
+            ])
+            ->add('statut_offre', ChoiceType::class, [
+                'label' => 'Statut de l\'offre',
+                'choices' => [
+                    'Disponible' => 'Disponible',
+                    'Pourvue' => 'Pourvue',
+                    'Expirée' => 'Expirée'
+                ],
                 'attr' => ['class' => 'form-control']
             ])
             ->add('entreprise', EntityType::class, [
