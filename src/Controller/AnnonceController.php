@@ -20,15 +20,6 @@ class AnnonceController extends AbstractController
         // Debug: afficher les coordonnées des entreprises
         foreach ($offres as $offre) {
             $adresse = $offre->getEntreprise()->getAdresse();
-            if ($adresse) {
-                dump([
-                    'entreprise' => $offre->getEntreprise()->getNom(),
-                    'rue' => $adresse->getRue(),
-                    'ville' => $adresse->getVille(),
-                    'latitude' => $adresse->getLatitude(),
-                    'longitude' => $adresse->getLongitude(),
-                ]);
-            }
         }
 
         return $this->render('annonce/index.html.twig', [
