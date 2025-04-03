@@ -248,7 +248,7 @@
         <h1>Offres de stage</h1>
         <div class="search-container">
             <div class="search-input-wrapper">
-                <input type="text" id="search-input" placeholder="Rechercher">
+                <label for="search-input"></label><input type="text" id="search-input" placeholder="Rechercher">
                 <img class="search-icon" src="{{ asset('images/Search.svg') }}" alt="Rechercher">
                 {# Overlay #}
                 <div id="search-overlay" class="search-overlay hidden">
@@ -271,8 +271,10 @@
                 </div>
             </div>
             <div class="view-options">
-                <button class="option-btn active">Default</button>
-                <button class="option-btn">A-Z</button>
+                <button class="option-btn active" data-sort-type="date^">Plus Tôt</button>
+                <button class="option-btn" data-sort-type="datev">Plus Tard</button>
+                <button class="option-btn" data-sort-type="a-z">A-Z</button>
+                <button class="option-btn" data-sort-type="z-a">Z-A</button>
             </div>
         </div>
     </div>
@@ -317,39 +319,35 @@
     <div class="search-and-map-container">
         <div class="offers-list">
             {% for offre in offres %}
-                <div class="offer-card" 
-                     data-lat="{{ offre.entreprise.adresse.latitude }}" 
-                     data-lng="{{ offre.entreprise.adresse.longitude }}"
-                     data-id="{{ offre.id }}"
-                     data-title="{{ offre.titreOffre }}"
-                     data-company="{{ offre.entreprise.nom }}"
-                     data-description="{{ offre.descriptionOffre }}"
-                     data-skills="{{ offre.competencesRequises }}"
-                     data-duration="{{ offre.dureeStage }}"
-                     data-start-date="{{ offre.dateDebutStage|date('d/m/Y') }}"
-                     data-end-date="{{ offre.dateFinStage|date('d/m/Y') }}"
-                     data-salary="{{ offre.salaire }}"
-                     data-address="{{ offre.entreprise.adresse.rue }}, {{ offre.entreprise.adresse.ville }}, {{ offre.entreprise.adresse.codePostal }}">
-                    <div class="offer-info">
-                        <div class="offer-main">
-                            <span class="offer-title">{{ offre.titreOffre }}</span>
-                            <span class="offer-company">{{ offre.entreprise.nom }}</span>
-                        </div>
-                        <div class="offer-actions">
-                            <button class="view-btn" title="Voir les détails">
-                                👁️
-                            </button>
-                            <button class="wishlist-btn" title="Ajouter à ma wishlist" data-offer-id="{{ offre.id }}">
-                                ❤️
-                            </button>
-                        </div>
-                    </div>
+            <div class="offer-card"
+                 data-lat="{{ offre.entreprise.adresse.latitude }}"
+                 data-lng="{{ offre.entreprise.adresse.longitude }}"
+                 data-id="{{ offre.id }}"
+                 data-title="{{ offre.titreOffre }}"
+                 data-company="{{ offre.entreprise.nom }}"
+                 data-description="{{ offre.descriptionOffre }}"
+                 data-skills="{{ offre.competencesRequises }}"
+                 data-duration="{{ offre.dureeStage }}"
+                 data-start-date="{{ offre.dateDebutStage|date('d/m/Y') }}"
+            data-end-date="{{ offre.dateFinStage|date('d/m/Y') }}"
+            data-salary="{{ offre.salaire }}"
+            data-address="{{ offre.entreprise.adresse.rue }}, {{ offre.entreprise.adresse.ville }}, {{ offre.entreprise.adresse.codePostal }}">
+            <div class="offer-info">
+                <div class="offer-main">
+                    <span class="offer-title">{{ offre.titreOffre }}</span>
+                    <span class="offer-company">{{ offre.entreprise.nom }}</span>
                 </div>
-            {% else %}
-                <div class="alert alert-info">
-                    Aucune offre de stage disponible pour le moment.
+                <div class="offer-actions">
+                    <button class="view-btn" title="Voir les détails">👁️</button>
+                    <button class="wishlist-btn" title="Ajouter à ma wishlist" data-offer-id="{{ offre.id }}">❤️</button>
                 </div>
-            {% endfor %}
+            </div>
+        </div>
+        {% else %}
+            <div class="alert alert-info">
+                Aucune offre de stage disponible pour le moment.
+            </div>
+        {% endfor %}
         </div>
         
         <div id="map"></div>
@@ -424,13 +422,12 @@
                 document.getElementById('modalSkills').textContent = card.dataset.skills;
                 
                 // Formatage des détails du stage
-                var details = `
+                document.getElementById('modalDetails').innerHTML = `
                     Durée : ${card.dataset.duration} mois<br>
                     Date de début : ${card.dataset.startDate}<br>
                     Date de fin : ${card.dataset.endDate}<br>
                     Salaire : ${card.dataset.salary}€ par mois
                 `;
-                document.getElementById('modalDetails').innerHTML = details;
                 
                 // Détails de l'entreprise
                 document.getElementById('modalCompanyDetails').innerHTML = `
@@ -451,7 +448,7 @@
             
             // Fermer la modal en cliquant en dehors
             window.onclick = function(event) {
-                if (event.target == modal) {
+                if (event.target === modal) {
                     closeModal();
                 }
             }
