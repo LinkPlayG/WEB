@@ -63,10 +63,11 @@ public function uploadProfileImage(Request $request, EntityManagerInterface $ent
 
     // Handle file upload
     $file = $request->files->get('profile_image');
+    $file_size = filesize($file);
     if ($file) {
         // Validate file type
         $mimeType = $file->getMimeType();
-        if (strpos($mimeType, 'image/') !== 0) {
+        if ((strpos($mimeType, 'image/') !== 0) || $file_size > 65000) {
             $this->addFlash('error', 'Le fichier doit être une image.');
             return $this->redirectToRoute('app_profile');
         }
