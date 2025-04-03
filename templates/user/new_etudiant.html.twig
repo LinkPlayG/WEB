@@ -2,6 +2,12 @@
 
 {% block title %}Créer un étudiant{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/user_creation.css') }}">
+{% endblock %}
+
+
 {% block body %}
 <div class="container mt-4">
     <h1>Créer un nouvel étudiant</h1>
@@ -35,4 +41,4 @@
     </div>
     {{ form_end(form) }}
 </div>
-{% endblock %} 
+{% endblock %}
