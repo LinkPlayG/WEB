@@ -32,7 +32,7 @@
             {% if app.user.profileImg %}
                 <img src="{{ path('app_profile_image', {'id': app.user.id}) }}" alt="Profil" id="profileIcon">
             {% else %}
-                <i class="fa fa-user profile-user-icon" aria-hidden="true" alt="Profil" id="profileIcon"></i>
+                <img src="{{ asset('images/user.svg') }}" alt="Profil" id="profileIcon"></i>
             {% endif %}
             <div class="account-overlay" id="accountOverlay">
                 <div class="burger-links">
@@ -47,7 +47,7 @@
                     {% if app.user.profileImg %}
                         <img src="{{ path('app_profile_image', {'id': app.user.id}) }}" alt="Avatar" class="user-avatar">
                     {% else %}
-                        <i class="fa fa-user profile-user-icon" aria-hidden="true" alt="Avatar" class="user-avatar"></i>
+                        <img src="{{ asset('images/user.svg') }}" alt="Avatar" class="user-avatar">
                     {% endif %}
                     <div class="user-details">
                         {% if app.user %}
