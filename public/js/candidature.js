@@ -101,5 +101,57 @@ document.addEventListener('DOMContentLoaded', function() {
         pendingButton.classList.add('active');
         filterApplications('En attente');
     }
+
+    // Gestion de la suppression des candidatures
+    const removeButtons = document.querySelectorAll('.btn-remove');
+    
+    removeButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const card = this.closest('.candidature-card');
+            const candidatureId = card.dataset.candidatureId;
+            
+            // Ajouter la classe pour l'animation
+            card.classList.add('removing');
+            
+            // Attendre la fin de l'animation avant de supprimer
+            setTimeout(() => {
+                // Envoyer la requête de suppression
+                fetch(`/candidature/remove/${candidatureId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Supprimer la carte du DOM
+                        card.remove();
+                        
+                        // Vérifier s'il reste des candidatures
+                        const remainingCards = document.querySelectorAll('.candidature-card');
+                        if (remainingCards.length === 0) {
+                            // Afficher le message "aucune candidature"
+                            const candidatureGrid = document.querySelector('.candidature-grid');
+                            candidatureGrid.innerHTML = `
+                                <div class="empty-candidature">
+                                    <h2>Aucune candidature</h2>
+                                    <p>Vous n'avez pas encore postulé à des offres de stage.</p>
+                                    <a href="{{ path('app_annonces') }}" class="browse-offers-btn">Parcourir les offres</a>
+                                </div>
+                            `;
+                        }
+                    } else {
+                        alert('Une erreur est survenue lors de la suppression de la candidature.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Erreur:', error);
+                    alert('Une erreur est survenue lors de la suppression de la candidature.');
+                });
+            }, 300); // Attendre la fin de l'animation (300ms)
+        });
+    });
 }); 
  

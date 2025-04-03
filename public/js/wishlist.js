@@ -18,7 +18,7 @@ class WishlistManager {
         document.querySelectorAll('.add-to-wishlist').forEach(button => {
             const offerId = button.dataset.offerId;
             this.checkWishlistStatus(offerId, button);
-            
+
             button.addEventListener('click', (e) => {
                 e.preventDefault();
                 this.toggleWishlist(offerId, button);
@@ -91,7 +91,7 @@ class WishlistManager {
         card.style.transition = 'all 0.3s ease';
         card.style.opacity = '0';
         card.style.transform = 'translateX(100px)';
-        
+
         setTimeout(() => {
             card.remove();
             this.checkEmptyWishlist();
