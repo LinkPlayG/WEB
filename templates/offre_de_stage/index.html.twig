@@ -1,6 +1,6 @@
 {% extends 'dashboard/layout.html.twig' %}
 
-{% block title %}Gestion des offres{% endblock %}
+{% block title %}Gestion des offres de stage{% endblock %}
 
 {% block dashboard_content %}
     <div class="container-fluid">
@@ -36,7 +36,7 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h3 class="card-title">Liste des offres</h3>
-                <a href="{{ path('app_offre_new') }}" class="btn btn-primary">
+                <a href="{{ path('app_offre_stage_new') }}" class="btn btn-primary">
                     <i class="fas fa-plus me-2"></i>Nouvelle offre
                 </a>
             </div>
@@ -67,19 +67,21 @@
                                             {{ offre.statutOffre }}
                                         </span>
                                     </td>
-                                    <td class="action-buttons">
-                                        <a href="{{ path('app_offre_show', {'id': offre.id}) }}" class="btn btn-sm btn-info" title="Voir les détails">
-                                            <i class="fas fa-eye"></i>
-                                        </a>
-                                        <a href="{{ path('app_offre_edit', {'id': offre.id}) }}" class="btn btn-sm btn-warning" title="Modifier">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-                                        <form method="post" action="{{ path('app_offre_delete', {'id': offre.id}) }}" class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette offre ?');">
-                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ offre.id) }}">
-                                            <button type="submit" class="btn btn-sm btn-danger" title="Supprimer">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </form>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a href="{{ path('app_offre_stage_show', {'id': offre.id}) }}" class="btn btn-info btn-sm" title="Voir">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <a href="{{ path('app_offre_stage_edit', {'id': offre.id}) }}" class="btn btn-warning btn-sm" title="Modifier">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <form method="post" action="{{ path('app_offre_stage_delete', {'id': offre.id}) }}" style="display: inline-block" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette offre ?');">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ offre.id) }}">
+                                                <button class="btn btn-danger btn-sm" title="Supprimer">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
                                     </td>
                                 </tr>
                             {% else %}

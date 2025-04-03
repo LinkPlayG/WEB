@@ -3,9 +3,9 @@
 {% block dashboard_content %}
     <!-- Statistics Cards -->
     <div class="row mb-4">
-        <div class="col-md-3">
+        <div class="col-md-4">
             <div class="stats-card">
-                <h5>Mes Étudiants</h5>
+                <h5>Étudiants</h5>
                 <div class="d-flex justify-content-between align-items-center">
                     <h2 class="mb-0">{{ stats.etudiants }}</h2>
                     <i class="fas fa-user-graduate fa-2x text-primary"></i>
@@ -13,19 +13,9 @@
                 <div class="mt-2 text-muted">Total des étudiants</div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-4">
             <div class="stats-card">
-                <h5>Offres actives</h5>
-                <div class="d-flex justify-content-between align-items-center">
-                    <h2 class="mb-0">{{ stats.offres }}</h2>
-                    <i class="fas fa-briefcase fa-2x text-success"></i>
-                </div>
-                <div class="mt-2 text-muted">Total des offres</div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="stats-card">
-                <h5>Entreprises partenaires</h5>
+                <h5>Entreprises</h5>
                 <div class="d-flex justify-content-between align-items-center">
                     <h2 class="mb-0">{{ stats.entreprises }}</h2>
                     <i class="fas fa-building fa-2x text-info"></i>
@@ -33,14 +23,14 @@
                 <div class="mt-2 text-muted">Total des entreprises</div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-4">
             <div class="stats-card">
-                <h5>Étudiants en stage</h5>
+                <h5>Offres de stage</h5>
                 <div class="d-flex justify-content-between align-items-center">
-                    <h2 class="mb-0">{{ stats.etudiantsEnStage|length }}</h2>
-                    <i class="fas fa-user-check fa-2x text-warning"></i>
+                    <h2 class="mb-0">{{ stats.offres }}</h2>
+                    <i class="fas fa-briefcase fa-2x text-warning"></i>
                 </div>
-                <div class="mt-2 text-muted">{{ (stats.etudiantsEnStage|length / stats.etudiants * 100)|round }}% placés</div>
+                <div class="mt-2 text-muted">Total des offres</div>
             </div>
         </div>
     </div>
@@ -49,14 +39,151 @@
     <div class="row mb-4">
         <div class="col-md-6">
             <div class="stats-card">
-                <h5>Statut des étudiants</h5>
-                <canvas id="studentStatusChart"></canvas>
+                <h5>Distribution des étudiants par promotion</h5>
+                <canvas id="promotionsChart"></canvas>
             </div>
         </div>
         <div class="col-md-6">
             <div class="stats-card">
-                <h5>Candidatures par entreprise</h5>
-                <canvas id="applicationChart"></canvas>
+                <h5>Offres de stage par mois</h5>
+                <canvas id="offresChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search and Filter Section -->
+    <div class="search-section mb-4">
+        <div class="row">
+            <div class="col-md-4">
+                <input type="text" class="form-control" placeholder="Rechercher...">
+            </div>
+            <div class="col-md-3">
+                <select class="form-select">
+                    <option>Toutes les promotions</option>
+                    {% for promotion, count in distributionPromos %}
+                        <option>{{ promotion }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select class="form-select">
+                    <option>Tous les campus</option>
+                    <option>Nancy</option>
+                    <option>Metz</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-primary w-100">
+                    <i class="fas fa-filter me-2"></i>Filtrer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Data Tables -->
+    <div class="data-table">
+        <ul class="nav nav-tabs mb-3">
+            <li class="nav-item">
+                <a class="nav-link active" data-bs-toggle="tab" href="#etudiants">
+                    <i class="fas fa-user-graduate me-2"></i>Étudiants
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#entreprises">
+                    <i class="fas fa-building me-2"></i>Entreprises
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#offres">
+                    <i class="fas fa-briefcase me-2"></i>Offres
+                </a>
+            </li>
+        </ul>
+
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="etudiants">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Nom</th>
+                            <th>Promotion</th>
+                            <th>Campus</th>
+                            <th>Statut</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for etudiant in etudiants %}
+                            <tr>
+                                <td>{{ etudiant.nomEtudiant }} {{ etudiant.prenomEtudiant }}</td>
+                                <td>{{ etudiant.promotion.nom }}</td>
+                                <td>{{ etudiant.promotion.campus }}</td>
+                                <td><span class="badge bg-{{ etudiant.statut == 'En stage' ? 'success' : 'warning' }}">{{ etudiant.statut }}</span></td>
+                                <td class="action-buttons">
+                                    <a href="#" class="btn btn-sm btn-info"><i class="fas fa-eye"></i></a>
+                                    <a href="#" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></a>
+                                    <a href="#" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="tab-pane fade" id="entreprises">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Nom</th>
+                            <th>Ville</th>
+                            <th>Secteur</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for entreprise in entreprises %}
+                            <tr>
+                                <td>{{ entreprise.nom }}</td>
+                                <td>{{ entreprise.adresse.ville }}</td>
+                                <td>{{ entreprise.secteur }}</td>
+                                <td class="action-buttons">
+                                    <a href="#" class="btn btn-sm btn-info"><i class="fas fa-eye"></i></a>
+                                    <a href="#" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></a>
+                                    <a href="#" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="tab-pane fade" id="offres">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Titre</th>
+                            <th>Entreprise</th>
+                            <th>Date de début</th>
+                            <th>Durée</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for offre in offres %}
+                            <tr>
+                                <td>{{ offre.titreOffre }}</td>
+                                <td>{{ offre.entreprise.nom }}</td>
+                                <td>{{ offre.dateDebutStage|date('d/m/Y') }}</td>
+                                <td>{{ offre.dureeStage }} mois</td>
+                                <td class="action-buttons">
+                                    <a href="#" class="btn btn-sm btn-info"><i class="fas fa-eye"></i></a>
+                                    <a href="#" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></a>
+                                    <a href="#" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -65,31 +192,40 @@
 {% block javascripts %}
     {{ parent() }}
     <script>
-        // Calcul des statistiques pour le graphique
-        const enStage = {{ stats.etudiantsEnStage|length }};
-        const enRecherche = {{ stats.etudiants - stats.etudiantsEnStage|length }};
+        // Graphique des promotions
+        const distributionPromos = {
+            {% for promo, count in distributionPromos %}
+                "{{ promo }}": {{ count }},
+            {% endfor %}
+        };
 
-        // Graphique du statut des étudiants
-        new Chart(document.getElementById('studentStatusChart'), {
-            type: 'doughnut',
+        new Chart(document.getElementById('promotionsChart'), {
+            type: 'pie',
             data: {
-                labels: ['En stage', 'En recherche'],
+                labels: Object.keys(distributionPromos),
                 datasets: [{
-                    data: [enStage, enRecherche],
-                    backgroundColor: ['#1cc88a', '#f6c23e']
+                    data: Object.values(distributionPromos),
+                    backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b']
                 }]
             }
         });
 
-        // Graphique des candidatures
-        new Chart(document.getElementById('applicationChart'), {
-            type: 'bar',
+        // Graphique des offres
+        const offresParMois = {
+            {% for offre in offresParMois %}
+                "{{ offre.mois }}": {{ offre.nombre }},
+            {% endfor %}
+        };
+
+        new Chart(document.getElementById('offresChart'), {
+            type: 'line',
             data: {
-                labels: ['Total des entreprises'],
+                labels: Object.keys(offresParMois),
                 datasets: [{
-                    label: 'Nombre d\'entreprises',
-                    data: [{{ stats.entreprises }}],
-                    backgroundColor: '#4e73df'
+                    label: 'Nombre d\'offres',
+                    data: Object.values(offresParMois),
+                    borderColor: '#4e73df',
+                    tension: 0.1
                 }]
             },
             options: {
