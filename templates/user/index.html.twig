@@ -124,15 +124,22 @@
                                 <td>{{ etudiant.promotion ? etudiant.promotion.nom : '-' }}</td>
                                 <td><span class="badge bg-{{ etudiant.statut == 'En stage' ? 'success' : 'warning' }}">{{ etudiant.statut }}</span></td>
                                 <td class="action-buttons">
+
                                     <a href="#" class="btn btn-sm btn-info" title="Voir le profil">
                                         <i class="fas fa-eye"></i>
                                     </a>
+
                                     <a href="#" class="btn btn-sm btn-warning" title="Modifier">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <a href="#" class="btn btn-sm btn-danger" title="Supprimer">
-                                        <i class="fas fa-trash"></i>
-                                    </a>
+
+                                    <form method="post" action="{{ path('app_etudiant_delete', {'id': etudiant.id}) }}" onsubmit="return confirm('Voulez-vous vraiment supprimer cet étudiant ?');" style="display:inline;">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete_etudiant_' ~ etudiant.id) }}">
+                                        <button class="btn btn-sm btn-danger" title="Supprimer">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+
                                 </td>
                             </tr>
                         {% endfor %}
@@ -142,7 +149,7 @@
 
             <div class="tab-pane fade" id="pilotes">
                 <div class="d-flex justify-content-end mb-3">
-                    <a href="#" class="btn btn-success">
+                    <a href="{{ path('app_pilote_new') }}" class="btn btn-success">
                         <i class="fas fa-plus me-2"></i>Ajouter un pilote
                     </a>
                 </div>
@@ -169,12 +176,18 @@
                                     <a href="#" class="btn btn-sm btn-info" title="Voir le profil">
                                         <i class="fas fa-eye"></i>
                                     </a>
+
                                     <a href="#" class="btn btn-sm btn-warning" title="Modifier">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <a href="#" class="btn btn-sm btn-danger" title="Supprimer">
-                                        <i class="fas fa-trash"></i>
-                                    </a>
+
+                                    <form method="post" action="{{ path('app_pilote_delete', {'id': pilote.id}) }}" onsubmit="return confirm('Confirmer la suppression du pilote ?');" style="display:inline;">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete_pilote_' ~ pilote.id) }}">
+                                        <button class="btn btn-sm btn-danger" title="Supprimer">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+
                                 </td>
                             </tr>
                         {% endfor %}

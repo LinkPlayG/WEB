@@ -6,6 +6,7 @@ use App\Repository\CompetenceRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CompetenceRepository::class)]
+#[ORM\Table(name:"competence")]
 class Competence
 {
     #[ORM\Id]

@@ -58,7 +58,7 @@ class UserController extends AbstractController
                 $form->get('password')->getData()
             );
             $etudiant->setPassword($hashedPassword);
-            
+
             $entityManager->persist($etudiant);
             $entityManager->flush();
 
@@ -85,16 +85,16 @@ class UserController extends AbstractController
                 $form->get('password')->getData()
             );
             $pilote->setPassword($hashedPassword);
-            
+
             // Récupérer la promotion par défaut
             $defaultPromotion = $entityManager->getRepository(Promotion::class)
                 ->findOneBy(['nom' => 'Promotion par défaut']);
-            
+
             if ($defaultPromotion) {
                 $pilote->addPromotion($defaultPromotion);
                 $defaultPromotion->setPilote($pilote);
             }
-            
+
             $entityManager->persist($pilote);
             $entityManager->flush();
 
@@ -105,5 +105,39 @@ class UserController extends AbstractController
         return $this->render('user/new_pilote.html.twig', [
             'form' => $form->createView(),
         ]);
+
     }
-} 
+
+    #[Route('/etudiant/delete/{id}', name: 'app_etudiant_delete', methods: ['POST'])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function deleteEtudiant(Request $request, Etudiant $etudiant, EntityManagerInterface $em): Response
+    {
+        if ($this->isCsrfTokenValid('delete_etudiant_' . $etudiant->getId(), $request->request->get('_token'))) {
+            $em->remove($etudiant);
+            $em->flush();
+            $this->addFlash('success', 'Étudiant supprimé avec succès.');
+        } else {
+            $this->addFlash('error', 'Jeton CSRF invalide.');
+        }
+
+        return $this->redirectToRoute('app_users');
+    }
+
+
+    #[Route('/pilote/delete/{id}', name: 'app_pilote_delete', methods: ['POST'])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function deletePilote(Request $request, PiloteDePromotion $pilote, EntityManagerInterface $entityManager): Response
+    {
+        if ($this->isCsrfTokenValid('delete_pilote_' . $pilote->getId(), $request->request->get('_token'))) {
+            $entityManager->remove($pilote);
+            $entityManager->flush();
+            $this->addFlash('success', 'Le pilote a été supprimé.');
+        } else {
+            $this->addFlash('error', 'Jeton CSRF invalide.');
+        }
+
+        return $this->redirectToRoute('app_users');
+    }
+
+
+}
