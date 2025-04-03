@@ -86,10 +86,11 @@
         <div class="card mb-3">
             <div class="cv-details">
                 <br>
-                <h3 class="card-title">Mes CV</h3>
                 <a href="{{ path('app_cv') }}" class="download-link">
                     <i class="fa fa-download download-icon" aria-hidden="true"></i>
                 </a>
+                <h3 class="card-title">Mes CV</h3>
+
             <div class="card-body cv-card-body">
                 {% if pdfs is defined and pdfs|length > 0 %}
                     <div class="pdf-list mt-3">
