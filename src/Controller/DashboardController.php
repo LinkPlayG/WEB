@@ -70,8 +70,8 @@ class DashboardController extends AbstractController
             
             // Statistiques pour le pilote
             $stats = [
-                'etudiants' => count($pilote->getPromotions()->first()->getEtudiants()),
-                'offres' => count($pilote->getOffresDeStage()),
+                'etudiants' => $entityManager->getRepository(Etudiant::class)->count([]),
+                'offres' => count($pilote->getOffresDeStage([])),
                 'entreprises' => $entityManager->getRepository(Entreprise::class)->count([]),
                 'etudiantsEnStage' => $entityManager->getRepository(Etudiant::class)
                     ->createQueryBuilder('e')

@@ -22,6 +22,8 @@ document.addEventListener('DOMContentLoaded', function() {
     clearSearch.style.display = 'none';
     searchInputWrapper.appendChild(clearSearch);
 
+    applySorting("default");
+
     // Afficher le bouton clearSearch quand le champ contient du texte
     searchInput.addEventListener('input', function() {
         clearSearch.style.display = searchInput.value ? 'block' : 'none';
@@ -45,6 +47,13 @@ document.addEventListener('DOMContentLoaded', function() {
     closeOverlay.addEventListener('click', function() {
         searchOverlay.classList.add('hidden');
         searchOverlay.style.display = 'none';
+    });
+
+    document.addEventListener('click', function(e) {
+        if (!searchOverlay.contains(e.target) && !searchInput.contains(e.target)) {
+            searchOverlay.classList.add('hidden');
+            searchOverlay.style.display = 'none';
+        }
     });
 
     // Effacer le champ de recherche
@@ -82,9 +91,10 @@ document.addEventListener('DOMContentLoaded', function() {
             optionButtons.forEach(btn => btn.classList.remove('active'));
             // Ajouter la classe active au bouton cliqué
             this.classList.add('active');
-            
+
             // Appliquer le tri correspondant
-            applySorting(this.textContent.trim());
+            const sortType = this.dataset.sortType; // Utilisation des data-attributes pour identifier le type de tri
+            applySorting(sortType);
         });
     });
 
@@ -156,38 +166,67 @@ document.addEventListener('DOMContentLoaded', function() {
     function applySorting(sortType) {
         const cardsList = document.querySelector('.offers-list');
         const cards = Array.from(cardsList.querySelectorAll('.offer-card'));
-        
-        switch(sortType) {
-            case 'A-Z':
-                // Trier par titre alphabétiquement
+
+        if (sortType === 'a-z') {
+            // Trier par titre alphabétique
+            cards.sort((a, b) => {
+                const titleA = a.querySelector('.offer-title').textContent.trim();
+                const titleB = b.querySelector('.offer-title').textContent.trim();
+                return titleA.localeCompare(titleB);
+            });
+        } else if (sortType === 'z-a') {
+                // Trier par titre alphabétique
                 cards.sort((a, b) => {
-                    const titleA = a.querySelector('.offer-title').textContent;
-                    const titleB = b.querySelector('.offer-title').textContent;
+                    const titleA = b.querySelector('.offer-title').textContent.trim();
+                    const titleB = a.querySelector('.offer-title').textContent.trim();
                     return titleA.localeCompare(titleB);
                 });
-                break;
-            case 'List view':
-                // Format liste (on peut ajuster les styles ici)
-                cards.forEach(card => {
-                    card.style.padding = '10px';
-                    card.style.marginBottom = '5px';
-                });
-                break;
-            default: // Default
-                // Retour à l'affichage par défaut (tri par date récente)
-                cards.sort((a, b) => {
-                    const dateA = a.querySelector('.offer-detail:nth-child(2)').textContent.trim();
-                    const dateB = b.querySelector('.offer-detail:nth-child(2)').textContent.trim();
-                    // Inverser la comparaison pour avoir les plus récentes en premier
-                    return dateB.localeCompare(dateA);
-                });
-                cards.forEach(card => {
-                    card.style.padding = '15px';
-                    card.style.marginBottom = '15px';
-                });
-                break;
+        } else if (sortType === 'date^') {
+            // Trier par date (les plus récentes en premier)
+            cards.sort((a, b) => {
+                const dateA = b.dataset.startDate; // Récupération depuis les data-attributes
+                const dateB = a.dataset.startDate;
+
+                // Conversion en timestamp pour comparer les dates
+                const toTimestamp = (dateString) => {
+                    const [day, month, year] = dateString.split('/');
+                    return new Date(year, month - 1, day).getTime();
+                };
+
+                return toTimestamp(dateB) - toTimestamp(dateA); // Tri décroissant
+            });
         }
-        
+        else if (sortType === 'datev') {
+            // Trier par date (les plus récentes en premier)
+            cards.sort((a, b) => {
+                const dateA = a.dataset.startDate; // Récupération depuis les data-attributes
+                const dateB = b.dataset.startDate;
+
+                // Conversion en timestamp pour comparer les dates
+                const toTimestamp = (dateString) => {
+                    const [day, month, year] = dateString.split('/');
+                    return new Date(year, month - 1, day).getTime();
+                };
+
+                return toTimestamp(dateB) - toTimestamp(dateA); // Tri décroissant
+            });
+        }
+        else {
+            // Trier par date (les plus récentes en premier)
+            cards.sort((a, b) => {
+                const dateA = b.dataset.startDate; // Récupération depuis les data-attributes
+                const dateB = a.dataset.startDate;
+
+                // Conversion en timestamp pour comparer les dates
+                const toTimestamp = (dateString) => {
+                    const [day, month, year] = dateString.split('/');
+                    return new Date(year, month - 1, day).getTime();
+                };
+
+                return toTimestamp(dateB) - toTimestamp(dateA); // Tri décroissant
+            });
+        }
+
         // Réorganiser les cartes dans le DOM
         cards.forEach(card => cardsList.appendChild(card));
     }
