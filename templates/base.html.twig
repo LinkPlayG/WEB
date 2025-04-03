@@ -29,8 +29,11 @@
     </nav>
     <div class="user-profile">
         <div class="profile-container">
-            <img src="{{ asset('images/user.svg') }}" alt="Profil" id="profileIcon">
-            <img src="{{ asset('images/burger.png') }}" alt="Burger" id="burgerIcon">
+            {% if app.user.profileImg %}
+                <img src="{{ path('app_profile_image', {'id': app.user.id}) }}" alt="Profil" id="profileIcon">
+            {% else %}
+                <i class="fa fa-user profile-user-icon" aria-hidden="true" alt="Profil" id="profileIcon"></i>
+            {% endif %}
             <div class="account-overlay" id="accountOverlay">
                 <div class="burger-links">
                     <a href="{{ path('app_home') }}" class="{{ app.request.get('_route') == 'app_home' ? 'active' : '' }} burger-link">Accueil</a>
@@ -41,7 +44,11 @@
                     <a href="{{ path('app_candidatures') }}" class="{{ app.request.get('_route') == 'app_candidatures' ? 'active' : '' }} burger-link">Candidatures</a>
                 </div>
                 <div class="user-info">
-                    <img src="{{ asset('images/user.svg') }}" alt="Avatar" class="user-avatar">
+                    {% if app.user.profileImg %}
+                        <img src="{{ path('app_profile_image', {'id': app.user.id}) }}" alt="Avatar" class="user-avatar">
+                    {% else %}
+                        <i class="fa fa-user profile-user-icon" aria-hidden="true" alt="Avatar" class="user-avatar"></i>
+                    {% endif %}
                     <div class="user-details">
                         {% if app.user %}
                             {% if is_granted('ROLE_ADMIN') %}
