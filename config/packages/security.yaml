@@ -36,6 +36,7 @@ security:
         - { path: ^/pilote/delete, roles: ROLE_ADMIN }
         - { path: ^/etudiant/delete, roles: ROLE_ADMIN }
         - { path: ^/etudiants, roles: ROLE_PILOTE }
+        - { path: ^/admin/delete, roles: ROLE_ADMIN }
         - { path: ^/pilote, roles: ROLE_PILOTE }
         - { path: ^/etudiant/profile, roles: ROLE_ETUDIANT }
         - { path: ^/etudiant, roles: [ROLE_ADMIN, ROLE_ETUDIANT] }

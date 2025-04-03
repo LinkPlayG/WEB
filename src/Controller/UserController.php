@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Form\AdministrateurType;
 
 #[IsGranted('ROLE_ADMIN')]
 class UserController extends AbstractController
@@ -108,6 +109,34 @@ class UserController extends AbstractController
 
     }
 
+    #[Route('/admin/new', name: 'app_admin_new')]
+    #[IsGranted('ROLE_ADMIN')]
+    public function newAdmin(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): Response
+    {
+        $admin = new Administrateur();
+        $form = $this->createForm(AdministrateurType::class, $admin);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $hashedPassword = $passwordHasher->hashPassword(
+                $admin,
+                $form->get('password')->getData()
+            );
+            $admin->setPassword($hashedPassword);
+
+            $entityManager->persist($admin);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Administrateur créé avec succès.');
+            return $this->redirectToRoute('app_users');
+        }
+
+        return $this->render('user/new_admin.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
+
     #[Route('/etudiant/delete/{id}', name: 'app_etudiant_delete', methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function deleteEtudiant(Request $request, Etudiant $etudiant, EntityManagerInterface $em): Response
@@ -132,6 +161,22 @@ class UserController extends AbstractController
             $entityManager->remove($pilote);
             $entityManager->flush();
             $this->addFlash('success', 'Le pilote a été supprimé.');
+        } else {
+            $this->addFlash('error', 'Jeton CSRF invalide.');
+        }
+
+        return $this->redirectToRoute('app_users');
+    }
+
+    #[Route('/admin/delete/{id}', name: 'app_admin_delete', methods: ['POST'])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function deleteAdministrateur(Request $request, Administrateur $admin, EntityManagerInterface $entityManager): Response
+    {
+        if ($this->isCsrfTokenValid('delete_admin_' . $admin->getId(), $request->request->get('_token'))) {
+            $entityManager->remove($admin);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Administrateur supprimé avec succès.');
         } else {
             $this->addFlash('error', 'Jeton CSRF invalide.');
         }
