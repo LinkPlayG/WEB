@@ -12,6 +12,7 @@ use App\Entity\Candidature;
 use App\Entity\OffreDeStage;
 use App\Entity\User;
 use App\Entity\Etudiant;
+use App\Entity\PiloteDePromotion;
 
 class CandidatureController extends AbstractController
 {
@@ -21,16 +22,73 @@ class CandidatureController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
         
-        if (!$user || !($user instanceof Etudiant)) {
+        if (!$user) {
             return $this->redirectToRoute('app_login');
         }
 
-        $candidatures = $entityManager->getRepository(Candidature::class)->findBy(['etudiant' => $user]);
+        // Si c'est un étudiant
+        if ($user instanceof Etudiant) {
+            $candidatures = $entityManager->getRepository(Candidature::class)
+                ->findBy(['etudiant' => $user]);
 
-        return $this->render('candidature/index.html.twig', [
-            'candidatures' => $candidatures,
-            'activeFilter' => 'pending' // Filtre actif par défaut
-        ]);
+            return $this->render('candidature/index.html.twig', [
+                'candidatures' => $candidatures,
+                'activeFilter' => 'pending'
+            ]);
+        }
+        
+        // Si c'est un pilote
+        if ($user instanceof PiloteDePromotion) {
+            // Récupérer les étudiants des promotions du pilote avec leurs candidatures
+            $etudiants = $entityManager->getRepository(Etudiant::class)
+                ->createQueryBuilder('e')
+                ->join('e.promotion', 'p')
+                ->leftJoin('e.candidatures', 'c')
+                ->where('p.pilote = :pilote')
+                ->setParameter('pilote', $user)
+                ->getQuery()
+                ->getResult();
+
+            return $this->render('candidature/pilote_index.html.twig', [
+                'etudiants' => $etudiants
+            ]);
+        }
+
+        // Si ce n'est ni un étudiant ni un pilote
+        return $this->redirectToRoute('app_dashboard');
+    }
+
+    #[Route('/candidature/{id}/update-status', name: 'app_candidature_update_status', methods: ['POST'])]
+    public function updateStatus(Request $request, Candidature $candidature, EntityManagerInterface $entityManager): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        
+        if (!$user || !($user instanceof PiloteDePromotion)) {
+            $this->addFlash('error', 'Vous devez être connecté en tant que pilote pour effectuer cette action.');
+            return $this->redirectToRoute('app_candidatures');
+        }
+
+        // Vérifier si le pilote est responsable de la promotion de l'étudiant
+        if ($candidature->getEtudiant()->getPromotion()->getPilote() !== $user) {
+            $this->addFlash('error', 'Vous n\'êtes pas autorisé à modifier cette candidature.');
+            return $this->redirectToRoute('app_candidatures');
+        }
+
+        $newStatus = $request->request->get('status');
+        if (in_array($newStatus, ['Acceptée', 'Refusée', 'En attente'])) {
+            $candidature->setStatut($newStatus);
+            if ($newStatus !== 'En attente') {
+                $candidature->setDateReponse(new \DateTime());
+            }
+            $entityManager->flush();
+            
+            $this->addFlash('success', 'Le statut de la candidature a été mis à jour.');
+        } else {
+            $this->addFlash('error', 'Statut invalide.');
+        }
+
+        return $this->redirectToRoute('app_candidatures');
     }
 
     #[Route('/candidature/new/{id}', name: 'app_candidature_new', methods: ['POST'])]

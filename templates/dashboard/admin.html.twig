@@ -164,6 +164,22 @@
             }
         });
 
+        // Noms des mois en français
+        const moisFrancais = {
+            '1': 'Janvier',
+            '2': 'Février',
+            '3': 'Mars',
+            '4': 'Avril',
+            '5': 'Mai',
+            '6': 'Juin',
+            '7': 'Juillet',
+            '8': 'Août',
+            '9': 'Septembre',
+            '10': 'Octobre',
+            '11': 'Novembre',
+            '12': 'Décembre'
+        };
+
         // Graphique des offres
         const offresParMois = {
             {% for offre in offresParMois %}
@@ -174,7 +190,7 @@
         new Chart(document.getElementById('offresChart'), {
             type: 'line',
             data: {
-                labels: Object.keys(offresParMois),
+                labels: Object.keys(offresParMois).map(mois => moisFrancais[mois]),
                 datasets: [{
                     label: 'Nombre d\'offres',
                     data: Object.values(offresParMois),
@@ -185,7 +201,10 @@
             options: {
                 scales: {
                     y: {
-                        beginAtZero: true
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1
+                        }
                     }
                 }
             }

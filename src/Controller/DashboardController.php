@@ -99,12 +99,47 @@ class DashboardController extends AbstractController
 
             // Récupérer les entreprises
             $entreprises = $entityManager->getRepository(Entreprise::class)->findAll();
+            
+            // Distribution des étudiants par promotion pour le pilote
+            $distributionPromos = [];
+            foreach ($pilote->getPromotions() as $promotion) {
+                $distributionPromos[$promotion->getNom()] = count($promotion->getEtudiants());
+            }
+            
+            // Offres par mois pour le pilote
+            $offresParMois = [];
+            $moisActuel = new \DateTime();
+            for ($i = 0; $i < 6; $i++) {
+                $mois = clone $moisActuel;
+                $mois->modify('-' . $i . ' months');
+                $moisFormat = $mois->format('m/Y');
+                
+                $nombreOffres = $entityManager->getRepository(OffreDeStage::class)
+                    ->createQueryBuilder('o')
+                    ->select('COUNT(o.id)')
+                    ->where('o.pilote = :pilote')
+                    ->andWhere('o.date_debut_stage >= :debutMois')
+                    ->andWhere('o.date_debut_stage < :finMois')
+                    ->setParameter('pilote', $pilote)
+                    ->setParameter('debutMois', $mois->format('Y-m-01'))
+                    ->setParameter('finMois', $mois->format('Y-m-t'))
+                    ->getQuery()
+                    ->getSingleScalarResult();
+                
+                $offresParMois[] = [
+                    'mois' => $moisFormat,
+                    'nombre' => $nombreOffres
+                ];
+            }
+            $offresParMois = array_reverse($offresParMois);
 
             return $this->render('dashboard/pilote.html.twig', [
                 'stats' => $stats,
                 'etudiants' => $etudiants,
                 'offres' => $offres,
-                'entreprises' => $entreprises
+                'entreprises' => $entreprises,
+                'distributionPromos' => $distributionPromos,
+                'offresParMois' => $offresParMois
             ]);
 
         } elseif ($this->isGranted('ROLE_ETUDIANT')) {
