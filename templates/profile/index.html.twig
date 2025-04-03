@@ -28,17 +28,25 @@
     <div class="profile-header-section position-relative">
         <div class="profile-picture">
             {% if user.profileImg %}
-                <!-- Test 1.2 -->
+                <img src="{{ path('app_profile_image', {'id': user.id}) }}" alt="Profile picture" class="profile-img">
             {% else %}
                 <i class="fa fa-user profile-user-icon" aria-hidden="true"></i>
             {% endif %}
         </div>
         
-        {% if app.user and app.user.id == user.id %}
-            <a class="profile-image-upload-btn">
-                <i class="fa fa-plus" aria-hidden="true"></i>
-            </a>
-        {% endif %}
+{% if app.user and app.user.id == user.id %}
+    <form id="profile-image-form" method="post" action="{{ path('app_profile_upload') }}" enctype="multipart/form-data">
+        <input type="file" id="profile-image-input" name="profile_image" style="display: none;" accept="image/*">
+        <a class="profile-image-upload-btn" onclick="document.getElementById('profile-image-input').click();">
+            <i class="fa fa-plus" aria-hidden="true"></i>
+        </a>
+    </form>
+    <script>
+        document.getElementById('profile-image-input').addEventListener('change', function() {
+            document.getElementById('profile-image-form').submit();
+        });
+    </script>
+{% endif %}
     </div>
 
     <!-- Name and Description -->
