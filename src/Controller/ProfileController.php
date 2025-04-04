@@ -51,8 +51,40 @@ class ProfileController extends AbstractController
             'pdfs' => $pdfs ?? []
         ]);
     }
-    
-#[Route('/profile/upload', name: 'app_profile_upload')]
+
+    #[Route('/profile/{id}', name: 'app_profile_show')]
+    public function showProfile(User $user, EntityManagerInterface $entityManager): Response
+    {
+        if (!$user) {
+            throw $this->createNotFoundException('Utilisateur non trouvé.');
+        }
+
+        // Gestion dynamique selon le type d'utilisateur
+        if ($user instanceof Etudiant) {
+            $nom = $user->getNomEtudiant();
+            $prenom = $user->getPrenomEtudiant();
+            $pdfs = $entityManager->getRepository(Pdf::class)->findBy(['etudiant' => $user], ['id' => 'DESC']);
+        } elseif ($user instanceof PiloteDePromotion) {
+            $nom = $user->getNomPilote();
+            $prenom = $user->getPrenomPilote();
+            $pdfs = [];
+        } elseif ($user instanceof Administrateur) {
+            $nom = $user->getNomAdmin();
+            $prenom = $user->getPrenomAdmin();
+            $pdfs = [];
+        }
+
+        return $this->render('profile/index.html.twig', [
+            'nom' => $nom,
+            'prenom' => $prenom,
+            'user' => $user,
+            'pdfs' => $pdfs ?? []
+        ]);
+    }
+
+
+
+    #[Route('/profile/upload', name: 'app_profile_upload')]
 public function uploadProfileImage(Request $request, EntityManagerInterface $entityManager): Response
 {
     // Get the current user
