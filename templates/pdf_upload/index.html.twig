@@ -1,6 +1,7 @@
-
 {% extends 'base.html.twig' %}
+
 {% block title %}Télécharger votre CV - Interned{% endblock %}
+
 {% block stylesheets %}
 {{ parent() }}
 <link rel="stylesheet" href="{{ asset('css/cv.css') }}">
@@ -66,6 +67,7 @@
     }
 </style>
 {% endblock %}
+
 {% block body %}
 <div class="container p-0">
     <div class="row my-4">
@@ -78,7 +80,7 @@
                     {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate', 'enctype': 'multipart/form-data'}}) }}
                     <div class="mb-3">
                         {{ form_label(form.CV, 'Votre CV (fichier PDF)', {'label_attr': {'class': 'form-label'}}) }}
-                        {{ form_widget(form.CV, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_widget(form.CV, {'attr': {'class': 'form-control', 'id': 'cv-file'}}) }}
                         <div class="form-text">Formats acceptés: PDF. Taille maximale: 1Mo.</div>
                         {% if form.CV.vars.errors|length > 0 %}
                         <div class="invalid-feedback d-block">
@@ -90,16 +92,16 @@
                         <a href="{{ path('app_profile') }}" class="btn btn-secondary me-2">
                             <i class="fa fa-arrow-left" aria-hidden="true"></i> Retour
                         </a>
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="btn btn-primary" id="submit-btn">
                             <i class="fa fa-upload" aria-hidden="true"></i> Enregistrer
                         </button>
                     </div>
                     {{ form_end(form) }}
                 </div>
             </div>
-
+            <br>
             {% if pdfs is defined and pdfs|length > 0 %}
-                        <div class="main-container mt-4">
+            <div class="main-container mt-4">
                 <div class="pdf-header">
                     <h3><i class="fa fa-files-o" aria-hidden="true"></i> Vos documents PDF</h3>
                 </div>
@@ -140,4 +142,43 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.getElementById('submit-btn').addEventListener('click', function(event) {
+        var fileInput = document.getElementById('cv-file');
+        var file = fileInput.files[0];
+        var fileError = document.createElement('div');
+        fileError.style.color = 'red';
+
+        // Réinitialiser les erreurs
+        document.querySelectorAll('.invalid-feedback').forEach(function(errorDiv) {
+            errorDiv.remove();
+        });
+
+        if (file) {
+            var fileExtension = file.name.split('.').pop().toLowerCase();
+            var maxSize = 1 * 1024 * 1024; // 1 Mo en octets
+
+            // Vérifier si le fichier est un PDF
+            if (fileExtension !== 'pdf') {
+                fileError.textContent = 'Seuls les fichiers PDF sont autorisés.';
+                fileInput.parentElement.appendChild(fileError);
+                event.preventDefault();
+                return;
+            }
+
+            // Vérifier la taille du fichier
+            if (file.size > maxSize) {
+                fileError.textContent = 'Le fichier ne doit pas dépasser 1 Mo.';
+                fileInput.parentElement.appendChild(fileError);
+                event.preventDefault();
+                return;
+            }
+        } else {
+            fileError.textContent = 'Veuillez sélectionner un fichier.';
+            fileInput.parentElement.appendChild(fileError);
+            event.preventDefault();
+        }
+    });
+</script>
 {% endblock %}
