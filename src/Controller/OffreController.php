@@ -90,6 +90,18 @@ class OffreController extends AbstractController
     public function delete(Request $request, OffreDeStage $offre, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$offre->getId(), $request->request->get('_token'))) {
+            // Check if the offer has any candidatures
+            if ($offre->getCandidatures()->count() > 0) {
+                $this->addFlash('error', 'Impossible de supprimer cette offre car elle a des candidatures associées. Veuillez d\'abord supprimer les candidatures.');
+                return $this->redirectToRoute('app_offre_show', ['id' => $offre->getId()]);
+            }
+            
+            // Check if the offer has any wishlist entries
+            if ($offre->getWishlists()->count() > 0) {
+                $this->addFlash('error', 'Impossible de supprimer cette offre car elle est dans des wishlists. Veuillez d\'abord supprimer les entrées de wishlist.');
+                return $this->redirectToRoute('app_offre_show', ['id' => $offre->getId()]);
+            }
+            
             $entityManager->remove($offre);
             $entityManager->flush();
 

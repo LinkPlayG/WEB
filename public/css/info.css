@@ -70,39 +70,39 @@ strong {
     font-weight: bold;
 }
 
-.nav-menu ul {
+.nav-side ul {
     list-style: none;
     flex-direction: column;
 }
 
-.nav-menu li {
+.nav-side li {
     display: block;
     margin-right: 10px;
     margin-bottom: 15px;
 }
 
-.nav-menu a {
+.nav-side a {
     text-decoration: none;
     color: #333;
     font-size: 16px;
 }
 
-.nav-menu a:hover {
+.nav-side a:hover {
     background-color: #f3f3f3;
 }
 
-.nav-menu .active{
+.nav-side .active{
     background-color: #f3f3f3;
     color: black;
 }
 
 /* Style spécifique pour le menu vertical */
-.nav-menu {
+.nav-side {
     display: flex;
     flex-direction: column;
 }
 
-.nav-menu li {
+.nav-side li {
     display: block;
     margin-bottom: 15px;
 }
@@ -127,12 +127,12 @@ strong {
         gap: 0;
         margin-top: 10px;
     }
-    .nav-menu a {
+    .nav-side a {
         display: flex;
         text-overflow: clip;
     }
 
-    .nav-menu li {
+    .nav-side li {
         margin: 2px 0;
     }
 
@@ -178,13 +178,13 @@ strong {
         width: 100%;
     }
 
-    .nav-menu ul {
+    .nav-side ul {
         display: flex;
         flex-wrap: wrap;
         font-size: 10px;
     }
 
-    .nav-menu li {
+    .nav-side li {
         margin-right: 15px;
     }
 }
@@ -200,11 +200,11 @@ strong {
         margin-bottom: 20px;
     }
 
-    .nav-menu ul {
+    .nav-side ul {
         flex-direction: column;
     }
 
-    .nav-menu li {
+    .nav-side li {
         margin-right: 0;
         margin-bottom: 10px;
     }

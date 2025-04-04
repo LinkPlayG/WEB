@@ -3,38 +3,38 @@
 {% block title %}Gestion des Candidatures{% endblock %}
 
 {% block body %}
-<div class="container mt-4">
-    <h1>Gestion des Candidatures</h1>
+    <div class="container mt-4">
+        <h1>Gestion des Candidatures</h1>
 
-    {% for message in app.flashes('success') %}
-        <div class="alert alert-success">
-            {{ message }}
-        </div>
-    {% endfor %}
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+        {% endfor %}
 
-    {% for message in app.flashes('error') %}
-        <div class="alert alert-danger">
-            {{ message }}
-        </div>
-    {% endfor %}
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger">
+                {{ message }}
+            </div>
+        {% endfor %}
 
-    <div class="accordion" id="studentsAccordion">
-        {% for etudiant in etudiants %}
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="heading{{ etudiant.id }}">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ etudiant.id }}" aria-expanded="false" aria-controls="collapse{{ etudiant.id }}">
-                        {{ etudiant.nomEtudiant }} {{ etudiant.prenomEtudiant }} - {{ etudiant.promotion.nom }}
-                        <span class="badge bg-primary ms-2">{{ etudiant.candidatures|length }} candidature(s)</span>
-                    </button>
-                </h2>
-                <div id="collapse{{ etudiant.id }}" class="accordion-collapse collapse" aria-labelledby="heading{{ etudiant.id }}" data-bs-parent="#studentsAccordion">
-                    <div class="accordion-body">
-                        {% if etudiant.candidatures is empty %}
-                            <p class="text-muted">Aucune candidature pour cet étudiant.</p>
-                        {% else %}
-                            <div class="table-responsive">
-                                <table class="table">
-                                    <thead>
+        <div class="accordion" id="studentsAccordion">
+            {% for etudiant in etudiants %}
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="heading{{ etudiant.id }}">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ etudiant.id }}" aria-expanded="false" aria-controls="collapse{{ etudiant.id }}">
+                            {{ etudiant.nomEtudiant }} {{ etudiant.prenomEtudiant }} - {{ etudiant.promotion.nom }}
+                            <span class="badge bg-primary ms-2">{{ etudiant.candidatures|length }} candidature(s)</span>
+                        </button>
+                    </h2>
+                    <div id="collapse{{ etudiant.id }}" class="accordion-collapse collapse" aria-labelledby="heading{{ etudiant.id }}" data-bs-parent="#studentsAccordion">
+                        <div class="accordion-body">
+                            {% if etudiant.candidatures is empty %}
+                                <p class="text-muted">Aucune candidature pour cet étudiant.</p>
+                            {% else %}
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
                                         <tr>
                                             <th>Entreprise</th>
                                             <th>Offre</th>
@@ -42,8 +42,8 @@
                                             <th>Statut actuel</th>
                                             <th>Actions</th>
                                         </tr>
-                                    </thead>
-                                    <tbody>
+                                        </thead>
+                                        <tbody>
                                         {% for candidature in etudiant.candidatures %}
                                             <tr>
                                                 <td>{{ candidature.offreDeStage.entreprise.nom }}</td>
@@ -71,26 +71,26 @@
                                                 </td>
                                             </tr>
                                         {% endfor %}
-                                    </tbody>
-                                </table>
-                            </div>
-                        {% endif %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
-            </div>
-        {% endfor %}
+            {% endfor %}
+        </div>
     </div>
-</div>
 {% endblock %}
 
 {% block javascripts %}
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Initialiser les tooltips Bootstrap si nécessaire
-    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl)
-    });
-});
-</script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialiser les tooltips Bootstrap si nécessaire
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl)
+            });
+        });
+    </script>
 {% endblock %} 

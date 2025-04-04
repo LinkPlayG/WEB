@@ -319,8 +319,10 @@
                 </div>
             </div>
             <div class="view-options">
-                <button class="option-btn active">Default</button>
-                <button class="option-btn">A-Z</button>
+                <button class="option-btn active" data-sort-type="a-z">A-Z</button>
+                <button class="option-btn" data-sort-type="z-a">Z-A</button>
+                <button class="option-btn" data-sort-type="date^">Plus Tôt</button>
+                <button class="option-btn" data-sort-type="datev">Plus Tard</button>
             </div>
         </div>
     </div>
@@ -391,9 +393,11 @@
                             <button class="view-btn" title="Voir les détails">
                                 👁️
                             </button>
+                            {% if is_granted('ROLE_ETUDIANT') %}
                             <button class="wishlist-btn" title="Ajouter à ma wishlist" data-offer-id="{{ offre.id }}">
-                                ❤️
+                                🤍
                             </button>
+                            {% endif %}
                         </div>
                     </div>
                 </div>

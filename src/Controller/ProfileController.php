@@ -52,6 +52,72 @@ class ProfileController extends AbstractController
         ]);
     }
 
+    #[Route('/profile/upload', name: 'app_profile_upload', methods: ['POST'])]
+    public function uploadProfileImage(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        // Get the current user
+        $user = $this->getUser();
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        // Handle file upload
+        $file = $request->files->get('profile_image');
+        if ($file) {
+            // Validate file type
+            $mimeType = $file->getMimeType();
+            $fileSize = $file->getSize();
+            if (!str_starts_with($mimeType, 'image/')) {
+                $this->addFlash('error', 'Le fichier doit être une image.');
+                return $this->redirectToRoute('app_profile');
+            }
+            
+            if ($fileSize > 16000000) { // 16 Mo
+                $this->addFlash('error', 'La taille du fichier doit être inférieure à 16 Mo.');
+                return $this->redirectToRoute('app_profile');
+            }
+
+            // Read file content into BLOB
+            $fileContent = file_get_contents($file->getPathname());
+            $user->setProfileImg($fileContent);
+            
+            // Save changes
+            $entityManager->persist($user);
+            $entityManager->flush();
+            
+            $this->addFlash('success', 'Photo de profil mise à jour avec succès.');
+        } else {
+            $this->addFlash('error', 'Aucun fichier n\'a été téléchargé.');
+        }
+
+        return $this->redirectToRoute('app_profile');
+    }
+
+    #[Route('/profile/image/{id}', name: 'app_profile_image')]
+    public function getProfileImage(User $user): Response
+    {
+        $profileImg = $user->getProfileImg();
+        
+        if (!$profileImg) {
+            throw $this->createNotFoundException('Aucune image de profil disponible.');
+        }
+        
+        // Convert BLOB resource to string if needed
+        if (is_resource($profileImg)) {
+            $profileImg = stream_get_contents($profileImg);
+        }
+        
+        // Create response with appropriate headers
+        $response = new Response($profileImg);
+        
+        // Try to detect the image type and set the appropriate content type
+        $finfo = new \finfo(FILEINFO_MIME_TYPE);
+        $mimeType = $finfo->buffer($profileImg) ?: 'image/jpeg';
+        
+        $response->headers->set('Content-Type', $mimeType);
+        return $response;
+    }
+
     #[Route('/profile/{id}', name: 'app_profile_show')]
     public function showProfile(User $user, EntityManagerInterface $entityManager): Response
     {
@@ -81,66 +147,5 @@ class ProfileController extends AbstractController
             'pdfs' => $pdfs ?? []
         ]);
     }
-
-
-
-    #[Route('/profile/upload', name: 'app_profile_upload')]
-public function uploadProfileImage(Request $request, EntityManagerInterface $entityManager): Response
-{
-    // Get the current user
-    $user = $this->getUser();
-    if (!$user) {
-        return $this->redirectToRoute('app_login');
-    }
-
-    // Handle file upload
-    $file = $request->files->get('profile_image');
-    $file_size = filesize($file);
-    if ($file) {
-        // Validate file type
-        $mimeType = $file->getMimeType();
-        if ((strpos($mimeType, 'image/') !== 0) || $file_size > 16000000) {
-            $this->addFlash('error', 'Le fichier doit être une image et avoir une taille inférieure à 65 Ko.');
-            return $this->redirectToRoute('app_profile');
-        }
-
-        // Read file content into BLOB
-        $fileContent = file_get_contents($file->getPathname());
-        $user->setProfileImg($fileContent);
-        
-        // Save changes
-        $entityManager->persist($user);
-        $entityManager->flush();
-        
-        $this->addFlash('success', 'Photo de profil mise à jour avec succès.');
-    }
-
-    return $this->redirectToRoute('app_profile');
-}
-
-#[Route('/profile/image/{id}', name: 'app_profile_image')]
-public function getProfileImage(User $user): Response
-{
-    $profileImg = $user->getProfileImg();
-    
-    if (!$profileImg) {
-        throw $this->createNotFoundException('Aucune image de profil disponible.');
-    }
-    
-    // Convert BLOB resource to string if needed
-    if (is_resource($profileImg)) {
-        $profileImg = stream_get_contents($profileImg);
-    }
-    
-    // Create response with appropriate headers
-    $response = new Response($profileImg);
-    
-    // Try to detect the image type and set the appropriate content type
-    $finfo = new \finfo(FILEINFO_MIME_TYPE);
-    $mimeType = $finfo->buffer($profileImg) ?: 'image/jpeg';
-    
-    $response->headers->set('Content-Type', $mimeType);
-    return $response;
-}
 }
 ?>

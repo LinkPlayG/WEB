@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', function() {
             this.classList.add('active');
 
             // Appliquer le tri correspondant
-            const sortType = this.dataset.sortType; // Utilisation des data-attributes pour identifier le type de tri
+            const sortType = this.dataset.sortType; // Utilisez data-attributes
             applySorting(sortType);
         });
     });

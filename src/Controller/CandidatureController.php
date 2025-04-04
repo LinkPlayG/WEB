@@ -125,6 +125,19 @@ class CandidatureController extends AbstractController
             'message' => 'Candidature enregistrée avec succès'
         ]);
     }
+
+    #[Route('/candidature/{id}', name: 'app_candidature_delete', methods: ['POST'])]
+    public function delete(Request $request, Candidature $candidature, EntityManagerInterface $entityManager): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$candidature->getId(), $request->request->get('_token'))) {
+            $entityManager->remove($candidature);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'La candidature a été supprimée avec succès.');
+        }
+
+        return $this->redirectToRoute('app_offre_show', ['id' => $candidature->getOffreDeStage()->getId()]);
+    }
 }
 
 ?>

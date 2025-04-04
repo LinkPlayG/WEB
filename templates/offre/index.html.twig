@@ -1,5 +1,11 @@
 {% extends 'dashboard/layout.html.twig' %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/offre.css') }}">
+{% endblock %}
+
+
 {% block title %}Gestion des offres{% endblock %}
 
 {% block dashboard_content %}

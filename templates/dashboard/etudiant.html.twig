@@ -5,6 +5,84 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <style>
+        .stats-card {
+            background: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            border-left: 4px solid #4e73df;
+            margin-bottom: 20px;
+        }
+
+        .stats-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stats-card h5 {
+            color: #4e73df;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .stats-card h2 {
+            color: #5a5c69;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .stats-card .text-muted {
+            font-size: 0.875rem;
+        }
+
+        .stats-card i {
+            opacity: 0.7;
+        }
+
+        /* Couleurs spécifiques pour chaque carte */
+        .stats-card.candidatures {
+            border-left-color: #4e73df;
+        }
+        .stats-card.candidatures i {
+            color: #4e73df;
+        }
+
+        .stats-card.entretiens {
+            border-left-color: #1cc88a;
+        }
+        .stats-card.entretiens i {
+            color: #1cc88a;
+        }
+
+        .stats-card.offres {
+            border-left-color: #36b9cc;
+        }
+        .stats-card.offres i {
+            color: #36b9cc;
+        }
+
+        .stats-card.wishlist {
+            border-left-color: #e74a3b;
+        }
+        .stats-card.wishlist i {
+            color: #e74a3b;
+        }
+
+        /* Style pour les graphiques */
+        .card {
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            border: none;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            color: #4e73df;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+    </style>
 {% endblock %}
 
 {% block body %}
@@ -12,43 +90,63 @@
     <!-- Statistics Cards -->
     <div class="row mb-4">
         <div class="col-md-3">
-            <div class="stats-card">
+            <div class="stats-card candidatures">
                 <h5>Candidatures</h5>
                 <div class="d-flex justify-content-between align-items-center">
                     <h2 class="mb-0">{{ stats.candidatures }}</h2>
-                    <i class="fas fa-paper-plane fa-2x text-primary"></i>
+                    <i class="fas fa-paper-plane fa-2x"></i>
                 </div>
-                <div class="mt-2 text-muted">Total des candidatures</div>
+                <div class="mt-2 text-muted">
+                    <span class="text-success">
+                        <i class="fas fa-arrow-up"></i> {{ stats.candidatures_percent|default(0) }}%
+                    </span>
+                    depuis le mois dernier
+                </div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="stats-card">
+            <div class="stats-card entretiens">
                 <h5>Entretiens</h5>
                 <div class="d-flex justify-content-between align-items-center">
                     <h2 class="mb-0">{{ stats.entretiens }}</h2>
-                    <i class="fas fa-calendar-check fa-2x text-success"></i>
+                    <i class="fas fa-calendar-check fa-2x"></i>
                 </div>
-                <div class="mt-2 text-muted">Entretiens prévus</div>
+                <div class="mt-2 text-muted">
+                    <span class="text-success">
+                        <i class="fas fa-calendar"></i>
+                    </span>
+                    Prochains rendez-vous
+                </div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="stats-card">
+            <div class="stats-card offres">
                 <h5>Offres disponibles</h5>
                 <div class="d-flex justify-content-between align-items-center">
                     <h2 class="mb-0">{{ stats.offresDisponibles }}</h2>
-                    <i class="fas fa-briefcase fa-2x text-info"></i>
+                    <i class="fas fa-briefcase fa-2x"></i>
                 </div>
-                <div class="mt-2 text-muted">Total des offres</div>
+                <div class="mt-2 text-muted">
+                    <span class="text-info">
+                        <i class="fas fa-sync"></i>
+                    </span>
+                    Mises à jour aujourd'hui
+                </div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="stats-card">
+            <div class="stats-card wishlist">
                 <h5>Wishlist</h5>
                 <div class="d-flex justify-content-between align-items-center">
                     <h2 class="mb-0">{{ stats.wishlist }}</h2>
-                    <i class="fas fa-heart fa-2x text-danger"></i>
+                    <i class="fas fa-heart fa-2x"></i>
                 </div>
-                <div class="mt-2 text-muted">Offres sauvegardées</div>
+                <div class="mt-2 text-muted">
+                    <span class="text-danger">
+                        <i class="fas fa-star"></i>
+                    </span>
+                    Offres favorites
+                </div>
             </div>
         </div>
     </div>
@@ -73,135 +171,6 @@
         </div>
     </div>
 
-    <!-- Search and Filter Section -->
-    <div class="card mb-4">
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-4">
-                    <input type="text" class="form-control" placeholder="Rechercher une offre...">
-                </div>
-                <div class="col-md-3">
-                    <select class="form-select">
-                        <option>Tous les secteurs</option>
-                        {% for offre in offres %}
-                            {% if offre.entreprise.secteur %}
-                                <option>{{ offre.entreprise.secteur }}</option>
-                            {% endif %}
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <select class="form-select">
-                        <option>Toutes les villes</option>
-                        {% for offre in offres %}
-                            {% if offre.entreprise.adresse.ville %}
-                                <option>{{ offre.entreprise.adresse.ville }}</option>
-                            {% endif %}
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <button class="btn btn-primary w-100">
-                        <i class="fas fa-filter me-2"></i>Filtrer
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Data Tables -->
-    <div class="card">
-        <div class="card-body">
-            <ul class="nav nav-tabs mb-3">
-                <li class="nav-item">
-                    <a class="nav-link active" data-bs-toggle="tab" href="#offres">
-                        <i class="fas fa-briefcase me-2"></i>Offres de stage
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-bs-toggle="tab" href="#candidatures">
-                        <i class="fas fa-paper-plane me-2"></i>Mes candidatures
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-bs-toggle="tab" href="#wishlist">
-                        <i class="fas fa-heart me-2"></i>Wishlist
-                    </a>
-                </li>
-            </ul>
-
-            <div class="tab-content">
-                <div class="tab-pane fade show active" id="offres">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>Entreprise</th>
-                                <th>Poste</th>
-                                <th>Ville</th>
-                                <th>Durée</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for offre in offres %}
-                                <tr>
-                                    <td>
-                                        {% if offre.entreprise.logo %}
-                                            <img src="{{ asset(offre.entreprise.logo) }}" class="rounded-circle me-2" alt="Logo" width="30">
-                                        {% endif %}
-                                        {{ offre.entreprise.nom }}
-                                    </td>
-                                    <td>{{ offre.titreOffre }}</td>
-                                    <td>{{ offre.entreprise.adresse.ville }}</td>
-                                    <td>{{ offre.dureeStage }} mois</td>
-                                    <td class="action-buttons">
-                                        <a href="#" class="btn btn-sm btn-info" title="Voir les détails">
-                                            <i class="fas fa-eye"></i>
-                                        </a>
-                                        <a href="#" class="btn btn-sm btn-success" title="Postuler">
-                                            <i class="fas fa-paper-plane"></i>
-                                        </a>
-                                        <a href="#" class="btn btn-sm btn-danger" title="Ajouter aux favoris">
-                                            <i class="fas fa-heart"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="tab-pane fade" id="candidatures">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>Entreprise</th>
-                                <th>Poste</th>
-                                <th>Date de candidature</th>
-                                <th>Statut</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for candidature in candidatures %}
-                                <tr>
-                                    <td>{{ candidature.offreDeStage.entreprise.nom }}</td>
-                                    <td>{{ candidature.offreDeStage.titreOffre }}</td>
-                                    <td>{{ candidature.dateCandidature|date('d/m/Y') }}</td>
-                                    <td><span class="badge bg-{{ candidature.statut == 'Acceptée' ? 'success' : (candidature.statut == 'En attente' ? 'warning' : 'danger') }}">{{ candidature.statut }}</span></td>
-                                    <td class="action-buttons">
-                                        <a href="#" class="btn btn-sm btn-info" title="Voir les détails">
-                                            <i class="fas fa-eye"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
 {% endblock %}
 

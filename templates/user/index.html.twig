@@ -42,6 +42,7 @@
                 <table id="usersTable" class="table table-striped">
                     <thead>
                         <tr>
+                            <th>Nom</th>
                             <th>Email</th>
                             <th>Type</th>
                             <th>Rôles</th>
@@ -52,6 +53,15 @@
                     <tbody>
                         {% for user in users %}
                             <tr>
+                                <td>
+                                    {% if 'ROLE_ADMIN' in user.roles %}
+                                        {{ user.nomAdmin }} {{ user.prenomAdmin }}
+                                    {% elseif 'ROLE_PILOTE' in user.roles %}
+                                        {{ user.nomPilote }} {{ user.prenomPilote }}
+                                    {% elseif 'ROLE_ETUDIANT' in user.roles %}
+                                        {{ user.nomEtudiant }} {{ user.prenomEtudiant }}
+                                    {% endif %}
+                                </td>
                                 <td>{{ user.email }}</td>
                                 <td>
                                     {% if 'ROLE_ADMIN' in user.roles %}
