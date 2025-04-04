@@ -9,6 +9,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -73,6 +74,11 @@ class EntrepriseType extends AbstractType
             ->add('description', TextareaType::class, [
                 'label' => 'Description',
                 'attr' => ['class' => 'form-control', 'rows' => 5]
+            ])
+            ->add('logo', UrlType::class, [
+                'label' => 'Logo (URL)',
+                'required' => false,
+                'attr' => ['class' => 'form-control']
             ])
         ;
     }
