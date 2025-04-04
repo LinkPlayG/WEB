@@ -19,8 +19,10 @@
         <ul>
             <li><a href="{{ path('app_home') }}" class="{{ app.request.get('_route') == 'app_home' ? 'active' : '' }}">Accueil</a></li>
             <li><a href="{{ path('app_annonces') }}" class="{{ app.request.get('_route') == 'app_annonces' ? 'active' : '' }}">Annonces</a></li>
-            {% if not is_granted('ROLE_ADMIN') %}
+            {% if is_granted('ROLE_ETUDIANT') %}
                 <li><a href="{{ path('app_wishlist') }}" class="{{ app.request.get('_route') == 'app_wishlist' ? 'active' : '' }}">Wishlist</a></li>
+                <li><a href="{{ path('app_candidatures') }}" class="{{ app.request.get('_route') == 'app_candidatures' ? 'active' : '' }}">Candidatures</a></li>
+            {% elseif is_granted('ROLE_PILOTE') %}
                 <li><a href="{{ path('app_candidatures') }}" class="{{ app.request.get('_route') == 'app_candidatures' ? 'active' : '' }}">Candidatures</a></li>
             {% endif %}
         </ul>
@@ -33,7 +35,9 @@
                 <div class="burger-links">
                     <a href="{{ path('app_home') }}" class="{{ app.request.get('_route') == 'app_home' ? 'active' : '' }} burger-link">Accueil</a>
                     <a href="{{ path('app_annonces') }}" class="{{ app.request.get('_route') == 'app_annonces' ? 'active' : '' }} burger-link">Annonces</a>
-                    <a href="{{ path('app_wishlist') }}" class="{{ app.request.get('_route') == 'app_wishlist' ? 'active' : '' }} burger-link">Wishlist</a>
+                    {% if is_granted('ROLE_ETUDIANT') %}
+                        <a href="{{ path('app_wishlist') }}" class="{{ app.request.get('_route') == 'app_wishlist' ? 'active' : '' }} burger-link">Wishlist</a>
+                    {% endif %}
                     <a href="{{ path('app_candidatures') }}" class="{{ app.request.get('_route') == 'app_candidatures' ? 'active' : '' }} burger-link">Candidatures</a>
                 </div>
                 <div class="user-info">
