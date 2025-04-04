@@ -1,3 +1,4 @@
+
 class WishlistManager {
     constructor() {
         this.initializeWishlistButtons();
@@ -118,4 +119,4 @@ class WishlistManager {
 // Initialiser le gestionnaire de wishlist quand le DOM est chargé
 document.addEventListener('DOMContentLoaded', () => {
     new WishlistManager();
-}); 
+});

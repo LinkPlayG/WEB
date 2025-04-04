@@ -2,48 +2,38 @@
 
 {% block title %}Créer un administrateur{% endblock %}
 
-{% block dashboard_content %}
-    <div class="container-fluid px-4">
-        <div class="row justify-content-center">
-            <div class="col-lg-6">
-                <div class="card shadow-lg border-0 rounded-lg mt-5">
-                    <div class="card-header">
-                        <h3 class="text-center font-weight-light my-4">
-                            <i class="fas fa-user-shield me-2"></i>
-                            Créer un administrateur
-                        </h3>
-                    </div>
-                    <div class="card-body">
-                        {{ form_start(form) }}
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    {{ form_row(form.nomAdmin) }}
-                                </div>
-                                <div class="col-md-6">
-                                    {{ form_row(form.prenomAdmin) }}
-                                </div>
-                            </div>
-                            
-                            <div class="mb-3">
-                                {{ form_row(form.email) }}
-                            </div>
-                            
-                            <div class="mb-3">
-                                {{ form_row(form.password) }}
-                            </div>
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/user_creation.css') }}">
+{% endblock %}
 
-                            <div class="d-flex align-items-center justify-content-between mt-4 mb-0">
-                                <a class="btn btn-secondary" href="{{ path('app_users') }}">
-                                    <i class="fas fa-arrow-left me-1"></i> Retour
-                                </a>
-                                <button type="submit" class="btn btn-danger">
-                                    <i class="fas fa-user-plus me-1"></i> Créer l'administrateur
-                                </button>
-                            </div>
-                        {{ form_end(form) }}
-                    </div>
-                </div>
+
+{% block body %}
+    <div class="container mt-4">
+        <h1>Créer un nouvel administrateur</h1>
+
+        {{ form_start(form, {'attr': {'class': 'needs-validation'}}) }}
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.nom_admin) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.prenom_admin) }}
             </div>
         </div>
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.email) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.password) }}
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <button type="submit" class="btn btn-primary">Créer l'administrateur</button>
+            <a href="{{ path('app_users') }}" class="btn btn-secondary">Retour</a>
+        </div>
+        {{ form_end(form) }}
     </div>
-{% endblock %} 
+{% endblock %}

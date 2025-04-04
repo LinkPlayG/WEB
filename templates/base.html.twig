@@ -34,6 +34,12 @@
             {% else %}
                 <img src="{{ asset('images/user.svg') }}" alt="Profil" id="profileIcon"></i>
             {% endif %}
+            {% if app.user.profileImg %}
+                <img src="{{ path('app_profile_image', {'id': app.user.id}) }}" alt="Profil" id="profileIcon">
+            {% else %}
+                <img src="{{ asset('images/user.svg') }}" alt="Profil" id="profileIcon"></i>
+            {% endif %}
+            <img src="{{ asset('images/burger.png') }}" id="burgerIcon">
             <div class="account-overlay" id="accountOverlay">
                 <div class="burger-links">
                     <a href="{{ path('app_home') }}" class="{{ app.request.get('_route') == 'app_home' ? 'active' : '' }} burger-link">Accueil</a>

@@ -21,7 +21,7 @@
             </div>
         </div>
 
-        
+
 <!-- Profile Content -->
 <div class="profile-content">
     <!-- Profile Picture with Upload Button -->
@@ -33,7 +33,7 @@
                 <i class="fa fa-user profile-user-icon" aria-hidden="true"></i>
             {% endif %}
         </div>
-        
+
 {% if app.user and app.user.id == user.id %}
     <form id="profile-image-form" method="post" action="{{ path('app_profile_upload') }}" enctype="multipart/form-data">
         <input type="file" id="profile-image-input" name="profile_image" style="display: none;" accept="image/*">
@@ -66,7 +66,7 @@
                     
                     <div class="experience-list">
                         <div class="experience-item mb-3">
-                            <p class="experience-title">• 2023-2024: École ingénieur CESI (Lorraine, France)</p>
+                            <p class="experience-title">2023-2024: École ingénieur CESI (Lorraine, France)</p>
                             <p>- Ambassadeur, Organisation événement et communication</p>
                         </div>
                         
@@ -100,7 +100,6 @@
                 {% if pdfs is defined and pdfs|length > 0 %}
                     <div class="pdf-list mt-3">
                         {% for pdf in pdfs %}
-                        
                             <div class="pdf-item d-flex justify-content-between align-items-center mb-2">
                                 <div class="d-flex align-items-center">
                                     <i class="fa fa-file-pdf-o pdf-icon mr-2" aria-hidden="true"></i>
