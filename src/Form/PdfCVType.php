@@ -34,7 +34,9 @@ class PdfCVType extends AbstractType
                     'application/pdf',
                     'application/x-pdf',
                 ],
-                'mimeTypesMessage' => 'Please upload a valid PDF document',
+                'mimeTypesMessage' => 'Veuillez téléverser un document PDF valide',
+                'extensions' => ['pdf'],
+                'extensionsMessage' => 'Seuls les fichiers PDF sont autorisés.'
             ])
         ],
     ])
