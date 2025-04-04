@@ -15,22 +15,5 @@
                 {{ about_text }}
             </p>
         </section>
-
-        <section class="offers-section">
-            <h2>Offres pour vous</h2>
-            <div class="offers-list">
-                {% for offer in offers %}
-                    <div class="offer-card">
-                        <div class="offer-image">
-                            <img src="{{ asset('images/offer-icon.png') }}" alt="{{ offer.title }}">
-                        </div>
-                        <div class="offer-content">
-                            <h3>{{ offer.title }}</h3>
-                            <p>{{ offer.description }}</p>
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
-        </section>
     </div>
 {% endblock %}
