@@ -14,6 +14,7 @@ class EntrepriseDTO
     private ?string $telephone = null;
     private ?string $email = null;
     private ?string $description = null;
+    private ?string $logo = null;
 
     public function getNom(): ?string
     {
@@ -122,6 +123,17 @@ class EntrepriseDTO
     public function setDescription(?string $description): self
     {
         $this->description = $description;
+        return $this;
+    }
+
+    public function getLogo(): ?string
+    {
+        return $this->logo;
+    }
+
+    public function setLogo(?string $logo): self
+    {
+        $this->logo = $logo;
         return $this;
     }
 } 

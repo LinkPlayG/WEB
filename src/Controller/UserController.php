@@ -9,6 +9,7 @@ use App\Entity\Administrateur;
 use App\Entity\Promotion;
 use App\Form\EtudiantType;
 use App\Form\PiloteType;
+use App\Form\UserType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,32 +17,20 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Security\Core\Security;
+use App\Repository\UserRepository;
 use App\Form\AdministrateurType;
 
 #[IsGranted('ROLE_ADMIN')]
 class UserController extends AbstractController
 {
     #[Route('/admin/users', name: 'app_users')]
-    public function index(EntityManagerInterface $entityManager): Response
+    public function index(UserRepository $userRepository): Response
     {
-        // Récupérer tous les utilisateurs par type
-        $etudiants = $entityManager->getRepository(Etudiant::class)->findAll();
-        $pilotes = $entityManager->getRepository(PiloteDePromotion::class)->findAll();
-        $admins = $entityManager->getRepository(Administrateur::class)->findAll();
-
-        // Statistiques
-        $stats = [
-            'total' => count($etudiants) + count($pilotes) + count($admins),
-            'etudiants' => count($etudiants),
-            'pilotes' => count($pilotes),
-            'admins' => count($admins)
-        ];
+        $users = $userRepository->findAll();
 
         return $this->render('user/index.html.twig', [
-            'stats' => $stats,
-            'etudiants' => $etudiants,
-            'pilotes' => $pilotes,
-            'admins' => $admins
+            'users' => $users
         ]);
     }
 
@@ -184,5 +173,22 @@ class UserController extends AbstractController
         return $this->redirectToRoute('app_users');
     }
 
+    #[Route('/{id}/edit', name: 'app_user_edit', methods: ['GET', 'POST'])]
+    public function edit(Request $request, User $user, EntityManagerInterface $entityManager): Response
+    {
+        $form = $this->createForm(UserType::class, $user);
+        $form->handleRequest($request);
 
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+
+            $this->addFlash('success', 'L\'utilisateur a été modifié avec succès.');
+            return $this->redirectToRoute('app_users');
+        }
+
+        return $this->render('user/edit.html.twig', [
+            'user' => $user,
+            'form' => $form,
+        ]);
+    }
 }
