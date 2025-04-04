@@ -15,7 +15,7 @@
         <img src="{{ asset('images/logo.png') }}" alt="Interned Logo">
         <span class="logo-text">Interned</span>
     </div>
-    <nav>
+    <nav class="nav-menu">
         <ul>
             <li><a href="{{ path('app_home') }}" class="{{ app.request.get('_route') == 'app_home' ? 'active' : '' }}">Accueil</a></li>
             <li><a href="{{ path('app_annonces') }}" class="{{ app.request.get('_route') == 'app_annonces' ? 'active' : '' }}">Annonces</a></li>
