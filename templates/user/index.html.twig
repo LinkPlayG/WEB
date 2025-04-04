@@ -124,15 +124,19 @@
                                 <td>{{ etudiant.promotion ? etudiant.promotion.nom : '-' }}</td>
                                 <td><span class="badge bg-{{ etudiant.statut == 'En stage' ? 'success' : 'warning' }}">{{ etudiant.statut }}</span></td>
                                 <td class="action-buttons">
-                                    <a href="#" class="btn btn-sm btn-info" title="Voir le profil">
+
+                                    <a href="{{ path('app_profile_show', {'id': etudiant.id}) }}" class="btn btn-sm btn-info" title="Voir le profil">
                                         <i class="fas fa-eye"></i>
                                     </a>
+
                                     <a href="#" class="btn btn-sm btn-warning" title="Modifier">
                                         <i class="fas fa-edit"></i>
                                     </a>
+
                                     <a href="#" class="btn btn-sm btn-danger" title="Supprimer">
                                         <i class="fas fa-trash"></i>
                                     </a>
+
                                 </td>
                             </tr>
                         {% endfor %}
@@ -169,9 +173,11 @@
                                     <a href="#" class="btn btn-sm btn-info" title="Voir le profil">
                                         <i class="fas fa-eye"></i>
                                     </a>
+
                                     <a href="#" class="btn btn-sm btn-warning" title="Modifier">
                                         <i class="fas fa-edit"></i>
                                     </a>
+
                                     <a href="#" class="btn btn-sm btn-danger" title="Supprimer">
                                         <i class="fas fa-trash"></i>
                                     </a>
