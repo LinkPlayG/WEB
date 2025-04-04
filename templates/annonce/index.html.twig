@@ -38,73 +38,76 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             cursor: pointer;
             transition: transform 0.2s;
-            display: flex;
-            gap: 15px;
-            border-left: 4px solid #e0e0e0;
         }
         .offer-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            border-left-color: #007bff;
         }
-        .offer-image {
-            width: 50px;
-            height: 50px;
+        .offer-info {
             display: flex;
             align-items: center;
-            justify-content: center;
-            background-color: #f8f9fa;
-            border-radius: 8px;
-            flex-shrink: 0;
+            gap: 12px;
+            width: 100%;
         }
-        .offer-image i {
-            font-size: 24px;
-            color: #6c757d;
-        }
-        .offer-content {
-            flex: 1;
-            min-width: 0; /* Pour éviter le débordement */
+        .offer-main {
             display: flex;
-            gap: 15px;
-        }
-        .offer-main-content {
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
             flex: 1;
-            min-width: 0; /* Pour éviter le débordement */
+            overflow: hidden;
         }
         .offer-title {
             font-size: 16px;
             font-weight: 600;
             color: #2c3e50;
-            margin-bottom: 5px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            min-width: 0;
         }
         .offer-company {
-            font-size: 14px;
+            font-size: 16px;
             color: #7f8c8d;
-            margin-bottom: 8px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            position: relative;
+            padding-left: 15px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            min-width: 0;
+            flex-shrink: 1;
         }
-        .offer-description {
+        .offer-company::before {
+            content: "•";
+            position: absolute;
+            left: 5px;
+            color: #bdc3c7;
+        }
+        .offer-details {
+            display: flex;
+            align-items: center;
+            gap: 12px;
             font-size: 14px;
-            color: #6c757d;
-            margin-bottom: 10px;
-            line-height: 1.4;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            color: #34495e;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+        .offer-detail {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            white-space: nowrap;
+        }
+        .offer-detail i {
+            font-size: 14px;
+            width: 16px;
+            text-align: center;
+            color: #7f8c8d;
         }
         .offer-actions {
             display: flex;
-            flex-direction: column;
-            gap: 8px;
-            padding-left: 15px;
-            border-left: 1px solid #e0e0e0;
+            align-items: center;
+            gap: 6px;
             flex-shrink: 0;
         }
         .view-btn, .wishlist-btn {
@@ -245,7 +248,7 @@
         <h1>Offres de stage</h1>
         <div class="search-container">
             <div class="search-input-wrapper">
-                <input type="text" id="search-input" placeholder="Rechercher">
+                <label for="search-input"></label><input type="text" id="search-input" placeholder="Rechercher">
                 <img class="search-icon" src="{{ asset('images/Search.svg') }}" alt="Rechercher">
                 {# Overlay #}
                 <div id="search-overlay" class="search-overlay hidden">
@@ -268,8 +271,10 @@
                 </div>
             </div>
             <div class="view-options">
-                <button class="option-btn active">Default</button>
-                <button class="option-btn">A-Z</button>
+                <button class="option-btn active" data-sort-type="date^">Plus Tôt</button>
+                <button class="option-btn" data-sort-type="datev">Plus Tard</button>
+                <button class="option-btn" data-sort-type="a-z">A-Z</button>
+                <button class="option-btn" data-sort-type="z-a">Z-A</button>
             </div>
         </div>
     </div>
@@ -314,8 +319,8 @@
     <div class="search-and-map-container">
         <div class="offers-list">
             {% for offre in offres %}
-                <div class="offer-card" 
-                     data-lat="{{ offre.entreprise.adresse.latitude }}" 
+                <div class="offer-card"
+                     data-lat="{{ offre.entreprise.adresse.latitude }}"
                      data-lng="{{ offre.entreprise.adresse.longitude }}"
                      data-id="{{ offre.id }}"
                      data-title="{{ offre.titreOffre }}"
@@ -327,22 +332,14 @@
                      data-end-date="{{ offre.dateFinStage|date('d/m/Y') }}"
                      data-salary="{{ offre.salaire }}"
                      data-address="{{ offre.entreprise.adresse.rue }}, {{ offre.entreprise.adresse.ville }}, {{ offre.entreprise.adresse.codePostal }}">
-                    <div class="offer-image">
-                        <i class="fas fa-building"></i>
-                    </div>
-                    <div class="offer-content">
-                        <div class="offer-main-content">
-                            <div class="offer-title">{{ offre.titreOffre }}</div>
-                            <div class="offer-company">{{ offre.entreprise.nom }}</div>
-                            <div class="offer-description">{{ offre.descriptionOffre }}</div>
+                    <div class="offer-info">
+                        <div class="offer-main">
+                            <span class="offer-title">{{ offre.titreOffre }}</span>
+                            <span class="offer-company">{{ offre.entreprise.nom }}</span>
                         </div>
                         <div class="offer-actions">
-                            <button class="view-btn" title="Voir les détails">
-                                👁️
-                            </button>
-                            <button class="wishlist-btn" title="Ajouter à ma wishlist" data-offer-id="{{ offre.id }}">
-                                ❤️
-                            </button>
+                            <button class="view-btn" title="Voir les détails">👁️</button>
+                            <button class="wishlist-btn" title="Ajouter à ma wishlist" data-offer-id="{{ offre.id }}">❤️</button>
                         </div>
                     </div>
                 </div>
@@ -352,7 +349,7 @@
                 </div>
             {% endfor %}
         </div>
-        
+
         <div id="map"></div>
     </div>
 {% endblock %}
@@ -365,7 +362,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Initialisation de la carte
             var map = L.map('map').setView([46.603354, 1.888334], 6); // Centre sur la France
-            
+
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 19,
                 attribution: '© OpenStreetMap contributors'
@@ -373,7 +370,7 @@
 
             var markers = [];
             var modal = document.getElementById('offerModal');
-            
+
             // Fonction pour enregistrer l'offre
             window.saveOffer = function() {
                 const currentCard = document.querySelector('.offer-card[data-id="' + currentOfferId + '"]');
@@ -393,23 +390,23 @@
                             'X-Requested-With': 'XMLHttpRequest'
                         }
                     })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            // Fermer la modal
-                            closeModal();
-                            // Afficher un message de succès
-                            alert('Votre candidature a été enregistrée avec succès !');
-                            // Rediriger vers la page des candidatures
-                            window.location.href = '/candidatures';
-                        } else {
-                            alert(data.error || 'Une erreur est survenue lors de l\'envoi de votre candidature.');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Erreur:', error);
-                        alert('Une erreur est survenue lors de l\'envoi de votre candidature.');
-                    });
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                // Fermer la modal
+                                closeModal();
+                                // Afficher un message de succès
+                                alert('Votre candidature a été enregistrée avec succès !');
+                                // Rediriger vers la page des candidatures
+                                window.location.href = '/candidatures';
+                            } else {
+                                alert(data.error || 'Une erreur est survenue lors de l\'envoi de votre candidature.');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Erreur:', error);
+                            alert('Une erreur est survenue lors de l\'envoi de votre candidature.');
+                        });
                 }
             }
 
@@ -423,50 +420,49 @@
                 document.getElementById('modalCompany').textContent = card.dataset.company;
                 document.getElementById('modalDescription').textContent = card.dataset.description;
                 document.getElementById('modalSkills').textContent = card.dataset.skills;
-                
+
                 // Formatage des détails du stage
-                var details = `
+                document.getElementById('modalDetails').innerHTML = `
                     Durée : ${card.dataset.duration} mois<br>
                     Date de début : ${card.dataset.startDate}<br>
                     Date de fin : ${card.dataset.endDate}<br>
                     Salaire : ${card.dataset.salary}€ par mois
                 `;
-                document.getElementById('modalDetails').innerHTML = details;
-                
+
                 // Détails de l'entreprise
                 document.getElementById('modalCompanyDetails').innerHTML = `
                     ${card.dataset.company}<br>
                     Adresse : ${card.dataset.address}
                 `;
-                
+
                 modal.style.display = 'block';
             }
-            
+
             // Fonction pour fermer la modal
             window.closeModal = function() {
                 modal.style.display = 'none';
             }
-            
+
             // Fermer la modal en cliquant sur la croix
             document.querySelector('.close-modal').onclick = closeModal;
-            
+
             // Fermer la modal en cliquant en dehors
             window.onclick = function(event) {
-                if (event.target == modal) {
+                if (event.target === modal) {
                     closeModal();
                 }
             }
-            
+
             // Ajout des marqueurs pour chaque offre
             document.querySelectorAll('.offer-card').forEach(function(card) {
                 var lat = parseFloat(card.dataset.lat);
                 var lng = parseFloat(card.dataset.lng);
-                
+
                 if (lat && lng) {
                     var marker = L.marker([lat, lng])
                         .bindPopup(card.querySelector('.offer-title').textContent)
                         .addTo(map);
-                    
+
                     markers.push({
                         marker: marker,
                         card: card
@@ -502,13 +498,12 @@
             // Synchroniser la recherche simple avec la recherche avancée
             searchInput.addEventListener('input', function(e) {
                 var searchText = e.target.value.toLowerCase();
-                
+
                 markers.forEach(function(item) {
                     var title = item.card.querySelector('.offer-title').textContent.toLowerCase();
                     var company = item.card.querySelector('.offer-company').textContent.toLowerCase();
-                    var description = item.card.querySelector('.offer-description').textContent.toLowerCase();
-                    
-                    if (title.includes(searchText) || company.includes(searchText) || description.includes(searchText)) {
+
+                    if (title.includes(searchText) || company.includes(searchText)) {
                         item.card.style.display = '';
                         item.marker.setOpacity(1);
                     } else {
@@ -517,29 +512,28 @@
                     }
                 });
             });
-            
+
             // Gestion de la recherche avancée
             const searchButton = document.getElementById('search-button');
             searchButton.addEventListener('click', function() {
                 const quoi = document.getElementById('quoi').value.toLowerCase();
                 const ou = document.getElementById('ou').value.toLowerCase();
-                
+
                 markers.forEach(function(item) {
                     var title = item.card.querySelector('.offer-title').textContent.toLowerCase();
                     var company = item.card.querySelector('.offer-company').textContent.toLowerCase();
-                    var description = item.card.querySelector('.offer-description').textContent.toLowerCase();
                     var matched = true;
-                    
-                    if (quoi && !(title.includes(quoi) || company.includes(quoi) || description.includes(quoi))) {
+
+                    if (quoi && !(title.includes(quoi) || company.includes(quoi))) {
                         matched = false;
                     }
-                    
+
                     // Vérifier la localisation si spécifiée
                     if (matched && ou) {
                         // On pourrait ajouter ici plus de détails sur la localisation
                         // comme la ville ou le département extraits des données
                         matched = false; // Par défaut, jusqu'à une vérification réelle
-                        
+
                         // Simulation - à remplacer par une vérification réelle
                         // par exemple avec la ville de l'entreprise
                         var address = item.card.dataset.address.toLowerCase();
@@ -547,7 +541,7 @@
                             matched = true;
                         }
                     }
-                    
+
                     if (matched) {
                         item.card.style.display = '';
                         item.marker.setOpacity(1);
@@ -556,7 +550,7 @@
                         item.marker.setOpacity(0.2);
                     }
                 });
-                
+
                 // Fermer l'overlay après la recherche
                 document.getElementById('search-overlay').style.display = 'none';
             });
@@ -566,10 +560,10 @@
                 button.addEventListener('click', function(e) {
                     e.stopPropagation(); // Empêcher la propagation du clic
                     const offerId = this.dataset.offerId;
-                    
+
                     // Toggle de la classe active
                     this.classList.toggle('active');
-                    
+
                     // Mise à jour du texte du bouton
                     if (this.classList.contains('active')) {
                         this.innerHTML = '❤️';
@@ -580,12 +574,12 @@
                                 'X-Requested-With': 'XMLHttpRequest'
                             }
                         })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                // Animation de succès si besoin
-                            }
-                        });
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    // Animation de succès si besoin
+                                }
+                            });
                     } else {
                         this.innerHTML = '🤍';
                         // Appel AJAX pour retirer de la wishlist
@@ -595,12 +589,12 @@
                                 'X-Requested-With': 'XMLHttpRequest'
                             }
                         })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                // Animation de succès si besoin
-                            }
-                        });
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    // Animation de succès si besoin
+                                }
+                            });
                     }
                 });
 
