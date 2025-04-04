@@ -18,9 +18,25 @@
         {% endfor %}
 
         <div class="card mb-4">
-            <div class="card-header">
-                <i class="fas fa-users me-1"></i>
-                Utilisateurs
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <div>
+                    <i class="fas fa-users me-1"></i>
+                    Utilisateurs
+                </div>
+                <div>
+                    <a href="{{ path('app_etudiant_new') }}" class="btn btn-success me-2">
+                        <i class="fas fa-user-graduate me-1"></i>
+                        Créer un étudiant
+                    </a>
+                    <a href="{{ path('app_pilote_new') }}" class="btn btn-primary me-2">
+                        <i class="fas fa-user-tie me-1"></i>
+                        Créer un pilote
+                    </a>
+                    <a href="{{ path('app_admin_new') }}" class="btn btn-danger">
+                        <i class="fas fa-user-shield me-1"></i>
+                        Créer un administrateur
+                    </a>
+                </div>
             </div>
             <div class="card-body">
                 <table id="usersTable" class="table table-striped">
@@ -55,8 +71,18 @@
                                 </td>
                                 <td>{{ user.dateCreation|date('d/m/Y H:i') }}</td>
                                 <td>
-                                    <a href="{{ path('app_user_edit', {'id': user.id}) }}" class="btn btn-sm btn-primary">
-                                        <i class="fas fa-edit"></i> Modifier
+                                    {% if 'ROLE_ETUDIANT' in user.roles %}
+                                        <a href="{{ path('app_etudiant_change_promotion', {'id': user.id}) }}" class="btn btn-info btn-sm" title="Modifier la promotion">
+                                            <i class="fas fa-graduation-cap"></i>
+                                        </a>
+                                    {% endif %}
+                                    {% if 'ROLE_PILOTE' in user.roles %}
+                                        <a href="{{ path('app_pilote_promotions', {'id': user.id}) }}" class="btn btn-info btn-sm" title="Modifier les promotions">
+                                            <i class="fas fa-users"></i>
+                                        </a>
+                                    {% endif %}
+                                    <a href="{{ path('app_user_edit', {'id': user.id}) }}" class="btn btn-primary btn-sm" title="Modifier">
+                                        <i class="fas fa-edit"></i>
                                     </a>
                                 </td>
                             </tr>

@@ -51,9 +51,13 @@ class OffreDeStage
     #[ORM\OneToMany(mappedBy: 'offreDeStage', targetEntity: Candidature::class)]
     private Collection $candidatures;
 
+    #[ORM\OneToMany(mappedBy: 'offreDeStage', targetEntity: Wishlist::class, orphanRemoval: true)]
+    private Collection $wishlists;
+
     public function __construct()
     {
         $this->candidatures = new ArrayCollection();
+        $this->wishlists = new ArrayCollection();
         $this->statut_offre = 'Disponible';
     }
 
@@ -205,6 +209,36 @@ class OffreDeStage
             // set the owning side to null (unless already changed)
             if ($candidature->getOffreDeStage() === $this) {
                 $candidature->setOffreDeStage(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Wishlist>
+     */
+    public function getWishlists(): Collection
+    {
+        return $this->wishlists;
+    }
+
+    public function addWishlist(Wishlist $wishlist): static
+    {
+        if (!$this->wishlists->contains($wishlist)) {
+            $this->wishlists->add($wishlist);
+            $wishlist->setOffreDeStage($this);
+        }
+
+        return $this;
+    }
+
+    public function removeWishlist(Wishlist $wishlist): static
+    {
+        if ($this->wishlists->removeElement($wishlist)) {
+            // set the owning side to null (unless already changed)
+            if ($wishlist->getOffreDeStage() === $this) {
+                $wishlist->setOffreDeStage(null);
             }
         }
 

@@ -10,6 +10,7 @@ use App\Entity\Promotion;
 use App\Form\EtudiantType;
 use App\Form\PiloteType;
 use App\Form\UserType;
+use App\Form\AdminType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,6 +20,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Security\Core\Security;
 use App\Repository\UserRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 #[IsGranted('ROLE_ADMIN')]
 class UserController extends AbstractController
@@ -144,6 +146,61 @@ class UserController extends AbstractController
         return $this->render('user/edit.html.twig', [
             'user' => $user,
             'form' => $form,
+        ]);
+    }
+
+    #[Route('/admin/new', name: 'app_admin_new')]
+    #[IsGranted('ROLE_ADMIN')]
+    public function newAdmin(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): Response
+    {
+        $admin = new Administrateur();
+        $form = $this->createForm(AdminType::class, $admin);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $hashedPassword = $passwordHasher->hashPassword(
+                $admin,
+                $form->get('password')->getData()
+            );
+            $admin->setPassword($hashedPassword);
+            $admin->setRoles(['ROLE_ADMIN']);
+
+            $entityManager->persist($admin);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Administrateur créé avec succès.');
+            return $this->redirectToRoute('app_users');
+        }
+
+        return $this->render('user/new_admin.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
+    #[Route('/etudiant/{id}/promotion', name: 'app_etudiant_change_promotion', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function changePromotion(Request $request, Etudiant $etudiant, EntityManagerInterface $entityManager): Response
+    {
+        $form = $this->createFormBuilder($etudiant)
+            ->add('promotion', EntityType::class, [
+                'class' => Promotion::class,
+                'choice_label' => 'nom',
+                'label' => 'Promotion',
+                'attr' => ['class' => 'form-control']
+            ])
+            ->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+            $this->addFlash('success', 'La promotion de l\'étudiant a été modifiée avec succès.');
+            return $this->redirectToRoute('app_users');
+        }
+
+        return $this->render('user/change_promotion.html.twig', [
+            'etudiant' => $etudiant,
+            'form' => $form
         ]);
     }
 }

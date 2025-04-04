@@ -50,17 +50,22 @@ class OffreDeStageController extends AbstractController
     {
         $offre = new OffreDeStage();
         
-        // Si c'est un pilote qui crée l'offre, on l'assigne automatiquement
-        if (!$this->isGranted('ROLE_ADMIN')) {
-            /** @var PiloteDePromotion $pilote */
-            $pilote = $this->getUser();
-            $offre->setPilote($pilote);
-        }
+        /** @var PiloteDePromotion $pilote */
+        $pilote = $this->getUser();
+        $offre->setPilote($pilote);
         
-        $form = $this->createForm(OffreDeStageType::class, $offre);
+        $form = $this->createForm(OffreDeStageType::class, $offre, [
+            'is_admin' => $this->isGranted('ROLE_ADMIN')
+        ]);
+        
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // Si ce n'est pas un admin, on force le pilote à être l'utilisateur connecté
+            if (!$this->isGranted('ROLE_ADMIN')) {
+                $offre->setPilote($pilote);
+            }
+            
             $entityManager->persist($offre);
             $entityManager->flush();
 
@@ -97,10 +102,18 @@ class OffreDeStageController extends AbstractController
             throw $this->createAccessDeniedException('Vous n\'avez pas accès à cette offre.');
         }
 
-        $form = $this->createForm(OffreDeStageType::class, $offre);
+        $form = $this->createForm(OffreDeStageType::class, $offre, [
+            'is_admin' => $this->isGranted('ROLE_ADMIN')
+        ]);
+        
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // Si ce n'est pas un admin, on force le pilote à être l'utilisateur connecté
+            if (!$this->isGranted('ROLE_ADMIN')) {
+                $offre->setPilote($this->getUser());
+            }
+            
             $entityManager->flush();
 
             $this->addFlash('success', 'L\'offre a été modifiée avec succès.');
